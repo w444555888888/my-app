@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import HotelsList from "./pages/HotelsList";
 import Hotel from "./pages/Hotel";
+import SignUp from "./pages/SignUp";
 
 function App() {
 
@@ -15,6 +16,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/signUp" element={<SignUp />} />
           <Route path="/hotelsList" element={<HotelsList />} />
           <Route path="/hotels/:id" element={<Hotel />} />
         </Routes>

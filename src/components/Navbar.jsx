@@ -13,8 +13,12 @@ const Navbar = () => {
 
     
     const navigate = useNavigate();
-    const handleSearchClick = () => {
+    const handleClickToHome = () => {
         navigate('/');
+    };
+
+    const handleClickToSignUp = () => {
+        navigate('/SignUp');
     };
 
     return (
@@ -22,11 +26,11 @@ const Navbar = () => {
             <div className="navbarContainer">
                 <div className="lineOne">
                     <div className="left">
-                        <span className="logo" onClick={handleSearchClick}>MIKE.BOOKING</span>
+                        <span className="logo" onClick={handleClickToHome}>MIKE.BOOKING</span>
                     </div>
                     <div className="right">
-                        <button className="navButton">註冊</button>
-                        <button className="navButton">登入</button>
+                        <button className="navButton" onClick={handleClickToSignUp}>註冊</button>
+                        <button className="navButton" >登入</button>
                     </div>
                 </div>
                 <div className="lineTwo">
