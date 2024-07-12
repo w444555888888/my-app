@@ -4,10 +4,9 @@ import React, { useState } from 'react'
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRange } from 'react-date-range';
-import * as locales from 'react-date-range/dist/locale';
 import format from 'date-fns/format';
 import "./header.scss"
-const Header = () => {
+const Header = () => {  
 
   const [openConditions, setOpenConditions] = useState(false);
   const [openCalendar, setOpenCalendar] = useState(false);
@@ -40,7 +39,7 @@ const Header = () => {
           尋找下趟住宿
         </h1>
         <p className="headerDes">搜尋飯店、民宿及其他住宿類型的優惠…
-          <br />Booking.com clone挑戰（為SamKo Demo使用不為盈利）</p>
+          <br />MIKE.Booking.com</p>
 
 
         <div className="headerSearchBar">
@@ -60,7 +59,6 @@ const Header = () => {
               className="calendar"
               ranges={dates}
               minDate={new Date()}
-              locale={locales['zhTW']}
             />}
           </div>
           <div className="SearchBarItem">

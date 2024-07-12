@@ -6,9 +6,9 @@ const Navbar = () => {
     return (
         <div className='navbar'>
             <div className="navbarContainer">
-                <div className="lineOne">
+                <div className="lineOne"> 
                     <div className="left">
-                    <span className="logo">SAM.BOOKING</span>
+                    <span className="logo">MIKE.BOOKING</span>
                     </div>
                     <div className="right">
                     <button className='navButtonFlag'/>

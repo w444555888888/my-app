@@ -4,9 +4,9 @@ const Footer = () => {
     return (
         <div className='footer'>
             <div className="title">
-                省時又省錢 !
+                訂閱MIKE.BOOKING
                 <span>
-                    現在訂閱，我們將寄送最佳訂房優惠給您。
+                    立即訂閱，我們將寄送最佳訂房優惠給您。
                 </span>
             </div>
             <div className="emailcontainer">
@@ -22,11 +22,9 @@ const Footer = () => {
                     </div>
             </div>
             <div className="subcontainer">
-                <button>將你的住宿註冊</button>
-                <hr />
                 <ul>
                     <li>
-                        手機版
+                        手機版  
                     </li>
                     <li>
                         您的帳戶
