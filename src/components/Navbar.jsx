@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import "./navbar.scss"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBed, faCar, faPlane, faTaxi, faToriiGate } from '@fortawesome/free-solid-svg-icons'
+import { useNavigate } from 'react-router-dom';
 const Navbar = () => {
 
     const [activeItem, setActiveItem] = useState('住宿');
@@ -10,16 +11,20 @@ const Navbar = () => {
         setActiveItem(item);
     };
 
+    
+    const navigate = useNavigate();
+    const handleSearchClick = () => {
+        navigate('/');
+    };
+
     return (
         <div className='navbar'>
             <div className="navbarContainer">
                 <div className="lineOne">
                     <div className="left">
-                        <span className="logo">MIKE.BOOKING</span>
+                        <span className="logo" onClick={handleSearchClick}>MIKE.BOOKING</span>
                     </div>
                     <div className="right">
-                        <button className='navButtonFlag' />
-                        <button className="navButtonNotif">使用webpack測試</button>
                         <button className="navButton">註冊</button>
                         <button className="navButton">登入</button>
                     </div>

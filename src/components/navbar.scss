@@ -16,6 +16,7 @@
             justify-content: space-between; //分開左右半部
             .left {
                 display: flex;
+                cursor: pointer;
                 span {
                     font-size: 20px;
                     font-weight: 500;
@@ -23,30 +24,7 @@
             }
             .right {
                 display: flex;
-                align-items: center; 
-                .navButtonFlag {
-                    border-radius: 50%; 
-                    height: 30px;
-                    width: 30px;
-                    border: none;
-                    background-image: url("https://q-xx.bstatic.com/backend_static/common/flags/new/48-squared/tw.png");
-                    background-size: cover;
-                    &:hover {
-                        cursor: pointer;
-                        border: 1px solid lightgray;
-                    }
-                }               
-                .navButtonNotif {
-                    font-size: 14px;
-                    margin-left: 10px;
-                    padding: 8px 16px;
-                    border: white 1px solid;
-                    background-color: rgb(92, 10, 255);
-                    color: white;
-                    &:hover {
-                        background-color: rgba(255, 255, 255, 0.14);
-                    }
-                }
+                align-items: center;               
                 .navButton {
                     font-size: 14px;
                     margin-left: 10px;
