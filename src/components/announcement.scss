@@ -65,7 +65,6 @@
                 }
             }
         }
-      
     }
 }
 
@@ -77,36 +76,34 @@
     padding: 5px 20px;
     height: 200px;
     border: 1px lightgrey solid;
-    background-repeat: no-repeat;//背景圖導入方式
-    background-position: right;//背景圖是那個世界地圖
+    background-repeat: no-repeat; //背景圖導入方式
+    background-position: right; //背景圖是那個世界地圖
     background-image: url("https://cf.bstatic.com/static/img/genius-banner-world-bg/2b5cdbad7b92073bc396b8b59d0bb421b3a01cba.png");
     img {
-        display: flex;//左邊
+        display: flex; //左邊
         width: 180px;
     }
-    .BannerInfoDes {//右邊
+    .BannerInfoDes {
+        //右邊
         display: flex;
         flex-direction: column;
         gap: 20px; //讓span title btn有間距
         .Bannerbtn {
             display: flex;
-            gap: 10px;//登入 註冊btn 有間距
+            gap: 10px; //登入 註冊btn 有間距
             button {
+                border: none;
                 padding: 8px 15px;
                 border-radius: 2px;
-                color: rgb(53, 164, 127);
-                border: 1px rgb(53, 164, 127) solid;
+                color: rgb(114, 64, 253);
                 background-color: white;
                 cursor: pointer;
                 &:hover {
-                    background-color: rgba(53, 164, 127, 0.1);
+                    background-color: rgba(119, 119, 119, 0.1);
                 }
             }
-            button:last-child {
-                //做一下差別註冊不要有外匡 
-                //last-child是指btn的最後一個物件概念 
-                //這邊就兩個 登入與註冊 登入就firse-child註冊就last-child
-                border: none;
+            .buttonActive {
+                border: 1px rgb(114, 64, 253) solid;
             }
         }
     }

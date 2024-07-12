@@ -10,7 +10,7 @@
     }
 }
 .listSearch {
-    background-color: #ffc489;
+    background-color: rgb(97, 97, 97);
     padding: 5px;
     border-radius: 2px;
     position: sticky;
@@ -18,14 +18,14 @@
     top: 10px;
     .searchTitle {
         color: black;
-        background-color: #fd8915c6;
+        background-color: #ffffffc6;
         padding: 10px 10px;
         border-radius: 1px;
         font-size: 20px;
     }
 }
 .listItem {
-    width: 250px;//這個為拉寬整個搜尋欄的250px，上面都沒有設置寬度
+    width: 300px;//這個為拉寬整個搜尋欄的300px，上面都沒有設置寬度
     margin-top: 20px;//每個都取出高度20px的間距
     display: flex;
     flex-direction: column;
