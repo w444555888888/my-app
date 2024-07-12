@@ -33,7 +33,7 @@ const HotelsList = () => {
           <div className="listWrapper">
             <div className="listSearch">
               <div className='searchTitle'>
-                搜尋
+                搜尋目前最新資料
               </div>
               <div className="listItem">
                 <label>目的地／住宿名稱：</label>
