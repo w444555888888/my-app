@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "./signUp.scss";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleRight } from '@fortawesome/free-solid-svg-icons'
 
 const SignUp = () => {
     const [email, setEmail] = useState('');
@@ -44,15 +46,15 @@ const SignUp = () => {
                         <span className="logo">MIKE.BOOKING</span>
                     </div>
                     <div className="right">
-                        <div className="navButton" onClick={handleClickToHome}>返回首頁</div>
+                        <div className="navButton" onClick={handleClickToHome}><FontAwesomeIcon icon={faCircleRight} /></div>
                     </div>
                 </div>
             </div>
             <div className="signUpContainer">
-                <h2>註冊</h2>
+                <h2>Sign Up</h2>
                 <form onSubmit={handleSignUp}>
                     <div className="formGroup">
-                        <label htmlFor="email">您的電子郵件:</label>
+                        <label htmlFor="email">E-mail;:</label>
                         <input
                             type="email"
                             id="email"
@@ -62,7 +64,7 @@ const SignUp = () => {
                         />
                     </div>
                     <div className="formGroup">
-                        <label htmlFor="password">密碼:</label>
+                        <label htmlFor="password">password:</label>
                         <input
                             type="password"
                             id="password"
@@ -72,7 +74,7 @@ const SignUp = () => {
                         />
                     </div>
                     <div className="formGroup">
-                        <label htmlFor="confirmPassword">確認密碼:</label>
+                        <label htmlFor="confirmPassword">confirm password:</label>
                         <input
                             type="password"
                             id="confirmPassword"
@@ -81,7 +83,7 @@ const SignUp = () => {
                             required
                         />
                     </div>
-                    <button type="submit">註冊</button>
+                    <button type="submit">Sign Up</button>
                 </form>
                 {message && <p>{message}</p>}
             </div>

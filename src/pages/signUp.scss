@@ -9,14 +9,14 @@
     color: gray;
     padding: 20px;
     box-sizing: border-box;
+    font-weight: bold;
 
     .signUpContainer {
         width: 100%;
         max-width: 450px;
         margin: 20px 0;
         padding: 20px;
-        border: 1px solid gray;
-        border-radius: 8px;
+        border-radius: 20px;
         background-color: #f9f9f9;
 
         .signUpTitle {
@@ -27,15 +27,14 @@
 
         .logo {
             font-size: 24px;
-            font-weight: bold;
         }
 
         .navButton {
             font-size: 14px;
             margin-left: 10px;
             border: none;
-            border-radius: 2px;
-            padding: 8px 16px;
+            border-radius: 16px;
+            padding: 8px 8px;
             cursor: pointer;
             color: white;
             background-color: gray;
@@ -70,6 +69,7 @@
 
         button[type="submit"] {
             width: 100%;
+            margin-top: 10px;
             padding: 10px;
             border: none;
             border-radius: 4px;
@@ -77,6 +77,7 @@
             color: white;
             cursor: pointer;
             font-size: 16px;
+            font-weight: bold;
         }
 
         p {
