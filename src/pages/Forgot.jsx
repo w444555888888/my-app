@@ -1,38 +1,30 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import "./logIn.scss";
+import "./forgot.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleRight , faQuestion } from '@fortawesome/free-solid-svg-icons'
+import { faCircleRight  } from '@fortawesome/free-solid-svg-icons'
 
-const LogIn = () => {
+const Forgot = () => {
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState('');
 
     const navigate = useNavigate();
-    const handleClickToHome = () => {
-        navigate('/');
+    const handleClickToLogin = () => {
+        navigate('/login');
     };
 
-    const handleClickToForgot = () => {
-        navigate('/forgot');
-    };
 
     const handleLogIn = async (event) => {
         event.preventDefault();
 
-        if (password !== confirmPassword) {
-            setMessage('密碼不正確請重新輸入');
-            return;
-        }
 
         const response = await fetch('http://localhost:3000/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ email })
         });
 
         if (response.ok) {
@@ -50,12 +42,12 @@ const LogIn = () => {
                         <span className="logo">MIKE.BOOKING</span>
                     </div>
                     <div className="right">
-                        <div className="navButton" onClick={handleClickToHome}><FontAwesomeIcon icon={faCircleRight} /></div>
+                        <div className="navButton" onClick={handleClickToLogin}><FontAwesomeIcon icon={faCircleRight} /></div>
                     </div>
                 </div>
             </div>
             <div className="logInContainer">
-                <h2>LogIn Account</h2>
+                <h2>Forgot Account</h2>
                 <form onSubmit={handleLogIn}>
                     <div className="formGroup">
                         <label htmlFor="email">E-mail:</label>
@@ -67,23 +59,12 @@ const LogIn = () => {
                             required
                         />
                     </div>
-                    <div className="formGroup">
-                        <label htmlFor="password">password:</label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <button type="submit">LogIn</button>
+                    <button type="submit">Send to Email</button>
                 </form>
-                <button className="forgotBtn"  onClick={handleClickToForgot}>forgot account <FontAwesomeIcon icon={faQuestion} /></button>
                 {message && <p>{message}</p>}
             </div>
         </div>
     );
 }
 
-export default LogIn;
+export default Forgot;

@@ -9,6 +9,7 @@ import HotelsList from "./pages/HotelsList";
 import Hotel from "./pages/Hotel";
 import SignUp from "./pages/SignUp";
 import LogIn from "./pages/LogIn";
+import Forgot from "./pages/Forgot";
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/signUp" element={<SignUp />} />
           <Route path="/logIn" element={<LogIn />} />
+          <Route path="/forgot" element={<Forgot />} />
           <Route path="/hotelsList" element={<HotelsList />} />
           <Route path="/hotels/:id" element={<Hotel />} />
         </Routes>
