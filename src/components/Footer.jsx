@@ -1,3 +1,11 @@
+/*
+ * @Author: w444555888 w444555888@yahoo.com.tw
+ * @Date: 2024-07-17 20:28:18
+ * @LastEditors: w444555888 w444555888@yahoo.com.tw
+ * @LastEditTime: 2024-07-18 00:08:45
+ * @FilePath: \my-app\src\components\Footer.jsx
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 import React from 'react'
 import "./footer.scss"
 const Footer = () => {
@@ -16,32 +24,14 @@ const Footer = () => {
                         訂閱 !
                     </button>
                 </div>
-                    <div className="checktext">
-                        <input type="checkbox" name="checkbox" id="checkbox" />
-                        請發送 Booking.com 免費 App 下載連結給我！
-                    </div>
+                <div className="checktext">
+                    <input type="checkbox" name="checkbox" id="checkbox" />
+                    請發送 Booking.com 免費 App 下載連結給我！
+                </div>
             </div>
             <div className="subcontainer">
-                <ul>
-                    <li>
-                        手機版  
-                    </li>
-                    <li>
-                        您的帳戶
-                    </li>
-                    <li>
-                        線上修改訂單
-                    </li>
-                    <li>
-                        客服支援
-                    </li>
-                    <li>
-                        加入聯盟行銷
-                    </li>
-                    <li>
-                        Booking.com 企業差旅服務
-                    </li>
-                </ul>
+                Copyright © 2024 Trip.com Travel Singapore Pte. Ltd. All rights reserved
+                Site Operator: Trip.com Travel Singapore Pte. Ltd.
             </div>
         </div>
     )
