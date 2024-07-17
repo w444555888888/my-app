@@ -1,13 +1,21 @@
+/*
+ * @Author: w444555888 w444555888@yahoo.com.tw
+ * @Date: 2024-07-17 20:28:18
+ * @LastEditors: w444555888 w444555888@yahoo.com.tw
+ * @LastEditTime: 2024-07-17 23:37:33
+ * @FilePath: \my-app\src\components\Announcement.jsx
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
 import "./announcement.scss"
 const Announcement = ({ type }) => {
 
-    const [activeItem, setActiveItem] = useState('登入');
+    const [activeItem, setActiveItem] = useState('登入')
     const handleClickActive = (item) => {
-        setActiveItem(item);
-    };
+        setActiveItem(item)
+    }
     return (
         <div className='announcement'>
             <div className="container">
@@ -25,11 +33,11 @@ const Announcement = ({ type }) => {
                         </div>
                         <div className="discountInfo">
                             <div className="left">
-                                <img src="https://r-xx.bstatic.com/data/mm/index_banner_getaway22_summer_2.jpg" alt="" />
+                                <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/160108451.jpg?k=276db1cee9672c663e0c40ab4ca7460dd21569524bf5542918acab6b6fe3ac1e&o=&hp=1" alt="" />
                             </div>
                             <div className="right">
-                                <h2>省 15% 或更多</h2>
-                                <span>這個夏天，讓夢想之旅成真！2024 年 9 月 30 日前預訂並住房就優惠最高30%</span>
+                                <h2>暑假優惠</h2>
+                                <span>2024 年 9 月 30 日前預訂並住房就優惠最高20%</span>
                                 <button>逛逛優惠</button>
                             </div>
                         </div>
@@ -37,13 +45,13 @@ const Announcement = ({ type }) => {
                     :
                     // false
                     <div className="GlobalBanner">
-                        <img src="https://cf.bstatic.com/static/img/genius-globe-with-badge_desktop@2x/1f5a273d871549f00bf6692f7ff612b5e8eda038.png" alt="" />
+                        <img src="https://cdn.visa.com/v2/assets/images/logos/visa/blue/logo.png" alt="" />
                         <div className="BannerInfoDes">
-                            <h2>立即享受優惠</h2>
-                            <span>登入您的 MIKE.BOOKING.com 帳戶，尋找紫色的圖標，輕鬆省一筆！</span>
+                            <h2>Visa各項優惠</h2>
+                            <span>刷Visa卡訂房最高享13%優惠</span>
                             <div className='Bannerbtn'>
-                                <button className={`${activeItem === '登入' ? 'buttonActive' : ''}`} onClick={()=>{handleClickActive('登入')}}>登入</button>
-                                <button className={`${activeItem === '註冊' ? 'buttonActive' : ''}`} onClick={()=>{handleClickActive('註冊')}}>註冊</button>
+                                <button className={`${activeItem === '登入' ? 'buttonActive' : ''}`} onClick={() => { handleClickActive('登入') }}>登入</button>
+                                <button className={`${activeItem === '註冊' ? 'buttonActive' : ''}`} onClick={() => { handleClickActive('註冊') }}>註冊</button>
                             </div>
                         </div>
                     </div>
