@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "./logIn.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleRight } from '@fortawesome/free-solid-svg-icons'
+import { faCircleRight , faQuestion } from '@fortawesome/free-solid-svg-icons'
 
 const LogIn = () => {
     const [email, setEmail] = useState('');
@@ -51,10 +51,10 @@ const LogIn = () => {
                 </div>
             </div>
             <div className="logInContainer">
-                <h2>Log In</h2>
+                <h2>LogIn Account</h2>
                 <form onSubmit={handleLogIn}>
                     <div className="formGroup">
-                        <label htmlFor="email">E-mail;:</label>
+                        <label htmlFor="email">E-mail:</label>
                         <input
                             type="email"
                             id="email"
@@ -73,7 +73,8 @@ const LogIn = () => {
                             required
                         />
                     </div>
-                    <button type="submit">Log In</button>
+                    <button type="submit">LogIn</button>
+                    <button className='forgotBtn'>forgot account <FontAwesomeIcon icon={faQuestion} /></button>
                 </form>
                 {message && <p>{message}</p>}
             </div>

@@ -32,6 +32,7 @@ const SignUp = () => {
         });
 
         if (response.ok) {
+            navigate('/login');
             setMessage('註冊成功');
         } else {
             setMessage('註冊失敗，請重新註冊');
@@ -51,7 +52,7 @@ const SignUp = () => {
                 </div>
             </div>
             <div className="signUpContainer">
-                <h2>Sign Up</h2>
+                <h2>Sign Up Account</h2>
                 <form onSubmit={handleSignUp}>
                     <div className="formGroup">
                         <label htmlFor="email">E-mail;:</label>
