@@ -14,7 +14,7 @@
         .headerTitle {
             font-size: 45px;
         }
-        .headerDes {
+        .headerDes { 
             margin-top: 10px;
         }
         .headerSearchBar {
@@ -47,8 +47,7 @@
         text-overflow: ellipsis;
     }
     .SearchBarItem:first-child {
-        //第一個SearchBarItem
-        width: calc(34% - 20px); //加上這個，可以讓”你要去哪裡“縮小的比別人快
+        width: calc(34% - 20px); 
     }
     .SearchBarItem {
         height: 50px;

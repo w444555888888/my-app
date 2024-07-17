@@ -23,10 +23,6 @@ const Announcement = ({ type }) => {
                     ?
                     // true
                     <>
-                        <div className="checktext">
-                            <input type="checkbox" name="checkbox" id="checkbox" />
-                            此為來回行程
-                        </div>
                         <div className="infoDes">
                             <FontAwesomeIcon icon={faInfoCircle} />
                             所需建議，在出發之前，查看最新外交部發布之旅遊警示，提供國人出國旅行之參考資訊
