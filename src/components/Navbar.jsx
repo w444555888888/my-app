@@ -18,7 +18,11 @@ const Navbar = () => {
     };
 
     const handleClickToSignUp = () => {
-        navigate('/SignUp');
+        navigate('/signUp');
+    };
+
+    const handleClickToLogIn = () => {
+        navigate('/logIn');
     };
 
     return (
@@ -30,7 +34,8 @@ const Navbar = () => {
                     </div>
                     <div className="right">
                         <button className="navButton" onClick={handleClickToSignUp}>註冊</button>
-                        <button className="navButton" >登入</button>
+                        <button className="navButton" 
+                        onClick={handleClickToLogIn}>登入</button>
                     </div>
                 </div>
                 <div className="lineTwo">
