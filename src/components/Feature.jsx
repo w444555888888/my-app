@@ -1,11 +1,18 @@
+/*
+ * @Author: w444555888 w444555888@yahoo.com.tw
+ * @Date: 2024-07-17 20:28:18
+ * @LastEditors: w444555888 w444555888@yahoo.com.tw
+ * @LastEditTime: 2024-07-19 00:39:39
+ * @FilePath: \my-app\src\components\Feature.jsx
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 import React from 'react'
 import Categories from '../subcomponents/Categories'
-import PostCards from '../subcomponents/PostCards'
 import PopularHotels from '../subcomponents/PopularHotels'
-import { CategoriesCities, CategoriesType, PopularHotelsData} from '../data'
+import { hotelType, PopularHotelsData } from '../data'
 import "./feature.scss"
 const Feature = () => {
-    
+
     return (
         <div className='feature'>
             <div className="container">
@@ -13,23 +20,14 @@ const Feature = () => {
                     <h2>依住宿類型瀏覽</h2>
                 </div>
                 <div className="listItems">
-                    <Categories dataArray={CategoriesType} />
+                    <Categories dataArray={hotelType} />
                 </div>
-                <div className="listItems">
-                    <PostCards/>
-                </div>
+                
                 <div className="listTitle">
-                    <h3>探索臺灣</h3>
-                    <p>這些熱門目的地魅力無窮，等你來體驗！</p>
+                    <h2>五星級酒店</h2>
                 </div>
                 <div className="listItems">
-                    <Categories dataArray={CategoriesCities}/>
-                </div>
-                <div className="listTitle">
-                    <h2>人氣民宿、公寓類型住宿</h2>
-                </div>
-                <div className="listItems">
-                    <PopularHotels dataArray={PopularHotelsData}/>
+                    <PopularHotels dataArray={PopularHotelsData} />
                 </div>
             </div>
         </div>

@@ -18,7 +18,7 @@ const PopularHotels = ({dataArray}) => {
                         </div>
                         <div className="rate">
                             <button>{item.rate}</button>
-                            <span>{item.rate >= 9.5 ? "好極了" : "傑出"}</span>
+                            <span>{item.rate >= 9.5 ? "超高分" : "很棒"}</span>
                             <p>{item.comment.toLocaleString()}則評論</p>
                         </div>
                     </div>

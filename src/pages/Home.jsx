@@ -7,15 +7,15 @@ import Navbar from '../components/Navbar'
 import "./home.scss"
 
 const Home = () => {
-    
+
   return (
     <div className='home'>
-    <Navbar/>
-    <Header/>
-    <Announcement type={"Upper half"}/>
-    <Feature/>
-    <Announcement type={"Lower half"}/>
-    <Footer/>
+      <Navbar />
+      <Header />
+      <Announcement type={"Upper half"} />
+      <Feature />
+      <Announcement type={"Lower half"} />
+      <Footer />
     </div>
   )
 }

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { logIn } from '../redux/userSlice';
 import "./logIn.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleRight, faQuestion } from '@fortawesome/free-solid-svg-icons'
@@ -10,6 +12,8 @@ const LogIn = ({setIsLoggedIn}) => {
     const [message, setMessage] = useState('');
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    
     const handleClickToHome = () => {
         navigate('/');
     };
@@ -28,7 +32,7 @@ const LogIn = ({setIsLoggedIn}) => {
             if (user) {
                 setMessage('登入成功');
                 localStorage.setItem('username', user.username);
-                setIsLoggedIn(true);
+                dispatch(logIn());
                 navigate('/');
             } else {
                 setMessage('帳號密碼輸出錯誤，請重新輸入');
@@ -40,7 +44,7 @@ const LogIn = ({setIsLoggedIn}) => {
     };
 
     return (
-        <div className='logInUpWrapper'>
+        <div className='logInWrapper'>
             <div className="logInContainer">
                 <div className="logInTitle">
                     <div className="left">

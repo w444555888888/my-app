@@ -1,29 +1,43 @@
+/*
+ * @Author: w444555888 w444555888@yahoo.com.tw
+ * @Date: 2024-07-17 20:28:18
+ * @LastEditors: w444555888 w444555888@yahoo.com.tw
+ * @LastEditTime: 2024-07-18 21:00:51
+ * @FilePath: \my-app\src\components\Navbar.jsx
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 import React, { useState } from 'react'
 import "./navbar.scss"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBed, faCar, faPlane, faTaxi, faToriiGate } from '@fortawesome/free-solid-svg-icons'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 const Navbar = () => {
+    const [activeItem, setActiveItem] = useState('住宿')
+    const { isLoggedIn } = useSelector((state) => state.user)
 
-    const [activeItem, setActiveItem] = useState('住宿');
 
     const handleClickActive = (item) => {
-        setActiveItem(item);
-    };
+        setActiveItem(item)
+    }
 
-    
-    const navigate = useNavigate();
+
+    const navigate = useNavigate()
     const handleClickToHome = () => {
-        navigate('/');
-    };
+        navigate('/')
+    }
 
     const handleClickToSignUp = () => {
-        navigate('/signUp');
-    };
+        navigate('/signUp')
+    }
 
     const handleClickToLogIn = () => {
-        navigate('/logIn');
-    };
+        navigate('/logIn')
+    }
+
+    const handleClickToPersonal = () => {
+        navigate('/personal')
+    }
 
     return (
         <div className='navbar'>
@@ -34,8 +48,13 @@ const Navbar = () => {
                     </div>
                     <div className="right">
                         <button className="navButton" onClick={handleClickToSignUp}>註冊</button>
-                        <button className="navButton" 
-                        onClick={handleClickToLogIn}>登入</button>
+
+                        {isLoggedIn ? (
+                            <button className="navButton" onClick={handleClickToPersonal}>我的帳戶</button>
+                        ) : (<button className="navButton"
+                            onClick={handleClickToLogIn}>登入</button>
+                        )}
+
                     </div>
                 </div>
                 <div className="lineTwo">
