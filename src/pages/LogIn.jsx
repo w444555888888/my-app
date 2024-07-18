@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "./logIn.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleRight , faQuestion } from '@fortawesome/free-solid-svg-icons'
+import { faCircleRight, faQuestion } from '@fortawesome/free-solid-svg-icons'
 
 const LogIn = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState('');
 
     const navigate = useNavigate();
@@ -21,24 +20,20 @@ const LogIn = () => {
 
     const handleLogIn = async (event) => {
         event.preventDefault();
+        try {
+            const response = await fetch('http://localhost:3000/users');
+            const resUsers = await response.json();
+            const user = resUsers.find(e => e.username === email && e.password === password);
 
-        if (password !== confirmPassword) {
-            setMessage('密碼不正確請重新輸入');
-            return;
-        }
+            if (user) {
+                setMessage('登入成功');
+                navigate('/');
+            } else {
+                setMessage('帳號密碼輸出錯誤，請重新輸入');
+            }
 
-        const response = await fetch('http://localhost:3000/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-        });
-
-        if (response.ok) {
-            setMessage('註冊成功');
-        } else {
-            setMessage('註冊失敗，請重新註冊');
+        } catch (error) {
+            setMessage('登入失敗，稍後在試');
         }
     };
 
@@ -79,7 +74,7 @@ const LogIn = () => {
                     </div>
                     <button type="submit">LogIn</button>
                 </form>
-                <button className="forgotBtn"  onClick={handleClickToForgot}>forgot account <FontAwesomeIcon icon={faQuestion} /></button>
+                <button className="forgotBtn" onClick={handleClickToForgot}>forgot account <FontAwesomeIcon icon={faQuestion} /></button>
                 {message && <p>{message}</p>}
             </div>
         </div>

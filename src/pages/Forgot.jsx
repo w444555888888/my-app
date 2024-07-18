@@ -6,7 +6,6 @@ import { faCircleRight  } from '@fortawesome/free-solid-svg-icons'
 
 const Forgot = () => {
     const [email, setEmail] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState('');
 
     const navigate = useNavigate();
@@ -17,7 +16,6 @@ const Forgot = () => {
 
     const handleLogIn = async (event) => {
         event.preventDefault();
-
 
         const response = await fetch('http://localhost:3000/signup', {
             method: 'POST',
@@ -50,7 +48,7 @@ const Forgot = () => {
                 <h2>Forgot Account</h2>
                 <form onSubmit={handleLogIn}>
                     <div className="formGroup">
-                        <label htmlFor="email">E-mail:</label>
+                        <label htmlFor="email">Original E-mail:</label>
                         <input
                             type="email"
                             id="email"
