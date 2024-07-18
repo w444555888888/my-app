@@ -4,7 +4,7 @@ import "./logIn.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleRight, faQuestion } from '@fortawesome/free-solid-svg-icons'
 
-const LogIn = () => {
+const LogIn = ({setIsLoggedIn}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
@@ -27,6 +27,8 @@ const LogIn = () => {
 
             if (user) {
                 setMessage('登入成功');
+                localStorage.setItem('username', user.username);
+                setIsLoggedIn(true);
                 navigate('/');
             } else {
                 setMessage('帳號密碼輸出錯誤，請重新輸入');
