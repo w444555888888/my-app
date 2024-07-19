@@ -44,8 +44,11 @@ const Navbar = () => {
     }
 
     const handleClicklogOut = () => {
-        dispatch(logOut())
-        navigate('/login')
+        if (window.confirm('確定登出?')) {
+            dispatch(logOut())
+            navigate('/login')
+        }
+
     }
 
     return (
