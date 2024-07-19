@@ -8,6 +8,7 @@ import { useLocation } from 'react-router-dom';
 const HotelsList = () => {
     // 路由傳遞資料
     const location = useLocation();
+
     const { destination, dates: locationDates, conditions: locationConditions } = location.state || {};
 
     const [openConditions, setOpenConditions] = useState(false);

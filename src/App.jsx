@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-18 20:24:17
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-07-19 00:10:38
+ * @LastEditTime: 2024-07-19 08:47:14
  * @FilePath: \my-app\src\App.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -41,7 +41,7 @@ function App () {
 
           <Route path="/hotelsList" element={<PrivateRoute isLoggedIn={isLoggedIn}><HotelsList /></PrivateRoute>} />
 
-          <Route path="/hotels/:id" element={<PrivateRoute isLoggedIn={isLoggedIn}><Hotel /></PrivateRoute>} />
+          <Route path="/hotel" element={<PrivateRoute isLoggedIn={isLoggedIn}><Hotel /></PrivateRoute>} />
 
           <Route path="/personal" element={<PrivateRoute isLoggedIn={isLoggedIn}><Personal /></PrivateRoute>} />
         </Routes>

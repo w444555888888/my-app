@@ -6,7 +6,7 @@ import "./logIn.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleRight, faQuestion } from '@fortawesome/free-solid-svg-icons'
 
-const LogIn = ({setIsLoggedIn}) => {
+const LogIn = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');

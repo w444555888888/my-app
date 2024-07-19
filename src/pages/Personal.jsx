@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-18 21:04:23
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-07-19 00:07:01
+ * @LastEditTime: 2024-07-19 08:37:59
  * @FilePath: \my-app\src\pages\Personal.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -36,9 +36,7 @@ const Personal = ({ setIsLoggedIn }) => {
 
   useEffect(() => {
     if (user) {
-      const passwordLength = user.password ? user.password.length : 0;
-      const starPassword = '*'.repeat(passwordLength);
-      setPassword(starPassword)
+      setPassword(user.password ? '*****':'')
       setPhoneNumber(user.phoneNumber || '')
       setAddress(user.address || '')
     }
