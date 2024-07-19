@@ -2,24 +2,31 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-17 20:28:18
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-07-19 08:46:42
+ * @LastEditTime: 2024-07-19 11:53:50
  * @FilePath: \my-app\src\components\SearchItem.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import React from 'react'
+import React, { useState } from 'react'
 import "./searchItem.scss"
 import { useNavigate } from 'react-router-dom'
 
-const SearchItem = ({ active }) => {
+const SearchItem = () => {
   const navigate = useNavigate()
 
   const handleClickToHotel = () => {
     navigate('/hotel')
   }
 
+  //SearchItem的active狀態
+  const [addactive, setAddActive] = useState(false)
+
+  const handleClickActive = () => {
+    setAddActive(!addactive)
+  }
+
 
   return (
-    <div className={`SearchItem ${active}`}>
+    <div className={`SearchItem ${addactive ? 'active' : ''}`} onClick={handleClickActive}>
       <img className="itemImg" src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/522878383.jpg?k=9ea00f9f7fad7c55854700d953ae6566250dc5039ea85fe3c85d52f1d0aad792&o=&hp=1" alt="" />
       <div className="itemInfo">
         <div className="infoTitle">
@@ -35,8 +42,9 @@ const SearchItem = ({ active }) => {
           </div>
         </div>
         <div className="infoDes">
-          <span className="far"> 台北中正區台北市中正區忠孝西路一段50號24樓</span>
-          <span className="discount">接駁車接送</span>
+          <span className="far"> 台北市大同區</span>
+          <span className="prompt">接駁車接送</span>
+          <span className="prompt">附早餐</span>
 
           <div className="infoDetail">
             <div className="detailLeft">
@@ -45,7 +53,6 @@ const SearchItem = ({ active }) => {
                 <p>一張雙人床</p>
               </div>
               <div className="detailDes">
-                <b>免費取消</b>
                 <p>立即搶下優惠價－可取消</p>
                 <b>此價格選項在本站僅剩 1 間</b>
               </div>

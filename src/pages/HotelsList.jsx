@@ -32,6 +32,7 @@ const HotelsList = () => {
         children: 0,
         room: 1,
     });
+    
     return (
         <>
             <div>
@@ -90,12 +91,9 @@ const HotelsList = () => {
 
                         <div className="listResult">
                             <div className="resultTitle">
-                                <h2>在台北找到505間房間</h2>
-                                <div className="map">
-                                    <button>在地圖上顯示</button>
-                                </div>
+                                <h2>在{destinationState ? destinationState : '全局'}找到400間房間</h2>
                             </div>
-                            <SearchItem active="active" />
+                            <SearchItem />
                             <SearchItem />
                             <SearchItem />
                             <SearchItem />

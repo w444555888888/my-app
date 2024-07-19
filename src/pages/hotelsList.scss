@@ -74,16 +74,4 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 15px;
-    .map{
-        padding: 20px 25px;
-        background-color: #000;
-        border-radius: 2px;
-        background-image: url("https://cf.bstatic.com/psb/capla/static/media/map-entry-point.6b01012a.png");
-        button{
-            padding: 8px 15px;
-            border: none;
-            color: white;
-            background-color: var(--primary-color);
-        }
-    }
 }

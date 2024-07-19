@@ -51,13 +51,14 @@
                 font-size: 12px;
                 margin-right: 5px;
             }
-            .discount {
+            .prompt {
                 align-items: center;
                 justify-content: center;
                 color: white;
                 font-size: 10px;
                 font-weight: 200;
                 padding: 5px;
+                margin-right: 5px;
                 border: none;
                 background-color: var(--primary-color);
             }
@@ -76,9 +77,10 @@
         font-size: 12px;
         .detailDes {
             margin-top: 10px;
+            font-weight: bolder;
             color: green;
-            b:last-child {
-                color: red;//剩一間警告
+            b {
+                color: red; //剩一間警告
             }
         }
     }
@@ -91,11 +93,11 @@
             font-size: 18px;
             padding: 5px 10px;
             border: none;
-            background-color: rgb(255, 142, 4);
-            border-radius: 1px;
+            background-color: rgb(121, 120, 120);
+            border-radius: 20px;
             cursor: pointer;
             &:hover {
-                background-color: rgb(206, 114, 1);
+                background-color: var(--primary-color);
             }
         }
         span {
@@ -113,6 +115,6 @@
 }
 
 .active{
-    background-color:rgba(53, 164, 127,0.2) ;
+    background-color:rgba(94, 57, 227, 0.2) ;
     box-shadow: 0px 0px 15px var(--primary-color);
 }
