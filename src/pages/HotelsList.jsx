@@ -9,13 +9,13 @@ const HotelsList = () => {
     // 路由傳遞資料
     const location = useLocation();
 
-    const { destination, dates: locationDates, conditions: locationConditions } = location.state || {};
+    const { destination: locationdestination, dates: locationDates, conditions: locationConditions } = location.state || {};
 
     const [openConditions, setOpenConditions] = useState(false);
     const [openCalendar, setOpenCalendar] = useState(false);
 
     // 搜尋欄
-    const [destinationState, setDestinationState] = useState(destination || '');
+    const [destinationState, setDestinationState] = useState(locationdestination || '');
 
     // 日期
     const [dates, setDates] = useState(locationDates || [
@@ -32,7 +32,7 @@ const HotelsList = () => {
         children: 0,
         room: 1,
     });
-    
+
     return (
         <>
             <div>

@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-17 20:28:18
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-07-19 11:53:50
+ * @LastEditTime: 2024-07-22 13:15:28
  * @FilePath: \my-app\src\components\SearchItem.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -12,9 +12,12 @@ import { useNavigate } from 'react-router-dom'
 
 const SearchItem = () => {
   const navigate = useNavigate()
+  const handleHotelDetailClick = () => {
+    navigate('/hotel', {
+      state: {
 
-  const handleClickToHotel = () => {
-    navigate('/hotel')
+      },
+    })
   }
 
   //SearchItem的active狀態
@@ -67,7 +70,7 @@ const SearchItem = () => {
               <span className="tax">
                 含稅費與其他費用
               </span>
-              <button className='btn' onClick={handleClickToHotel}>查看客房供應情況</button>
+              <button className='btn' onClick={handleHotelDetailClick}>查看客房供應情況</button>
             </div>
           </div>
         </div>
