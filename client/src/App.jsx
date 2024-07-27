@@ -47,7 +47,7 @@ function App () {
 
           <Route path="/hotelsList" element={<PrivateRoute isLoggedIn={isLoggedIn}><HotelsList /></PrivateRoute>} />
 
-          <Route path="/hotel" element={<PrivateRoute isLoggedIn={isLoggedIn}><Hotel /></PrivateRoute>} />
+          <Route path="/hotel/:id" element={<PrivateRoute isLoggedIn={isLoggedIn}><Hotel /></PrivateRoute>} />
 
           <Route path="/personal" element={<PrivateRoute isLoggedIn={isLoggedIn}><Personal /></PrivateRoute>} />
         </Routes>
