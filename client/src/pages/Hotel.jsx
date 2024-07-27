@@ -14,14 +14,12 @@ const Hotel = () => {
   const [openSlider, setOpenSlider] = useState(false);
   const comments = useRef(null)
   const dispatch = useDispatch()
- 
-
   const hotelDetails = useSelector((state) => state.user)
 
 
   useEffect(() => {
-    dispatch(fetchHotelToDetail())
-  }, [dispatch])
+   
+  })
 
   const handleHover = () => {
     gsap.to(comments.current, {

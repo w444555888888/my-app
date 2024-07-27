@@ -12,37 +12,5 @@
       "phoneNumber": "0912345678",
       "address": "台北市中山區101號"
     }
-  ],
-  "hotelToDetail": [
-    {
-      "id": "1001",
-      "uname": "所在行旅-渡咕所在UrbanAbode DUGU",
-      "address": "台北市中山區",
-      "desc": "所在行旅-渡咕所在UrbanAbode DUGU 附近的人氣景點包括臺北市中山堂、捷運西門站和寧夏觀光夜市。最近的機場是台北松山機場，距離這間住宿 5 公里"
-    },
-    {
-      "id": "1002",
-      "uname": "Sirin Exclusive Hotel and Residence",
-      "address": "338/139 Moo.12 Pratumnak Soi 5 Nongpure",
-      "desc": "Sirin Exclusive Hotel and Residence 位於芭達雅南區，距離普拉塔納克海灘（Pratumnak Beach） 700 公尺，有室外游泳池、免費私人停車位、健身中心和花園。這間住宿設有餐廳，還有共用休息室、桑拿和熱水按摩池。設施包括露台。住宿提供 WiFi"
-    },
-    {
-      "id": "1003",
-      "uname": "Royal Cliff Beach Hotel Pattaya",
-      "address": "353 Phra Tamnuk Road, South Pattaya, Banglamung",
-      "desc": "Royal Cliff Beach Hotel Pattaya 5 星級度假村坐擁奢華私人海灘，是您度假的最佳選擇。設有山景／海景客房、 11 間餐廳，館內多座室外游泳池均設有池中酒吧。此豪華度假村距離歷史悠久的考普拉寺 800 公尺，距離熱鬧的芭達雅市區 10 分鐘車程"
-    },
-    {
-      "id": "1004",
-      "uname": "Siam Bayshore Resort Pattaya",
-      "address": "559 Beach Road, Pattaya City",
-      "desc": "飯店設有 8 間餐廳和 2 座室外游泳池，位在步行街旁，提供寬敞的花園翼樓客房，並附私人露台。24 小時營業的 Sunrise Sunset Restaurant 餐廳供應國際美食和自助式早餐，其他餐廳包括暹羅象泰式餐廳（ Siam Elephant Thai Restaurant ）、巴厘海中國海鮮餐廳（Bali-Hai Chinese & Seafood Restaurant）和海鮮燒烤露台（Seafood BBQ Terrace）。另設有 4 間酒吧供應飲品"
-    },
-    {
-      "id": "1005",
-      "uname": "Cross Pattaya Pratamnak - SHA Plus",
-      "address": "286/4 Moo 12 Kasetsin Road, Nongprue",
-      "desc": "Cross Pattaya Pratamnak - SHA Plus 位在芭達雅南區，距離舒適海灘只需走一點路，有室外游泳池、免費私人停車位、健身中心和花園。這間住宿提供的設施與服務包括餐廳、客房服務、24 小時接待櫃檯以及全館 WiFi（免費）。住客可以在酒吧享用飲品"
-    }
   ]
 }

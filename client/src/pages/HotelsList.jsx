@@ -4,18 +4,19 @@ import Navbar from '../components/Navbar'
 import "./hotelsList.scss"
 import { DateRange } from 'react-date-range'
 import { format } from 'date-fns'
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 const HotelsList = () => {
     // 路由傳遞資料
-    const location = useLocation();
+    const location = useLocation()
 
-    const { destination: locationdestination, dates: locationDates, conditions: locationConditions } = location.state || {};
+    const { destination: locationdestination, dates: locationDates, conditions: locationConditions } = location.state || {}
 
-    const [openConditions, setOpenConditions] = useState(false);
-    const [openCalendar, setOpenCalendar] = useState(false);
+    const [openConditions, setOpenConditions] = useState(false)
+    const [openCalendar, setOpenCalendar] = useState(false)
 
     // 搜尋欄
-    const [destinationState, setDestinationState] = useState(locationdestination || '');
+    const [destinationState, setDestinationState] = useState(locationdestination || '')
 
     // 日期
     const [dates, setDates] = useState(locationDates || [
@@ -24,15 +25,20 @@ const HotelsList = () => {
             endDate: new Date(),
             key: 'selection',
         }
-    ]);
+    ])
 
     // 人數/房間數
     const [conditions, setConditions] = useState(locationConditions || {
         adult: 1,
         children: 0,
         room: 1,
-    });
+    })
 
+    // 飯店資料
+    const hotels = useSelector((state) => state.user.Hotels)
+console.log('====================================');
+console.log(hotels,'hotels');
+console.log('====================================');
     return (
         <>
             <div>
@@ -52,7 +58,7 @@ const HotelsList = () => {
                                 <label>入住/退房日期</label>
                                 <span className='dates' >
                                     <div className="searchInput" onClick={() => setOpenCalendar(!openCalendar)} >{format(dates[0].startDate, "MM/dd/yyyy")} - {format(dates[0].endDate, "MM/dd/yyyy")}</div>
-                                    
+
                                     {openCalendar && <DateRange
                                         editableDateInputs={true}
                                         onChange={item => setDates([item.selection])}
@@ -93,12 +99,9 @@ const HotelsList = () => {
                             <div className="resultTitle">
                                 <h2>在{destinationState ? destinationState : '全局'}找到400間房間</h2>
                             </div>
-                            <SearchItem />
-                            <SearchItem />
-                            <SearchItem />
-                            <SearchItem />
-                            <SearchItem />
-                            <SearchItem />
+                            {hotels.map(hotel => (
+                                <SearchItem key={hotel._id} hotel={hotel} />
+                            ))}
                         </div>
                     </div>
                 </div>

@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-17 20:28:18
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-07-22 13:15:28
+ * @LastEditTime: 2024-07-27 19:23:53
  * @FilePath: \my-app\src\components\SearchItem.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -10,7 +10,7 @@ import React, { useState } from 'react'
 import "./searchItem.scss"
 import { useNavigate } from 'react-router-dom'
 
-const SearchItem = () => {
+const SearchItem = ({ hotel }) => {
   const navigate = useNavigate()
   const handleHotelDetailClick = () => {
     navigate('/hotel', {
@@ -30,22 +30,22 @@ const SearchItem = () => {
 
   return (
     <div className={`SearchItem ${addactive ? 'active' : ''}`} onClick={handleClickActive}>
-      <img className="itemImg" src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/522878383.jpg?k=9ea00f9f7fad7c55854700d953ae6566250dc5039ea85fe3c85d52f1d0aad792&o=&hp=1" alt="" />
+      <img className="itemImg" src={hotel.photos[0]} alt="" />
       <div className="itemInfo">
         <div className="infoTitle">
           <h2>
-            所在行旅-渡咕所在UrbanAbode DUGU
+            {hotel.title}
           </h2>
           <div className='infoTitleRight'>
             傑出<br />
-            1223則評論
+            {hotel.comments}則評論
             <button className='infoTitleRate'>
-              9.8
+              {hotel.rating}
             </button>
           </div>
         </div>
         <div className="infoDes">
-          <span className="far"> 台北市大同區</span>
+          <span className="far">{hotel.distance}</span>
           <span className="prompt">接駁車接送</span>
           <span className="prompt">附早餐</span>
 
@@ -65,7 +65,7 @@ const SearchItem = () => {
                 1晚、2位
               </span>
               <span className="price">
-                TWD 4890
+                TWD {hotel.cheapestPrice}
               </span>
               <span className="tax">
                 含稅費與其他費用

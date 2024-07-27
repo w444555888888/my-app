@@ -2,17 +2,17 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-25 13:15:20
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-07-25 23:42:11
+ * @LastEditTime: 2024-07-27 18:15:44
  * @FilePath: \my-app\api\RoutesController\hotels.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import Hotel from "../models/Hotel.js"
 
 
-// 获取所有酒店数据
+// 獲取所有飯店資料
 export const getAllHotels = async (req, res) => {
     try {
-        const hotels = await Hotel.find() // 从数据库中获取所有酒店记录
+        const hotels = await Hotel.find() // 從資料庫獲取所又資料
         res.status(200).json(hotels)
     } catch (err) {
         res.status(500).json({ message: err.message })
@@ -30,7 +30,6 @@ export const createHotel = async (req, res, next) => { //新增next
 }
 export const getHotel = async (req, res, next) => {
     const id = req.params.id
-    next()
     try {
         const getHotel = await Hotel.findById(id)
         res.status(200).json(getHotel)
