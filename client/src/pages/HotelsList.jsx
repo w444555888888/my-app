@@ -36,9 +36,6 @@ const HotelsList = () => {
 
     // 飯店資料
     const hotels = useSelector((state) => state.user.Hotels)
-console.log('====================================');
-console.log(hotels,'hotels');
-console.log('====================================');
     return (
         <>
             <div>

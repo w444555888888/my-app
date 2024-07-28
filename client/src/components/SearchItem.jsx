@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-17 20:28:18
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-07-28 06:29:45
+ * @LastEditTime: 2024-07-28 07:55:20
  * @FilePath: \my-app\src\components\SearchItem.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -14,9 +14,7 @@ const SearchItem = ({ hotel }) => {
   const navigate = useNavigate()
   const handleHotelDetailClick = () => {
     navigate(`/hotel/${hotel._id}`, {
-      state: {
-
-      },
+      state: {hotel},
     })
   }
 
@@ -48,8 +46,8 @@ const SearchItem = ({ hotel }) => {
           <span className="far">{hotel.distance}</span>
           {hotel.popularHotel && (
             <>
-            <span className="prompt">接駁車接送</span><span className="prompt">附早餐</span>
-            </> )}
+              <span className="prompt">接駁車接送</span><span className="prompt">附早餐</span>
+            </>)}
           <div className="infoDetail">
             <div className="detailLeft">
               <div className="equipment">
