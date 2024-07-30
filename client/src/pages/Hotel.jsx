@@ -112,7 +112,7 @@ console.log(comments,'comments');
             <div className="hotelImg">
               {location.state.hotel.photos.map((e, index) => (
                 <div key={index} className="Imgwrap" onClick={clickSlider}>
-                  <img src={e} />
+                  <img src={e} key={index}/>
                 </div>
               ))}
             </div>

@@ -127,15 +127,13 @@
   position: absolute; //觸碰區
   top: 0px;
   left: 0px;
-  z-index: 2; //這個代表圖層至少比下面img照片都還要多一層
-  //就是最上方圖層才不會被蓋住看不見
+  z-index: 2;  //要高於圖片1層
   height: 300px;
   width: 300px;
   padding: 10px;
-  .commentInfo {
-    display: none; //原本是display:flex
+  .commentInfo {  //這是圖片提示評論數
+    display: none; 
     opacity: 0;
-
     height: 60px;
     width: 250px;
     border-radius: 2px;
@@ -257,8 +255,8 @@
   align-items: center;
   justify-content: center;
   img {
-    width: 800px;
-    height: 600px;
+    width: 700px;
+    height: 500px;
     border-radius: 5px;
   }
   .arrow {
