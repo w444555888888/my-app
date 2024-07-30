@@ -94,7 +94,7 @@ const HotelsList = () => {
 
                         <div className="listResult">
                             <div className="resultTitle">
-                                <h2>在{destinationState ? destinationState : '全局'}找到400間房間</h2>
+                                <h2>在{destinationState ? destinationState : '全區域'}找到400間房間</h2>
                             </div>
                             {hotels.map(hotel => (
                                 <SearchItem key={hotel._id} hotel={hotel} />

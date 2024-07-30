@@ -12,7 +12,7 @@ import { fetchHotelToDetail } from '../redux/userSlice'
 
 const Hotel = () => {
   // modal
-  const [openSlider, setOpenSlider] = useState(true);
+  const [openSlider, setOpenSlider] = useState(false);
   const [sliderIndex, setSiderIndex] = useState(0);
   const comments = useRef(null)
 
