@@ -1,4 +1,4 @@
-import { faHeartCircleCheck, faLocationDot, faPeopleGroup, faSmokingBan, faWifi, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faLocationDot, faPeopleGroup, faSmokingBan, faWifi, faXmark, faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useRef, useState, useEffect } from 'react'
 import Footer from '../components/Footer'
@@ -11,18 +11,24 @@ import { fetchHotelToDetail } from '../redux/userSlice'
 
 
 const Hotel = () => {
-  const [openSlider, setOpenSlider] = useState(false)
+  // modal
+  const [openSlider, setOpenSlider] = useState(true);
+  const [sliderIndex, setSiderIndex] = useState(0);
   const comments = useRef(null)
-  const dispatch = useDispatch()
-  const hotelDetails = useSelector((state) => state.user)
 
   // 路由傳遞資料
   const location = useLocation()
-  console.log(location, 'location')
+
 
   useEffect(() => {
 
   })
+
+  const clickSlider = (index) => {
+    setOpenSlider(true);
+    
+  }
+console.log(comments,'comments');
 
   const handleHover = () => {
     gsap.to(comments.current, {
@@ -30,7 +36,7 @@ const Hotel = () => {
         display: "flex",
         opacity: 1,
       },
-      ease: "power3.inOut"
+      ease: "strong.inOut"
     })
   }
 
@@ -40,8 +46,21 @@ const Hotel = () => {
         display: "none",
         opacity: 0,
       },
-      ease: "power3.inOut"
+      ease: "strong.inOut"
     })
+  }
+
+  const slideDirection = (direction) => {
+    let newSliderIndex;
+    let lastPicutre = location.state.hotel.photos.length - 1
+    if (direction === "left") {
+      sliderIndex === 0 ? newSliderIndex = lastPicutre: newSliderIndex = sliderIndex - 1
+
+      setSiderIndex(newSliderIndex)
+    } else {
+      sliderIndex === lastPicutre ? newSliderIndex = 0 : newSliderIndex = sliderIndex + 1
+      setSiderIndex(newSliderIndex)
+    }
   }
 
   return (
@@ -51,13 +70,15 @@ const Hotel = () => {
         <div className="slider">
           <div className="sliderWrapper">
             <div className="wrapperTitle">
-              <div className='TitleName'>{'name'}</div>
+              <div className='TitleName'>{location.state.hotel.name}</div>
               <span className="CloseSign" onClick={() => setOpenSlider(false)}>關閉
                 <FontAwesomeIcon icon={faXmark} /></span>
             </div>
             <div className="wrapperBody">
-
-            </div>
+            <FontAwesomeIcon icon={faAngleLeft} className="arrow" onClick={()=>slideDirection("left")} />
+            <img src={location.state.hotel.photos[sliderIndex]}  />
+            <FontAwesomeIcon icon={faAngleRight} className="arrow" onClick={()=>slideDirection("right")}/>
+          </div>
           </div>
         </div>
       }
@@ -78,24 +99,23 @@ const Hotel = () => {
             </div>
             <div className="titleRight">
               <button className="reservationBtn">現在就預訂</button>
-              <p><FontAwesomeIcon icon={faHeartCircleCheck} /><span>買貴退差價</span></p>
             </div>
           </div>
           <div className="hotelImgWrapper">
             <div className="popupcomment" onMouseEnter={handleHover} onMouseOut={handleHoverExit}>
               <div className='commentInfo' ref={comments}>
-                <button className='commentRate'>{'rating'}</button>
+                <button className='commentRate'>{location.state.hotel.rating}</button>
                 傑出<br />
-                {'8'}則評論
+                {location.state.hotel.comments}則評論
               </div>
             </div>
             <div className="hotelImg">
-    {location.state.hotel.photos.map((e, index) => (
-      <div key={index} className="Imgwrap">
-        <img src={e} alt={`Hotel photo ${index + 1}`} />
-      </div>
-    ))}
-  </div>
+              {location.state.hotel.photos.map((e, index) => (
+                <div key={index} className="Imgwrap" onClick={clickSlider}>
+                  <img src={e} />
+                </div>
+              ))}
+            </div>
           </div>
           <div className="hotelDes">
             <div className="hotelDesText">
