@@ -9,10 +9,11 @@
 import React from 'react'
 import Categories from '../subcomponents/Categories'
 import PopularHotels from '../subcomponents/PopularHotels'
-import { hotelType, PopularHotelsData } from '../data'
+
+import { useSelector } from 'react-redux'
 import "./feature.scss"
 const Feature = () => {
-
+    const hotels = useSelector((state) => state.user.Hotels)
     return (
         <div className='feature'>
             <div className="container">
@@ -20,14 +21,14 @@ const Feature = () => {
                     <h2>依住宿類型瀏覽</h2>
                 </div>
                 <div className="listItems">
-                    <Categories dataArray={hotelType} />
+                    <Categories dataArray={hotels} />
                 </div>
                 
                 <div className="listTitle">
                     <h2>五星級酒店</h2>
                 </div>
                 <div className="listItems">
-                    <PopularHotels dataArray={PopularHotelsData} />
+                    <PopularHotels dataArray={hotels} />
                 </div>
             </div>
         </div>

@@ -12,8 +12,8 @@ import { fetchHotelToDetail } from '../redux/userSlice'
 
 const Hotel = () => {
   // modal
-  const [openSlider, setOpenSlider] = useState(false);
-  const [sliderIndex, setSiderIndex] = useState(0);
+  const [openSlider, setOpenSlider] = useState(false)
+  const [sliderIndex, setSiderIndex] = useState(0)
   const comments = useRef(null)
 
   // 路由傳遞資料
@@ -24,11 +24,6 @@ const Hotel = () => {
 
   })
 
-  const clickSlider = (index) => {
-    setOpenSlider(true);
-    
-  }
-console.log(comments,'comments');
 
   const handleHover = () => {
     gsap.to(comments.current, {
@@ -50,12 +45,17 @@ console.log(comments,'comments');
     })
   }
 
+
+  const clickSlider = (index) => {
+    setOpenSlider(true)
+    setSiderIndex(index)
+  }
+
   const slideDirection = (direction) => {
     let newSliderIndex;
     let lastPicutre = location.state.hotel.photos.length - 1
     if (direction === "left") {
-      sliderIndex === 0 ? newSliderIndex = lastPicutre: newSliderIndex = sliderIndex - 1
-
+      sliderIndex === 0 ? newSliderIndex = lastPicutre : newSliderIndex = sliderIndex - 1
       setSiderIndex(newSliderIndex)
     } else {
       sliderIndex === lastPicutre ? newSliderIndex = 0 : newSliderIndex = sliderIndex + 1
@@ -75,10 +75,10 @@ console.log(comments,'comments');
                 <FontAwesomeIcon icon={faXmark} /></span>
             </div>
             <div className="wrapperBody">
-            <FontAwesomeIcon icon={faAngleLeft} className="arrow" onClick={()=>slideDirection("left")} />
-            <img src={location.state.hotel.photos[sliderIndex]}  />
-            <FontAwesomeIcon icon={faAngleRight} className="arrow" onClick={()=>slideDirection("right")}/>
-          </div>
+              <FontAwesomeIcon icon={faAngleLeft} className="arrow" onClick={() => slideDirection("left")} />
+              <img src={location.state.hotel.photos[sliderIndex]} />
+              <FontAwesomeIcon icon={faAngleRight} className="arrow" onClick={() => slideDirection("right")} />
+            </div>
           </div>
         </div>
       }
@@ -111,8 +111,8 @@ console.log(comments,'comments');
             </div>
             <div className="hotelImg">
               {location.state.hotel.photos.map((e, index) => (
-                <div key={index} className="Imgwrap" onClick={clickSlider}>
-                  <img src={e} key={index}/>
+                <div key={index} className="Imgwrap" onClick={() => clickSlider(index)}>
+                  <img src={e} key={index} />
                 </div>
               ))}
             </div>
