@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-18 21:04:23
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-07-22 22:36:22
+ * @LastEditTime: 2024-08-05 12:06:26
  * @FilePath: \my-app\src\pages\Personal.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -12,10 +12,11 @@ import './personal.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleRight } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux'
-import {  } from '../redux/userSlice'
+import { logOut } from '../redux/userSlice'
+import axios from 'axios'
 
-const Personal = ({ setIsLoggedIn }) => {
-  const dispatch = useDispatch()
+const Personal = () => {
+  const dispatch = useDispatch
   const navigate = useNavigate()
 
   // useState
@@ -23,62 +24,38 @@ const Personal = ({ setIsLoggedIn }) => {
   const [message, setMessage] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
   const [address, setAddress] = useState('')
-
-  // redux
+  // localStroge
   const username = localStorage.getItem('username')
-  const { users } = useSelector((state) => state.user)
-  const user = users.find((e) => e.username === username)
+
+
+
 
   // useEffect
   useEffect(() => {
-   
-  }, [dispatch])
 
-  useEffect(() => {
-    if (user) {
-      setPassword(user.password ? '*****' : '')
-      setPhoneNumber(user.phoneNumber || '')
-      setAddress(user.address || '')
-    }
-  }, [user])
+  }, [dispatch])
 
 
   const handleClickToHome = () => {
     navigate('/')
   }
 
+  // 編輯帳戶
   const handleEdit = async (event) => {
     event.preventDefault()
     try {
-      if (user) {
-        const updatedUser = {
-          ...user,
-          password: password,
-          phoneNumber: phoneNumber,
-          address: address,
-        }
-
-        const updateResponse = await fetch(`http://localhost:3000/users/${user.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(updatedUser),
-        })
-
-        if (updateResponse.ok) {
-          setMessage('修改完成')
-        } else {
-          setMessage('更新失敗，請重新修改')
-        }
-      } else {
-        setMessage('帳號密碼輸出錯誤，請重新輸入')
-      }
     } catch (error) {
       setMessage('稍後再試')
     }
   }
 
+  // 登出
+  const handleClicklogOut = () => {
+    if (window.confirm('確定登出?')) {
+      dispatch(logOut())
+      navigate('/login')
+    }
+  }
 
   return (
     <div className="personalWrapper">
@@ -130,6 +107,7 @@ const Personal = ({ setIsLoggedIn }) => {
             />
           </div>
           <button type="submit">Confirm Edit</button>
+          <button onClick={handleClicklogOut} >Log Out</button>
         </form>
 
         {message && <p>{message}</p>}

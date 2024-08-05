@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-17 20:28:18
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-07-19 08:33:16
+ * @LastEditTime: 2024-08-05 11:59:03
  * @FilePath: \my-app\src\components\Navbar.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -20,7 +20,7 @@ const Navbar = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
-    const { isLoggedIn } = useSelector((state) => state.user)
+    const { login } = useSelector((state) => state.user)
 
 
     const handleClickActive = (item) => {
@@ -43,13 +43,7 @@ const Navbar = () => {
         navigate('/personal')
     }
 
-    const handleClicklogOut = () => {
-        if (window.confirm('確定登出?')) {
-            dispatch(logOut())
-            navigate('/login')
-        }
 
-    }
 
     return (
         <div className='navbar'>
@@ -61,8 +55,8 @@ const Navbar = () => {
                     <div className="right">
                         <button className="navButton" onClick={handleClickToSignUp}>註冊</button>
 
-                        {isLoggedIn ? (
-                            <button className="navButton" onClick={handleClickToPersonal} onContextMenu={handleClicklogOut}>我的帳戶</button>
+                        {login ? (
+                            <button className="navButton" onClick={handleClickToPersonal}>我的帳戶</button>
                         ) : (<button className="navButton"
                             onClick={handleClickToLogIn}>登入</button>
                         )}

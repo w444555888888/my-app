@@ -12,79 +12,92 @@
   font-weight: bold;
 
   .personalContainer {
-      width: 100%;
-      max-width: 450px;
-      margin: 20px 0;
-      padding: 20px;
-      border-radius: 20px;
-      background-color: #f9f9f9;
+    width: 100%;
+    max-width: 450px;
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 20px;
+    background-color: #f9f9f9;
 
-      .personalTitle {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 20px;
+    .personalTitle {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      font-size: 24px;
+    }
+
+    .navButton {
+      font-size: 14px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 16px;
+      padding: 8px 8px;
+      cursor: pointer;
+      color: white;
+      background-color: gray;
+    }
+
+    .item {
+      margin: 0 10px;
+      cursor: pointer;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .formGroup {
+      margin-bottom: 15px;
+
+      label {
+        display: block;
+        margin-bottom: 5px;
       }
 
-      .logo {
-          font-size: 24px;
+      input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid gray;
+        border-radius: 4px;
+        box-sizing: border-box;
       }
+    }
 
-      .navButton {
-          font-size: 14px;
-          margin-left: 10px;
-          border: none;
-          border-radius: 16px;
-          padding: 8px 8px;
-          cursor: pointer;
-          color: white;
-          background-color: gray;
-      }
+    button[type='submit'] {
+      width: 50%;
+      margin-top: 10px;
+      margin-right: 10px;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      background-color: gray;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+    }
 
-      .item {
-          margin: 0 10px;
-          cursor: pointer;
-      }
+    button {
+      width: 40%;
+      margin-top: 10px;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      background-color: gray;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+    }
 
-      h2 {
-          text-align: center;
-          margin-bottom: 20px;
-      }
-
-      .formGroup {
-          margin-bottom: 15px;
-
-          label {
-              display: block;
-              margin-bottom: 5px;
-          }
-
-          input {
-              width: 100%;
-              padding: 8px;
-              border: 1px solid gray;
-              border-radius: 4px;
-              box-sizing: border-box;
-          }
-      }
-
-      button[type="submit"] {
-          width: 100%;
-          margin-top: 10px;
-          padding: 10px;
-          border: none;
-          border-radius: 4px;
-          background-color: gray;
-          color: white;
-          cursor: pointer;
-          font-size: 16px;
-          font-weight: bold;
-      }
-
-      
-      p {
-          text-align: center;
-          margin-top: 20px;
-          color: red;
-      }
+    p {
+      text-align: center;
+      margin-top: 20px;
+      color: red;
+    }
   }
 }

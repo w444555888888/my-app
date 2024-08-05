@@ -37,7 +37,8 @@ app.listen(port, () => {
 
 app.use(express.json())//讓上傳的req.body可以視為json
 app.use(cookieParser())//cookie驗證
-app.use(cors())//跨域
+//跨域
+app.use(cors())
 
 ///middlewares中間代理商概念
 app.use("/api/v1/hotels", hotelsApiRoute)

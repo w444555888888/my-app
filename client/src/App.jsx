@@ -22,7 +22,7 @@ import Personal from "./pages/Personal"
 
 function App () {
   const dispatch = useDispatch()
-  const { isLoggedIn } = useSelector((state) => state.user)
+  const { login } = useSelector((state) => state.user)
 
 
 
@@ -36,7 +36,7 @@ function App () {
     <div className="App">
       <Router>
         <Routes>
-          <Route path="/" element={<PrivateRoute isLoggedIn={isLoggedIn}><Home /></PrivateRoute>} />
+          <Route path="/" element={<PrivateRoute login={login}><Home /></PrivateRoute>} />
 
           <Route path="/signUp" element={<SignUp />} />
 
@@ -44,19 +44,19 @@ function App () {
 
           <Route path="/forgot" element={<Forgot />} />
 
-          <Route path="/hotelsList" element={<PrivateRoute isLoggedIn={isLoggedIn}><HotelsList /></PrivateRoute>} />
+          <Route path="/hotelsList" element={<PrivateRoute login={login}><HotelsList /></PrivateRoute>} />
 
-          <Route path="/hotel/:id" element={<PrivateRoute isLoggedIn={isLoggedIn}><Hotel /></PrivateRoute>} />
+          <Route path="/hotel/:id" element={<PrivateRoute login={login}><Hotel /></PrivateRoute>} />
 
-          <Route path="/personal" element={<PrivateRoute isLoggedIn={isLoggedIn}><Personal /></PrivateRoute>} />
+          <Route path="/personal" element={<PrivateRoute login={login}><Personal /></PrivateRoute>} />
         </Routes>
       </Router>
     </div>
   )
 }
 
-const PrivateRoute = ({ children, isLoggedIn }) => {
-  return isLoggedIn ? children : <Navigate to="/logIn" replace />
+const PrivateRoute = ({ children, login }) => {
+  return login ? children : <Navigate to="/logIn" replace />
 }
 
 
