@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import "./signUp.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleRight } from '@fortawesome/free-solid-svg-icons'
-
+import axios from 'axios'
 const SignUp = () => {
     const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState('');
 
     const navigate = useNavigate();
@@ -16,27 +16,19 @@ const SignUp = () => {
     };
 
     const handleSignUp = async (event) => {
-        event.preventDefault();
+        event.preventDefault()
+        try {
+            const response = await axios.post('http://localhost:5000/api/v1/auth/register', {
+                email:email, username: username, password: password
+            })
+            if(response.data){
+                navigate('/login')
+            }
 
-        // if (password !== confirmPassword) {
-        //     setMessage('密碼不正確請重新輸入');
-        //     return;
-        // }
-
-        // const response = await fetch('http://localhost:3000/signup', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({ email, password })
-        // });
-
-        // if (response.ok) {
-        //     navigate('/login');
-        //     setMessage('註冊成功');
-        // } else {
-        //     setMessage('註冊失敗，請重新註冊');
-        // }
+        } catch (error) {
+            console.error('Error:', error)
+            setMessage(error.response.data.Message)
+        }
     };
 
     return (
@@ -65,6 +57,15 @@ const SignUp = () => {
                         />
                     </div>
                     <div className="formGroup">
+                        <label htmlFor="username">username:</label>
+                        <input
+                            id="username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="formGroup">
                         <label htmlFor="password">password:</label>
                         <input
                             type="password"
@@ -74,16 +75,7 @@ const SignUp = () => {
                             required
                         />
                     </div>
-                    <div className="formGroup">
-                        <label htmlFor="confirmPassword">confirm password:</label>
-                        <input
-                            type="password"
-                            id="confirmPassword"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            required
-                        />
-                    </div>
+                   
                     <button type="submit">Sign Up</button>
                 </form>
                 {message && <p>{message}</p>}
