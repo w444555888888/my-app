@@ -18,25 +18,25 @@ const SignUp = () => {
     const handleSignUp = async (event) => {
         event.preventDefault();
 
-        if (password !== confirmPassword) {
-            setMessage('密碼不正確請重新輸入');
-            return;
-        }
+        // if (password !== confirmPassword) {
+        //     setMessage('密碼不正確請重新輸入');
+        //     return;
+        // }
 
-        const response = await fetch('http://localhost:3000/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-        });
+        // const response = await fetch('http://localhost:3000/signup', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({ email, password })
+        // });
 
-        if (response.ok) {
-            navigate('/login');
-            setMessage('註冊成功');
-        } else {
-            setMessage('註冊失敗，請重新註冊');
-        }
+        // if (response.ok) {
+        //     navigate('/login');
+        //     setMessage('註冊成功');
+        // } else {
+        //     setMessage('註冊失敗，請重新註冊');
+        // }
     };
 
     return (

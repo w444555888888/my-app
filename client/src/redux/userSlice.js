@@ -9,10 +9,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 
-export const fetchUsers = createAsyncThunk('fetchUsers', async () => {
-  const response = await fetch('http://localhost:3000/users')
-  return response.json()
-})
+
 
 export const axiosHotels = createAsyncThunk('axiosHotels', async () => {
   const response = await axios.get('http://localhost:5000/api/v1/hotels')
@@ -42,17 +39,6 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUsers.pending, (state) => {
-        state.status = 'loading'
-      })
-      .addCase(fetchUsers.fulfilled, (state, action) => {
-        state.status = 'succeeded'
-        state.users = action.payload
-      })
-      .addCase(fetchUsers.rejected, (state, action) => {
-        state.status = 'failed'
-        state.error = action.error.message
-      })
       .addCase(axiosHotels.pending, (state) => {
         state.status = 'loading'
       })

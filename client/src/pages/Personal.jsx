@@ -12,7 +12,7 @@ import './personal.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleRight } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchUsers } from '../redux/userSlice'
+import {  } from '../redux/userSlice'
 
 const Personal = ({ setIsLoggedIn }) => {
   const dispatch = useDispatch()
@@ -31,7 +31,7 @@ const Personal = ({ setIsLoggedIn }) => {
 
   // useEffect
   useEffect(() => {
-    dispatch(fetchUsers())
+   
   }, [dispatch])
 
   useEffect(() => {

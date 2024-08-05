@@ -1,47 +1,55 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { logIn } from '../redux/userSlice';
-import "./logIn.scss";
+/*
+ * @Author: w444555888 w444555888@yahoo.com.tw
+ * @Date: 2024-07-18 20:24:17
+ * @LastEditors: w444555888 w444555888@yahoo.com.tw
+ * @LastEditTime: 2024-08-04 19:12:28
+ * @FilePath: \my-app\client\src\pages\LogIn.jsx
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
+/*
+ * @Author: w444555888 w444555888@yahoo.com.tw
+ * @Date: 2024-07-18 20:24:17
+ * @LastEditors: w444555888 w444555888@yahoo.com.tw
+ * @LastEditTime: 2024-08-04 18:21:22
+ * @FilePath: \my-app\client\src\pages\LogIn.jsx
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { logIn } from '../redux/userSlice'
+import axios from 'axios'
+import "./logIn.scss"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleRight, faQuestion } from '@fortawesome/free-solid-svg-icons'
 
 const LogIn = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [message, setMessage] = useState('');
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [message, setMessage] = useState('')
 
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+
     const handleClickToHome = () => {
-        navigate('/');
-    };
+        navigate('/')
+    }
 
     const handleClickToForgot = () => {
-        navigate('/forgot');
-    };
+        navigate('/forgot')
+    }
 
     const handleLogIn = async (event) => {
-        event.preventDefault();
+        event.preventDefault()
         try {
-            const response = await fetch('http://localhost:3000/users');
-            const resUsers = await response.json();
-            const user = resUsers.find(e => e.username === email && e.password === password);
-
-            if (user) {
-                setMessage('登入成功');
-                localStorage.setItem('username', user.username);
-                dispatch(logIn());
-                navigate('/');
-            } else {
-                setMessage('帳號密碼輸出錯誤，請重新輸入');
-            }
-
+            const response = await axios.post('http://localhost:5000/api/v1/auth/login', {
+                account: email, password: password
+            })
+            console.log(response.data)
         } catch (error) {
-            setMessage('登入失敗，稍後在試');
+            console.error('Error logging in:', error)
         }
-    };
+    }
 
     return (
         <div className='logInWrapper'>
@@ -61,7 +69,6 @@ const LogIn = () => {
                     <div className="formGroup">
                         <label htmlFor="email">E-mail:</label>
                         <input
-                            type="email"
                             id="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -84,7 +91,7 @@ const LogIn = () => {
                 {message && <p>{message}</p>}
             </div>
         </div>
-    );
+    )
 }
 
-export default LogIn;
+export default LogIn

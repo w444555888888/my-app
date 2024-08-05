@@ -1,7 +1,9 @@
-export const errorMessage=(status, message,err)=>{
-    const error = new Error();
-    const orignalErr = err.message;
-    error.status= status;
-    error.message=message+`\n錯誤詳細描述: `+orignalErr;
-    return error; 
-}
+export const errorMessage = (status, message, error = null) => {
+    return (req, res, next) => {
+        res.status(status).json({
+            status: status,
+            message: message,
+            ...(error && { error: error.message }), 
+        });
+    };
+};
