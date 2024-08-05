@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-18 21:04:23
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-08-05 12:06:26
+ * @LastEditTime: 2024-08-05 14:44:25
  * @FilePath: \my-app\src\pages\Personal.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -16,7 +16,7 @@ import { logOut } from '../redux/userSlice'
 import axios from 'axios'
 
 const Personal = () => {
-  const dispatch = useDispatch
+  const dispatch = useDispatch()
   const navigate = useNavigate()
 
   // useState
@@ -26,14 +26,6 @@ const Personal = () => {
   const [address, setAddress] = useState('')
   // localStroge
   const username = localStorage.getItem('username')
-
-
-
-
-  // useEffect
-  useEffect(() => {
-
-  }, [dispatch])
 
 
   const handleClickToHome = () => {
@@ -56,6 +48,12 @@ const Personal = () => {
       navigate('/login')
     }
   }
+
+
+  // useEffect
+  useEffect(() => {
+
+  }, [dispatch])
 
   return (
     <div className="personalWrapper">

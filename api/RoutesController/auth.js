@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-25 13:15:20
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-08-05 10:47:58
+ * @LastEditTime: 2024-08-05 14:46:25
  * @FilePath: \my-app\api\RoutesController\auth.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -41,16 +41,14 @@ export const login = async (req, res, next) => {
   const loginData = req.body
   try {
     const userData = await User.findOne({ username: loginData.account }) || await User.findOne({ email: loginData.account })
-
     if (!userData) return (next(errorMessage(404, "沒有此使用者")))
+      
     const isPasswordCorrect = await bcrypt.compare(loginData.password, userData.password)
     if (!isPasswordCorrect) return (next(errorMessage(404, "輸入密碼錯誤")))
 
     //process.env.JWT
     const token = jwt.sign({ id: userData._id, isAdmin: userData.isAdmin }, process.env.JWT)
 
-    console.log(token, 'token')
-    
     const { password, isAdmin, ...userDetails } = userData._doc
     res
       .cookie('JWT_token', token, {

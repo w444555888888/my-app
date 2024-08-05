@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-18 20:24:17
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-08-05 11:56:03
+ * @LastEditTime: 2024-08-05 22:26:44
  * @FilePath: \my-app\client\src\pages\LogIn.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -45,6 +45,7 @@ const LogIn = () => {
             const response = await axios.post('http://localhost:5000/api/v1/auth/login', {
                 account: email, password: password
             })
+
             // 登入把帳號存到本地
             if (response.data) {
                 localStorage.setItem('username', response.data.userDetails.username)
@@ -52,7 +53,8 @@ const LogIn = () => {
                 navigate('/')
             }
         } catch (error) {
-            console.error('Error logging in:', error)
+            console.error('Error:', error)
+            setMessage(error.response.data.Message)
         }
     }
 
