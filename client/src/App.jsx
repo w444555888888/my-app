@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-18 20:24:17
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-08-04 19:01:52
+ * @LastEditTime: 2024-08-06 15:18:46
  * @FilePath: \my-app\src\App.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -18,16 +18,13 @@ import SignUp from "./pages/SignUp"
 import LogIn from "./pages/LogIn"
 import Forgot from "./pages/Forgot"
 import Personal from "./pages/Personal"
-
+import axios from 'axios'
 
 function App () {
+  // 跨域請求cookie
+  axios.defaults.withCredentials = true
   const dispatch = useDispatch()
   const { login } = useSelector((state) => state.user)
-
-
-
-
-
   useEffect(() => {
     dispatch(axiosHotels())
   }, [dispatch])

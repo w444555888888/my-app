@@ -55,7 +55,9 @@ export const login = async (req, res, next) => {
     const { password, isAdmin, ...userDetails } = userData._doc
     res
       .cookie('JWT_token', token, {
-        httpOnly: true
+        httpOnly: true,
+        secure: false, 
+        path: '/',
       })
       .status(200).json({ userDetails })
 

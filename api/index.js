@@ -37,8 +37,14 @@ app.listen(port, () => {
 
 app.use(express.json())//讓上傳的req.body可以視為json
 app.use(cookieParser())//cookie驗證
+
 //跨域
-app.use(cors())
+const corsOptions = {
+    origin: 'http://localhost:3000', 
+    credentials: true, // 允許發送Cookie
+  };
+app.use(cors(corsOptions))
+
 
 ///middlewares中間代理商
 app.use("/api/v1/hotels", hotelsApiRoute)
@@ -47,7 +53,7 @@ app.use("/api/v1/users", usersApiRoute)
 app.use("/api/v1/auth", authApiRoute)
 
 
-//如果上述ApiRoute傳接有問題可以來這邊回傳錯誤訊息
+//共同管理error狀態
 app.use((error, req, res, next) => {
     const errorStatus = error.status || 500
     const errorMessage = error.message || "伺服器錯誤"

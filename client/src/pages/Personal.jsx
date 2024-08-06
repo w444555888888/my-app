@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-18 21:04:23
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-08-05 14:44:25
+ * @LastEditTime: 2024-08-06 16:11:38
  * @FilePath: \my-app\src\pages\Personal.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -21,12 +21,13 @@ const Personal = () => {
 
   // useState
   const [password, setPassword] = useState('')
-  const [message, setMessage] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
   const [address, setAddress] = useState('')
+  const [message, setMessage] = useState('')
   // localStroge
-  const username = localStorage.getItem('username')
-
+  const localStrogeToUsername = localStorage.getItem('username')
+  const userDetails = JSON.parse(localStrogeToUsername)
+  const username = userDetails.username
 
   const handleClickToHome = () => {
     navigate('/')
@@ -34,12 +35,16 @@ const Personal = () => {
 
   // 編輯帳戶
   const handleEdit = async (event) => {
-    event.preventDefault()
     try {
+      await axios.put(`http://localhost:5000/api/v1/users/${userDetails._id}`, { password: password, address: address, phoneNumber: phoneNumber })
+
     } catch (error) {
-      setMessage('稍後再試')
+      console.error('Error:', error)
+      setMessage(error.response.data.Message)
     }
   }
+
+
 
   // 登出
   const handleClicklogOut = () => {
@@ -71,7 +76,7 @@ const Personal = () => {
       </div>
       <div className="personalContainer">
         <h2>Personalize</h2>
-        <form onSubmit={handleEdit}>
+        <form >
           <div className="formGroup">
             <label htmlFor="email">E-mail:</label>
             <input type="email" id="email" value={username} required disabled />
@@ -104,7 +109,7 @@ const Personal = () => {
               required
             />
           </div>
-          <button type="submit">Confirm Edit</button>
+          <button type='submit' onClick={handleEdit}>Confirm Edit</button>
           <button onClick={handleClicklogOut} >Log Out</button>
         </form>
 

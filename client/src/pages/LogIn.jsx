@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-18 20:24:17
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-08-05 22:26:44
+ * @LastEditTime: 2024-08-06 15:33:37
  * @FilePath: \my-app\client\src\pages\LogIn.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -46,9 +46,10 @@ const LogIn = () => {
                 account: email, password: password
             })
 
-            // 登入把帳號存到本地
+            // 登入把登入帳號資料存到本地存儲
             if (response.data) {
-                localStorage.setItem('username', response.data.userDetails.username)
+                // 物件轉換字串
+                localStorage.setItem('username', JSON.stringify(response.data.userDetails))
                 dispatch(logIn())
                 navigate('/')
             }
