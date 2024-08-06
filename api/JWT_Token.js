@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-08-04 17:27:55
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-08-04 17:28:04
+ * @LastEditTime: 2024-08-06 18:51:52
  * @FilePath: \my-app\api\JWT_Token.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -10,23 +10,27 @@ import jwt from "jsonwebtoken"
 import { errorMessage } from "./errorMessage.js"
 
 const JWT_Token = (req, res, next, callBackFunction) => {
-  const token = req.cookies.JWT_token//在index.js 使用app.use(cookieParser()) 來抓取
-  //沒抓到Token就顯示
+  // 使用app.use(cookieParser()) 取得cookie
+  const token = req.cookies.JWT_token
   if (!token) { next(errorMessage(401, "請先登入")) }
-  jwt.verify(token, process.env.JWT, (err, payload) => {//cookie解碼
+
+  //cookie解碼
+  jwt.verify(token, process.env.JWT, (err, payload) => {
     if (err) { next(errorMessage(403, "TOKEN無效，解開JWT失敗")) }
-    req.userData = payload//解碼後應該是我們一開始sign的user.id與user.isadmin
-    //next()
-    callBackFunction()//讓我們下列的()=>{}才能順利運作
+    // token解開的對應id資料
+    req.userData = payload
+    // 回調函數
+    callBackFunction()
   })
 }
 export const verifyUser = (req, res, next) => {
   JWT_Token(
-    req, res, next, () => { //req.params.id 是user的id
-      const apiUserId = req.params.id
-      if (req.userData.id == apiUserId || req.userData.isAdmin) { next() }
-      //next 讓他可以往下執行到實際要做的RoutesController
-      else { next(errorMessage(403, "只能修改個人自己的權限或是你不是管理員")) }
+    req, res, next, () => { 
+      // 請求的id
+      const requestId = req.params.id
+      // token的id == 請求的id
+      if (req.userData.id == requestId ) { next() }
+      else { next(errorMessage(403, "只能修改個人自己的權限")) }
     }
   )
 }
