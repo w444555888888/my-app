@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-18 21:04:23
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-08-06 16:11:38
+ * @LastEditTime: 2024-08-06 18:40:14
  * @FilePath: \my-app\src\pages\Personal.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -28,6 +28,7 @@ const Personal = () => {
   const localStrogeToUsername = localStorage.getItem('username')
   const userDetails = JSON.parse(localStrogeToUsername)
   const username = userDetails.username
+  const email = userDetails.email
 
   const handleClickToHome = () => {
     navigate('/')
@@ -37,7 +38,7 @@ const Personal = () => {
   const handleEdit = async (event) => {
     try {
       await axios.put(`http://localhost:5000/api/v1/users/${userDetails._id}`, { password: password, address: address, phoneNumber: phoneNumber })
-
+      navigate('/')
     } catch (error) {
       console.error('Error:', error)
       setMessage(error.response.data.Message)
@@ -79,10 +80,14 @@ const Personal = () => {
         <form >
           <div className="formGroup">
             <label htmlFor="email">E-mail:</label>
-            <input type="email" id="email" value={username} required disabled />
+            <input type="email" id="email" value={email} required disabled />
           </div>
           <div className="formGroup">
-            <label htmlFor="password">change password:</label>
+            <label htmlFor="username">Username:</label>
+            <input id="username" value={username} required disabled />
+          </div>
+          <div className="formGroup">
+            <label htmlFor="password">Change Password:</label>
             <input
               type="password"
               id="password"
