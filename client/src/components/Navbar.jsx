@@ -60,7 +60,7 @@ const Navbar = () => {
                         ) : (<button className="navButton"
                             onClick={handleClickToLogIn}>登入</button>
                         )}
-
+ 
                     </div>
                 </div>
                 <div className="lineTwo">

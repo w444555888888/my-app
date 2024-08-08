@@ -8,15 +8,15 @@ import { useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 const HotelsList = () => {
     // 路由傳遞資料
-    const location = useLocation()
+    const location = useLocation();
 
-    const { destination: locationdestination, dates: locationDates, conditions: locationConditions, hotels: locationhHotels } = location.state || {}
+    const { destination: locationdestination, dates: locationDates, conditions: locationConditions, hotels: locationHotels } = location.state || {};
 
-    const [openConditions, setOpenConditions] = useState(false)
-    const [openCalendar, setOpenCalendar] = useState(false)
+    const [openConditions, setOpenConditions] = useState(false);
+    const [openCalendar, setOpenCalendar] = useState(false);
 
     // 搜尋欄
-    const [destinationState, setDestinationState] = useState(locationdestination || '')
+    const [destinationState, setDestinationState] = useState(locationdestination || '');
 
     // 日期
     const [dates, setDates] = useState(locationDates || [
@@ -25,14 +25,14 @@ const HotelsList = () => {
             endDate: new Date(),
             key: 'selection',
         }
-    ])
+    ]);
 
     // 人數/房間數
     const [conditions, setConditions] = useState(locationConditions || {
         adult: 1,
         children: 0,
         room: 1,
-    })
+    });
 
     return (
         <>
@@ -92,9 +92,11 @@ const HotelsList = () => {
 
                         <div className="listResult">
                             <div className="resultTitle">
-                                <h2>在{destinationState ? destinationState : '全區域搜尋'}找到{locationhHotels ? locationhHotels.length : 0}間房間</h2>
+                                <h2>在{destinationState ? destinationState : '全區域搜尋'}找到{locationHotels.length}間房間</h2>
                             </div>
-                            {locationhHotels.map(hotel => (
+
+                            {/* 搜尋後的飯店物件 */}
+                            {locationHotels.map(hotel => (
                                 <SearchItem key={hotel._id} hotel={hotel} />
                             ))}
                         </div>
