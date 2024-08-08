@@ -8,14 +8,20 @@
  */
 import Hotel from "../models/Hotel.js"
 
+// 獲取所有 || 搜尋飯店資料
+export const getAllHotels = async (req, res, next) => {
+    const { name } = req.query
+    let query = {}
 
-// 獲取所有飯店資料
-export const getAllHotels = async (req, res) => {
+    if (name) {
+        query.name = new RegExp(name, 'i')
+    }
+
     try {
-        const hotels = await Hotel.find() // 從資料庫獲取所又資料
+        const hotels = await Hotel.find(query);
         res.status(200).json(hotels)
-    } catch (err) {
-        res.status(500).json({ message: err.message })
+    }catch (err){
+        next(errorMessage(500, "獲取資料失敗"))
     }
 }
 

@@ -10,7 +10,7 @@ const HotelsList = () => {
     // 路由傳遞資料
     const location = useLocation()
 
-    const { destination: locationdestination, dates: locationDates, conditions: locationConditions } = location.state || {}
+    const { destination: locationdestination, dates: locationDates, conditions: locationConditions, hotels: locationhHotels } = location.state || {}
 
     const [openConditions, setOpenConditions] = useState(false)
     const [openCalendar, setOpenCalendar] = useState(false)
@@ -34,8 +34,6 @@ const HotelsList = () => {
         room: 1,
     })
 
-    // 飯店資料
-    const hotels = useSelector((state) => state.user.Hotels)
     return (
         <>
             <div>
@@ -94,9 +92,9 @@ const HotelsList = () => {
 
                         <div className="listResult">
                             <div className="resultTitle">
-                                <h2>在{destinationState ? destinationState : '全區域'}找到400間房間</h2>
+                                <h2>在{destinationState ? destinationState : '全區域搜尋'}找到{locationhHotels ? locationhHotels.length : 0}間房間</h2>
                             </div>
-                            {hotels.map(hotel => (
+                            {locationhHotels.map(hotel => (
                                 <SearchItem key={hotel._id} hotel={hotel} />
                             ))}
                         </div>

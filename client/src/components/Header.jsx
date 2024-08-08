@@ -1,31 +1,32 @@
 import { faBed, faCalendar, faPeopleGroup } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
-import 'react-date-range/dist/styles.css'; // main css file
-import 'react-date-range/dist/theme/default.css'; // theme css file
-import { DateRange } from 'react-date-range';
-import format from 'date-fns/format';
-import { useNavigate } from 'react-router-dom';
+import 'react-date-range/dist/styles.css' // main css file
+import 'react-date-range/dist/theme/default.css' // theme css file
+import { DateRange } from 'react-date-range'
+import format from 'date-fns/format'
+import { useNavigate } from 'react-router-dom'
 import "./header.scss"
+import axios from 'axios'
 const Header = () => {
 
-    const [openConditions, setOpenConditions] = useState(false);
-    const [openCalendar, setOpenCalendar] = useState(false);
-    const [destination, setDestination] = useState('');
+    const [openConditions, setOpenConditions] = useState(false)
+    const [openCalendar, setOpenCalendar] = useState(false)
+    const [destination, setDestination] = useState('')
     const [dates, setDates] = useState([
         {
             startDate: new Date(),
             endDate: new Date(),
             key: 'selection',
         }
-    ]);
+    ])
     const [conditions, setConditions] = useState(
         {
             adult: 1, //初始人數,房間數為一
             children: 0, //可以不一定要有小孩
             room: 1,
         }
-    );
+    )
     const handleCounter = (name, sign) => {
         setConditions(prev => {
             return {
@@ -35,16 +36,25 @@ const Header = () => {
         })
     }
 
-    const navigate = useNavigate();
-    const handleSearchClick = () => {
-        navigate('/hotelsList', {
-            state: {
-                destination,
-                dates,
-                conditions,
-            },
-        });
-    };
+    const navigate = useNavigate()
+    const handleSearchClick = async (event) => {
+
+        event.preventDefault()
+        try {
+            const response = await axios.get(`http://localhost:5000/api/v1/hotels?name=${destination}`)
+
+            navigate('/hotelsList', {
+                state: {
+                    destination,
+                    dates,
+                    conditions,
+                    hotels: response.data
+                },
+            })
+        } catch (error) {
+            console.error('Error:', error)
+        }
+    }
 
     return (
         <div className='header'>
@@ -60,7 +70,7 @@ const Header = () => {
                     <div className="SearchBarItem">
                         <FontAwesomeIcon icon={faBed} />
                         <input type="text" placeholder='你要去哪裡？' className='SearchInput' value={destination}
-                            onChange={e => setDestination(e.target.value)}/>
+                            onChange={e => setDestination(e.target.value)} />
                     </div>
                     <div className="SearchBarItem">
                         <FontAwesomeIcon icon={faCalendar} onClick={() => setOpenCalendar(!openCalendar)} />
@@ -126,8 +136,6 @@ const Header = () => {
                                 </div>
                             </div>
                         }
-
-
                     </div>
                     <button className='SearchBarBtn' onClick={handleSearchClick}>搜尋</button>
                 </div>

@@ -13,7 +13,7 @@ import { getAllHotels, createHotel, deleteHotel, getHotel, updatedHotel } from "
 
 const router = express.Router()
 
-// 获取所有酒店数据
+//獲取所有飯店資訊
 router.get('/', getAllHotels)
 //創建第一筆資料
 router.post("/", createHotel)
