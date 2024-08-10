@@ -43,7 +43,7 @@ const Header = () => {
         try {
             const response = await axios.get(`http://localhost:5000/api/v1/hotels?name=${destination}`)
 
-            navigate('/hotelsList', {
+            navigate(`/hotelsList?name=${destination}`, {
                 state: {
                     destination,
                     dates,
