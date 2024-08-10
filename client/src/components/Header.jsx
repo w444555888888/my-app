@@ -38,22 +38,13 @@ const Header = () => {
 
     const navigate = useNavigate()
     const handleSearchClick = async (event) => {
-
-        event.preventDefault()
-        try {
-            const response = await axios.get(`http://localhost:5000/api/v1/hotels?name=${destination}`)
-
-            navigate(`/hotelsList?name=${destination}`, {
-                state: {
-                    destination,
-                    dates,
-                    conditions,
-                    hotels: response.data
-                },
-            })
-        } catch (error) {
-            console.error('Error:', error)
-        }
+        navigate(`/hotelsList?name=${destination}`, {
+            state: {
+                destination,
+                dates,
+                conditions,
+            },
+        })
     }
 
     return (

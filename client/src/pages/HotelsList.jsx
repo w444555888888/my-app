@@ -10,7 +10,7 @@ import axios from 'axios';
 const HotelsList = () => {
     // 路由傳遞數據
     const location = useLocation();
-    const { destination: locationdestination, dates: locationDates, conditions: locationConditions, hotels: locationHotels } = location.state || {};
+    const { destination: locationdestination, dates: locationDates, conditions: locationConditions } = location.state || {};
 
     const [openConditions, setOpenConditions] = useState(false);
     const [openCalendar, setOpenCalendar] = useState(false);
@@ -35,14 +35,14 @@ const HotelsList = () => {
     });
 
     // 飯店列表數據
-    const [hotels, setHotels] = useState(locationHotels || []);
+    const [hotels, setHotels] = useState([]);
 
     // 直接输入的路由網址，locationHotels會沒有數據
     useEffect(() => {
         const params  = new URLSearchParams(location.search);
         const paramsName = params.get('name');
 
-        if (!locationHotels && paramsName) {
+        if (paramsName) {
             axios.get(`http://localhost:5000/api/v1/hotels?name=${paramsName}`)
                 .then(response => {
                     setHotels(response.data);
@@ -51,7 +51,7 @@ const HotelsList = () => {
                     console.error('Error fetching hotels:', error);
                 });
         }
-    }, [location.search, locationHotels]);
+    }, [location.search]);
 
     return (
         <>
