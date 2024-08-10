@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import SearchItem from '../components/SearchItem';
-import Navbar from '../components/Navbar';
-import "./hotelsList.scss";
-import { DateRange } from 'react-date-range';
-import { format } from 'date-fns';
-import { useLocation } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react'
+import SearchItem from '../components/SearchItem'
+import Navbar from '../components/Navbar'
+import "./hotelsList.scss"
+import { DateRange } from 'react-date-range'
+import { format } from 'date-fns'
+import { useLocation } from 'react-router-dom'
+import axios from 'axios'
 
 const HotelsList = () => {
     // 路由傳遞數據
-    const location = useLocation();
-    const { destination: locationdestination, dates: locationDates, conditions: locationConditions } = location.state || {};
+    const location = useLocation()
+    const { destination: locationdestination, dates: locationDates, conditions: locationConditions } = location.state || {}
 
-    const [openConditions, setOpenConditions] = useState(false);
-    const [openCalendar, setOpenCalendar] = useState(false);
+    const [openConditions, setOpenConditions] = useState(false)
+    const [openCalendar, setOpenCalendar] = useState(false)
 
     // 搜尋欄
-    const [destinationState, setDestinationState] = useState(locationdestination || '');
+    const [destinationState, setDestinationState] = useState(locationdestination || '')
 
     // 日期
     const [dates, setDates] = useState(locationDates || [
@@ -25,33 +25,37 @@ const HotelsList = () => {
             endDate: new Date(),
             key: 'selection',
         }
-    ]);
+    ])
 
     // 人數/房間數
     const [conditions, setConditions] = useState(locationConditions || {
         adult: 1,
         children: 0,
         room: 1,
-    });
+    })
 
     // 飯店列表數據
-    const [hotels, setHotels] = useState([]);
+    const [hotels, setHotels] = useState([])
 
-    // 直接输入的路由網址，locationHotels會沒有數據
+    // 副作用監聽的路由網址，發送請求
     useEffect(() => {
-        const params  = new URLSearchParams(location.search);
-        const paramsName = params.get('name');
+        const params = new URLSearchParams(location.search)
+        const paramsName = params.get('name')
 
-        if (paramsName) {
-            axios.get(`http://localhost:5000/api/v1/hotels?name=${paramsName}`)
-                .then(response => {
-                    setHotels(response.data);
-                })
-                .catch(error => {
-                    console.error('Error fetching hotels:', error);
-                });
+        const axiosHotels = async () => {
+            try {
+                const response = await axios.get(`http://localhost:5000/api/v1/hotels${paramsName ? `?name=${paramsName}` : ''}`)
+                console.log('====================================')
+                console.log(response, 'response')
+                console.log('====================================')
+                setHotels(response.data)
+            } catch (error) {
+                console.error('Error fetching hotels:', error)
+            }
         }
-    }, [location.search]);
+
+        axiosHotels()
+    }, [location.search])
 
     return (
         <>
@@ -126,7 +130,7 @@ const HotelsList = () => {
                 </div>
             </div>
         </>
-    );
+    )
 }
 
-export default HotelsList;
+export default HotelsList
