@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-18 22:29:00
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-08-05 11:47:45
+ * @LastEditTime: 2024-08-12 17:38:38
  * @FilePath: \my-app\src\redux\userSlice.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -18,13 +18,16 @@ export const axiosHotels = createAsyncThunk('axiosHotels', async () => {
 
 
 
-
+/**
+ * 全部飯店:Hotels
+ * 主題:theme
+*/
 const userSlice = createSlice({
   name: 'user',
   initialState: {
     login: !!localStorage.getItem('username'),
-    users: [],
     Hotels: [],
+    theme: 'light',
     status: '',
     error: null,
   },
@@ -36,6 +39,9 @@ const userSlice = createSlice({
       state.login = false
       localStorage.removeItem('username')
     },
+    toggleTheme: (state) => { 
+     state.theme = state.theme === 'light' ? 'dark' : 'light'
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -53,6 +59,6 @@ const userSlice = createSlice({
   },
 })
 
-export const { logIn, logOut } = userSlice.actions
+export const { logIn, logOut, toggleTheme } = userSlice.actions
 
 export default userSlice.reducer

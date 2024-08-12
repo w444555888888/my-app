@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-17 20:28:18
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-08-12 16:03:10
+ * @LastEditTime: 2024-08-12 17:43:09
  * @FilePath: \my-app\src\components\Navbar.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -13,14 +13,15 @@ import { faBed, faCar, faPlane, faTaxi, faToriiGate } from '@fortawesome/free-so
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
-import { logOut } from '../redux/userSlice'
+import { toggleTheme  } from '../redux/userSlice'
 const Navbar = () => {
     const [activeItem, setActiveItem] = useState('住宿')
 
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
-    const { login } = useSelector((state) => state.user)
+    // 拿到全局initialState數據
+    const { login, theme } = useSelector((state) => state.user)
 
 
     const handleClickActive = (item) => {
@@ -44,10 +45,8 @@ const Navbar = () => {
     }
 
     // 切換主題白天/夜晚狀態
-    const [theme, setTheme] = useState('light')
-
-    const toggleTheme = () => {
-        setTheme(prev => prev === 'light' ? 'dark' : 'light')
+    const toggleThemeHandler = () => {
+        dispatch(toggleTheme()) 
     }
 
     // (夜晚主題)添加類dark-theme
@@ -61,7 +60,7 @@ const Navbar = () => {
         <div className='navbar'>
             <div className="navbarContainer">
                 <div className="lineOne">
-                    <button className="navButton" onClick={toggleTheme}>
+                    <button className="navButton" onClick={toggleThemeHandler}>
                         {theme === 'light' ? '夜晚模式' : '白天模式'}
                     </button>
                     <div className="left">
