@@ -1,7 +1,43 @@
 * {
-    font-family: "Open Sans", sans-serif;
-    margin: 0;
+  font-family: 'Open Sans', sans-serif;
+  margin: 0;
 }
-:root{
-    --primary-color: rgb(114, 64, 253);
+
+//主題
+$themes: (
+  light: (
+    primary-color: rgb(114, 64, 253),
+    background-color: white,
+    text-color: black,
+  ),
+  dark: (
+    primary-color: rgb(255, 153, 0),
+    background-color: black,
+    text-color: white,
+  ),
+);
+
+// 主題函數
+@mixin apply-theme($var) {
+  --primary-color: #{map-get($var, primary-color)};
+  --background-color: #{map-get($var, background-color)};
+  --text-color: #{map-get($var, text-color)};
+}
+
+// 預設
+:root {
+  @include apply-theme(map-get($themes, light));
+}
+
+.dark-theme {
+  @include apply-theme(map-get($themes, dark));
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+h1 {
+  color: var(--primary-color);
 }

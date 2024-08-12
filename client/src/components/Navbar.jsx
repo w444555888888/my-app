@@ -2,11 +2,11 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-17 20:28:18
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-08-05 11:59:03
+ * @LastEditTime: 2024-08-12 16:03:10
  * @FilePath: \my-app\src\components\Navbar.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import "./navbar.scss"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBed, faCar, faPlane, faTaxi, faToriiGate } from '@fortawesome/free-solid-svg-icons'
@@ -43,12 +43,27 @@ const Navbar = () => {
         navigate('/personal')
     }
 
+    // 切換主題白天/夜晚狀態
+    const [theme, setTheme] = useState('light')
+
+    const toggleTheme = () => {
+        setTheme(prev => prev === 'light' ? 'dark' : 'light')
+    }
+
+    // (夜晚主題)添加類dark-theme
+    useEffect(() => {
+        document.documentElement.className = theme === 'dark' ? 'dark-theme' : ''
+    }, [theme])
+
 
 
     return (
         <div className='navbar'>
             <div className="navbarContainer">
                 <div className="lineOne">
+                    <button className="navButton" onClick={toggleTheme}>
+                        {theme === 'light' ? '夜晚模式' : '白天模式'}
+                    </button>
                     <div className="left">
                         <span className="logo" onClick={handleClickToHome}>MIKE.BOOKING</span>
                     </div>
@@ -60,7 +75,7 @@ const Navbar = () => {
                         ) : (<button className="navButton"
                             onClick={handleClickToLogIn}>登入</button>
                         )}
- 
+
                     </div>
                 </div>
                 <div className="lineTwo">
