@@ -19,8 +19,9 @@ export const axiosHotels = createAsyncThunk('axiosHotels', async () => {
 
 
 /**
- * 全部飯店:Hotels
- * 主題:theme
+ * 登入狀態 : login
+ * 全部飯店 : Hotels
+ * 主題 : theme
 */
 const userSlice = createSlice({
   name: 'user',
@@ -39,8 +40,8 @@ const userSlice = createSlice({
       state.login = false
       localStorage.removeItem('username')
     },
-    toggleTheme: (state) => { 
-     state.theme = state.theme === 'light' ? 'dark' : 'light'
+    toggleTheme: (state) => {
+      state.theme = state.theme === 'light' ? 'dark' : 'light'
     }
   },
   extraReducers: (builder) => {

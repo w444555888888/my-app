@@ -87,7 +87,7 @@
                 border: none;
                 padding: 8px 15px;
                 border-radius: 2px;
-                color: rgb(114, 64, 253);
+                color: var(--primary-color);
                 background-color: white;
                 cursor: pointer;
                 &:hover {
@@ -95,7 +95,7 @@
                 }
             }
             .buttonActive {
-                border: 1px rgb(114, 64, 253) solid;
+                border: 2px var(--primary-color) solid;
             }
         }
     }
