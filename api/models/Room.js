@@ -1,28 +1,34 @@
-import mongoose from 'mongoose';
+/*
+ * @Author: w444555888 w444555888@yahoo.com.tw
+ * @Date: 2024-07-25 13:15:20
+ * @LastEditors: w444555888 w444555888@yahoo.com.tw
+ * @LastEditTime: 2024-08-14 14:42:36
+ * @FilePath: \my-app\api\models\Room.js
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
+import mongoose from 'mongoose'
 const RoomSchema = new mongoose.Schema({
-    title:{
-        type:String,
-        required:true,
+    title: {
+        type: String,
+        required: true,
     },
-    desc:{
-        type:String,
-        required:true,
+    desc: {
+        type: String,
+        required: true,
     },
-    price:{
-        type:Number,
-        required:true,
+    price: {
+        type: Number,
+        required: true,
     },
-    maxPeople:{
-        type:Number,
-        required:true,
+    maxPeople: {
+        type: Number,
+        required: true,
     },
-    roomNumbers:[{
-       number:Number, unavailableDates:[{type:Date}]
-    }],
-    
-},{timestamps:true})
-export default mongoose.model("Room",RoomSchema)
+    roomType: {
+        type: Number,
+        required: true,
+    }
 
-// [ 到時候要紀錄的訂房時間就會以時間戳章的方式記在roomNumber這邊
-//     {number:1022, unavilbaleDates:[01.02.2022,02.02.2023]}
-// ]
+}, { timestamps: true })
+export default mongoose.model("Room", RoomSchema)
+

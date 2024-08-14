@@ -7,22 +7,32 @@ import { gsap } from "gsap"
 import "./hotel.scss"
 import { useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchHotelToDetail } from '../redux/userSlice'
+import axios from 'axios'
 
 
 const Hotel = () => {
   // modal
   const [openSlider, setOpenSlider] = useState(false)
   const [sliderIndex, setSiderIndex] = useState(0)
+  const [rooms, setRooms] = useState([])
   const comments = useRef(null)
 
   // 路由傳遞資料
   const location = useLocation()
-
+  
 
   useEffect(() => {
+    const axiosRooms = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/v1/rooms/findHotel/${location.state.hotel._id}`)
+        setRooms(response.data)
+      } catch (error) {
+        console.error('Error fetching hotels:', error)
+      }
+    }
 
-  })
+    axiosRooms()
+  },[location])
 
 
   const handleHover = () => {
@@ -52,7 +62,7 @@ const Hotel = () => {
   }
 
   const slideDirection = (direction) => {
-    let newSliderIndex;
+    let newSliderIndex
     let lastPicutre = location.state.hotel.photos.length - 1
     if (direction === "left") {
       sliderIndex === 0 ? newSliderIndex = lastPicutre : newSliderIndex = sliderIndex - 1

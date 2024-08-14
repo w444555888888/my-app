@@ -45,9 +45,6 @@ const HotelsList = () => {
         const axiosHotels = async () => {
             try {
                 const response = await axios.get(`http://localhost:5000/api/v1/hotels${paramsName ? `?name=${paramsName}` : ''}`)
-                console.log('====================================')
-                console.log(response, 'response')
-                console.log('====================================')
                 setHotels(response.data)
             } catch (error) {
                 console.error('Error fetching hotels:', error)
