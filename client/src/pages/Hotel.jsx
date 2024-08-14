@@ -157,22 +157,33 @@ const Hotel = () => {
                   <tr>
                     <th>客房類型</th>
                     <th>住客人數</th>
-                    <th>房價</th>
+                    <th>1晚房價</th>
                     <th>訂購須知</th>
+                    <th>現在就預定</th>
                   </tr>
                 </thead>
                 <tbody>
                   {rooms.map((e) => (
                     <tr key={e._id}>
-                      <td>{e.title} <br /> {e.desc}</td>
+                      <td><span>{e.title}</span> <br /> {e.desc}</td>
                       <td>
                         {Array.from({ length: e.maxPeople }).map((_, index) => (
                           <FontAwesomeIcon key={index} icon={faUserLarge} />
                         ))}
                       </td>
 
-                      <td>{e.price}</td>
-                      <td>{e.desc}</td>
+                      <td className='twd'>$TWD {e.price}</td>
+                      <td><ul>
+                        <li>
+                          不可退款
+                        </li>
+                        <li>
+                          透過 Booking.com 安全地在線上付款
+                        </li>
+                      </ul></td>
+                      <td>
+                        <button>現在就預定</button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
