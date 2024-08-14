@@ -52,7 +52,7 @@
       font-size: 20px;
     }
     .recommend {
-      vertical-align: bottom; //以文字向下對齊         
+      vertical-align: bottom; //以文字向下對齊
       background-color: #d7d7d7;
       font-size: 12px;
       border-radius: 15px;
@@ -68,14 +68,14 @@
       }
     }
     .address {
-      font-size: 16px
+      font-size: 16px;
     }
   }
 
   .titleRight {
     display: flex;
     flex-direction: column; //彈性布局改方向
-    align-items: flex-end; 
+    align-items: flex-end;
     button {
       border: none;
       background-color: var(--primary-color);
@@ -123,16 +123,62 @@
   }
 }
 
+.roomDesText {
+  width: 100%;
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+    margin: 30px 0;
+    text-align: left;
+    border-collapse: collapse;
+    thead {
+      tr {
+        th {
+          display: table-cell;
+          padding: 5px 15px;
+          background-color: rgb(120, 120, 120);
+          border-top: 3px solid rgba(169, 169, 169, 0.5); 
+          border-right: 3px solid rgba(169, 169, 169, 0.5); 
+          border-bottom: none; 
+          border-left: 3px solid rgba(169, 169, 169, 0.5); 
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        &:hover {
+          background-color: #f1f1f1;
+        }
+
+        td {
+          padding: 10px 15px;
+          border-top: 3px solid rgba(169, 169, 169, 0.5); 
+          border-right: 3px solid rgba(169, 169, 169, 0.5); 
+          border-bottom: 3px solid rgba(169, 169, 169, 0.5); 
+          border-left: none; 
+        }
+
+        svg {
+          color: var(--primary-color);
+        }
+      }
+    }
+  }
+}
+
 .popupcomment {
   position: absolute; //觸碰區
   top: 0px;
   left: 0px;
-  z-index: 2;  //要高於圖片1層
+  z-index: 2; //要高於圖片1層
   height: 300px;
   width: 300px;
   padding: 10px;
-  .commentInfo {  //這是圖片提示評論數
-    display: none; 
+  .commentInfo {
+    //這是圖片提示評論數
+    display: none;
     opacity: 0;
     height: 60px;
     width: 250px;
@@ -161,7 +207,7 @@
 .hotelImgWrapper {
   position: relative;
   .hotelImg {
-    overflow-x: auto; 
+    overflow-x: auto;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 3px;

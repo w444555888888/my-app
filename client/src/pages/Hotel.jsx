@@ -1,4 +1,4 @@
-import { faLocationDot, faPeopleGroup, faSmokingBan, faWifi, faXmark, faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
+import { faLocationDot, faPeopleGroup, faSmokingBan, faWifi, faXmark, faAngleLeft, faAngleRight, faUserLarge } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useRef, useState, useEffect } from 'react'
 import Footer from '../components/Footer'
@@ -19,20 +19,23 @@ const Hotel = () => {
 
   // 路由傳遞資料
   const location = useLocation()
-  
+
 
   useEffect(() => {
     const axiosRooms = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/api/v1/rooms/findHotel/${location.state.hotel._id}`)
         setRooms(response.data)
+        console.log('====================================')
+        console.log(response.data, 'rooms')
+        console.log('====================================')
       } catch (error) {
         console.error('Error fetching hotels:', error)
       }
     }
 
     axiosRooms()
-  },[location])
+  }, [location])
 
 
   const handleHover = () => {
@@ -133,7 +136,6 @@ const Hotel = () => {
               <br />
               {location.state.hotel.desc}
               <h1>熱門設施</h1>
-              <hr />
               <p className='textIcon'><FontAwesomeIcon icon={faWifi} className="wifi" />
                 免費無線網路 <FontAwesomeIcon icon={faSmokingBan} />禁菸客房</p>
             </div>
@@ -145,6 +147,36 @@ const Hotel = () => {
                 深受獨行旅客歡迎</p>
               <h2>TWD {location.state.hotel.cheapestPrice}</h2>
               <button>現在就預訂</button>
+            </div>
+          </div>
+          <hr />
+          <div className="roomDes">
+            <div className="roomDesText">
+              <table>
+                <thead>
+                  <tr>
+                    <th>客房類型</th>
+                    <th>住客人數</th>
+                    <th>房價</th>
+                    <th>訂購須知</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rooms.map((e) => (
+                    <tr key={e._id}>
+                      <td>{e.title} <br /> {e.desc}</td>
+                      <td>
+                        {Array.from({ length: e.maxPeople }).map((_, index) => (
+                          <FontAwesomeIcon key={index} icon={faUserLarge} />
+                        ))}
+                      </td>
+
+                      <td>{e.price}</td>
+                      <td>{e.desc}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
