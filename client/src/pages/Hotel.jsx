@@ -1,4 +1,5 @@
 import { faLocationDot, faPeopleGroup, faSmokingBan, faWifi, faXmark, faAngleLeft, faAngleRight, faUserLarge } from '@fortawesome/free-solid-svg-icons'
+import { IoBed } from "react-icons/io5";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useRef, useState, useEffect } from 'react'
 import Footer from '../components/Footer'
@@ -24,13 +25,10 @@ const Hotel = () => {
   useEffect(() => {
     const axiosRooms = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/v1/rooms/findHotel/${location.state.hotel._id}`)
-        setRooms(response.data)
-        console.log('====================================')
-        console.log(response.data, 'rooms')
-        console.log('====================================')
+        const response = await axios.get(`http://localhost:5000/api/v1/rooms/findHotel/${location.state.hotel._id}`);
+        setRooms(response.data);
       } catch (error) {
-        console.error('Error fetching hotels:', error)
+        console.error('Error fetching hotels:', error);
       }
     }
 
@@ -165,7 +163,7 @@ const Hotel = () => {
                 <tbody>
                   {rooms.map((e) => (
                     <tr key={e._id}>
-                      <td><span>{e.title}</span> <br /> {e.desc}</td>
+                      <td><span>{e.title}</span> <IoBed /> <br /> {e.desc}</td>
                       <td>
                         {Array.from({ length: e.maxPeople }).map((_, index) => (
                           <FontAwesomeIcon key={index} icon={faUserLarge} />
