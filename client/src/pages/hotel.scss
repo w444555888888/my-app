@@ -202,6 +202,17 @@
                 font-weight: bolder;
               }
 
+              .breakFast {
+                margin-top: 8px;
+                .breakfast-icon {
+                  vertical-align: middle; //對齊行內元素
+                }
+              }
+
+              li {
+                margin-top: 7px;
+              }
+
               button {
                 background-color: var(--primary-color);
                 padding: 8px 12px;

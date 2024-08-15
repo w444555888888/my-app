@@ -1,5 +1,6 @@
 import { faLocationDot, faPeopleGroup, faSmokingBan, faWifi, faXmark, faAngleLeft, faAngleRight, faUserLarge } from '@fortawesome/free-solid-svg-icons'
 import { IoBed } from "react-icons/io5"
+import { MdFreeBreakfast } from "react-icons/md";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useRef, useState, useEffect } from 'react'
 import Footer from '../components/Footer'
@@ -178,6 +179,9 @@ const Hotel = () => {
                         <li>
                           透過 Booking.com 安全地在線上付款
                         </li>
+                        <div className='breakFast'>
+                          {e.breakFast === true ? <li> <MdFreeBreakfast   className="breakfast-icon"/>含早餐－評價超棒</li> : ''}
+                        </div>
                       </ul></td>
                       <td>
                         <button>現在就預定</button>

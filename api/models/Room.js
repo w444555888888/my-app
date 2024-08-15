@@ -31,6 +31,10 @@ const RoomSchema = new mongoose.Schema({
     roomType: {
         type: Number,
         required: true,
+    },
+    breakFast: {
+        type: Boolean,
+        required: true,
     }
 
 }, { timestamps: true })
