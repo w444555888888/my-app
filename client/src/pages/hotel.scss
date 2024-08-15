@@ -135,6 +135,10 @@
           text-align: left;
           border-collapse: collapse;
           thead {
+            // sticky
+            position: sticky;
+            top: 0;
+            z-index: 10;
             tr {
               th {
                 padding: 10px 15px;
@@ -144,11 +148,6 @@
                 border-right: 3px solid rgba(169, 169, 169, 0.5);
                 border-bottom: none;
                 border-left: 3px solid rgba(169, 169, 169, 0.5);
-
-                position: sticky; 
-                top: 0; 
-                z-index: 10;
-              
               }
             }
           }
