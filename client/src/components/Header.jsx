@@ -22,8 +22,7 @@ const Header = () => {
     ])
     const [conditions, setConditions] = useState(
         {
-            adult: 1, //初始人數,房間數為一
-            children: 0, //可以不一定要有小孩
+            adult: 1,  //初始人數,房間數為一
             room: 1,
         }
     )
@@ -79,7 +78,7 @@ const Header = () => {
                     </div>
                     <div className="SearchBarItem">
                         <FontAwesomeIcon icon={faPeopleGroup} onClick={() => setOpenConditions(!openConditions)} />
-                        <span className="SearchText" onClick={() => setOpenConditions(!openConditions)}  >{conditions.adult}位成人 · {conditions.children} 位小孩 · {conditions.room} 間房</span>
+                        <span className="SearchText" onClick={() => setOpenConditions(!openConditions)}  >{conditions.adult}位成人 · {conditions.room} 間房</span>
                         {openConditions &&
                             <div className="ConditionsContainer">
                                 <div className="condition">
@@ -95,22 +94,7 @@ const Header = () => {
                                         </button>
                                     </div>
                                 </div>
-                                <div className="condition">
-                                    <span>小孩
-                                        <p>0-17 歲</p>
-                                    </span>
 
-                                    <div className="conditionCounter">
-                                        <button className="conditionCounterButton" disabled={conditions.children <= 0}
-                                            onClick={() => handleCounter("children", "decrease")} >
-                                            -
-                                        </button>
-                                        <span className="number">{conditions.children}</span>
-                                        <button className="conditionCounterButton" onClick={() => handleCounter("children", "increase")}>
-                                            +
-                                        </button>
-                                    </div>
-                                </div>
 
                                 <div className="condition">
                                     房間

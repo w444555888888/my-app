@@ -36,7 +36,7 @@ const Hotel = () => {
     axiosRooms()
   }, [location])
 
-
+  
   const handleHover = () => {
     gsap.to(comments.current, {
       css: {

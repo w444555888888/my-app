@@ -5,6 +5,7 @@ import "./hotelsList.scss"
 import { DateRange } from 'react-date-range'
 import { format } from 'date-fns'
 import { useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 const HotelsList = () => {
@@ -30,25 +31,42 @@ const HotelsList = () => {
     // 人數/房間數
     const [conditions, setConditions] = useState(locationConditions || {
         adult: 1,
-        children: 0,
         room: 1,
     })
 
     // 飯店列表數據
     const [hotels, setHotels] = useState([])
 
+    const [minPrice, setMinPrice] = useState('')
+    const [maxPrice, setMaxPrice] = useState('')
+
+
+    const navigate = useNavigate()
+    // 飯店name搜尋完，根據name搜尋範圍價格
+    const handleSearchHotelsPrice = () => {
+        const params = new URLSearchParams(location.search)
+        const paramsName = params.get('name')
+        navigate(`/hotelsList?name=${paramsName}&minPrice=${minPrice}&maxPrice=${maxPrice}`, {
+
+        })
+    }
+
     // 副作用監聽的路由網址，發送請求
     useEffect(() => {
         const params = new URLSearchParams(location.search)
         const paramsName = params.get('name')
+        const paramsMinPrice = params.get('minPrice')
+        const paramsMaxPrice = params.get('maxPrice')
 
         const axiosHotels = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/v1/hotels${paramsName ? `?name=${paramsName}` : ''}`)
+
+                 const queryString = `${paramsName ? `name=${paramsName}` : ''}${paramsMinPrice ? `&minPrice=${paramsMinPrice}` : ''}${paramsMaxPrice ? `&maxPrice=${paramsMaxPrice}` : ''}`
+
+                const response = await axios.get(`http://localhost:5000/api/v1/hotels?${queryString}`)
+                console.log(response.data,'responseresponseresponse');
+                
                 setHotels(response.data)
-                console.log('====================================');
-                console.log(response,'response');
-                console.log('====================================');
             } catch (error) {
                 console.error('Error fetching hotels:', error)
             }
@@ -56,6 +74,11 @@ const HotelsList = () => {
 
         axiosHotels()
     }, [location.search])
+
+
+
+
+
 
     return (
         <>
@@ -94,25 +117,35 @@ const HotelsList = () => {
                                     <span className="limitTitle">
                                         每晚最低價格
                                     </span>
-                                    <input type="text" className='searchInput' />
+                                    <input type="text" className='searchInput' 
+                                    value={minPrice}
+                                    onChange={(e)=>setMinPrice(e.target.value)}
+                                    required/>
+
+
+                                 
                                 </div>
                                 <div className="listItemLimitPrice">
                                     <span className="limitTitle">
                                         每晚最高價格
                                     </span>
-                                    <input type="text" className='searchInput' />
+                                    <input type="text" className='searchInput' 
+                                    value={maxPrice}
+                                    onChange={(e)=>setMaxPrice(e.target.value)}
+                                    required/>
+
                                 </div>
                                 <span className="limitTitle">
                                     人數/房間數
                                 </span>
                                 <div className="listItmConditions">
                                     <span className="SearchText" onClick={() => setOpenConditions(!openConditions)}  >
-                                        {conditions.adult}位成人 · {conditions.children} 位小孩 · {conditions.room} 間房
+                                        {conditions.adult}位成人 · {conditions.room} 間房
                                     </span>
                                 </div>
                             </div>
                             <div className="listItem">
-                                <button className='searchbtn'>搜尋</button>
+                                <button className='searchbtn' onClick={handleSearchHotelsPrice}>搜尋</button>
                             </div>
                         </div>
 

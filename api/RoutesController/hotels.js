@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-25 13:15:20
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-08-16 00:02:32
+ * @LastEditTime: 2024-08-18 21:13:43
  * @FilePath: \my-app\api\RoutesController\hotels.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -12,8 +12,11 @@ import { errorMessage } from "../errorMessage.js"
 
 // 獲取所有 || 搜尋飯店資料(價格抓取rooms最便宜的)
 export const getAllHotels = async (req, res, next) => {
-    const { name } = req.query
+    const { name, minPrice, maxPrice } = req.query
     let query = {}
+
+    const minPriceNumber = Number(minPrice)
+    const maxPriceNumber = Number(maxPrice)
 
     if (name) {
         query.name = new RegExp(name, 'i')
@@ -30,15 +33,28 @@ export const getAllHotels = async (req, res, next) => {
                 const cheapestRoom = await Room.find({ roomType: { $in: roomTypes } })
                     .sort({ price: 1 }) // 升序排序
                     .limit(1) // 找最便宜第一個
+                const filterRoom = await Room.find({ roomType: { $in: roomTypes } })
+                    .sort({ price: 1 }) // 升序排序
 
                 // 返回帶有最便宜的價格
                 return {
                     ...e._doc, //._doc = Mongoose 模型中的原始对象
-                    cheapestPrice: cheapestRoom.length > 0 ? cheapestRoom[0].price : null, // 設置最低價
+                    filterRoom,
+                    cheapestPrice: cheapestRoom.length > 0 ? cheapestRoom[0].price : null, // 設置最低房間價格
                 }
             })
         )
-        res.status(200).json(updatedHotels)
+
+
+        // 如果有最低最高價格區間，!isNaN判斷是否為數字
+        const filterPriceHotels = (!isNaN(minPriceNumber) && !isNaN(maxPriceNumber))
+            ? updatedHotels.filter(hotel =>
+                hotel.cheapestPrice >= minPriceNumber && hotel.cheapestPrice <= maxPriceNumber
+            )
+            : updatedHotels
+
+
+        res.status(200).json(filterPriceHotels)
     } catch (err) {
         next(errorMessage(500, "獲取資料失敗"))
     }
