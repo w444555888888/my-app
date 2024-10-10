@@ -8,6 +8,7 @@
  */
 import React, { useState } from 'react'
 import axios from 'axios'
+import "./resetPassword.scss"
 import { useParams } from 'react-router-dom'
 
 const ResetPassword = () => {
@@ -28,8 +29,9 @@ const ResetPassword = () => {
   }
 
   return (
-    <div>
-      <h2>重置密碼</h2>
+    <div className='resetWrapper'>
+      <div className='resetContainer'>
+      <h2 className='resetTitle'>重置密碼</h2>
       <form onSubmit={handlePasswordReset}>
         <div>
           <label htmlFor="password">新密碼：</label>
@@ -39,11 +41,14 @@ const ResetPassword = () => {
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             required
+            className='navButton'
           />
         </div>
         <button type="submit">提交新密碼</button>
       </form>
       {message && <p>{message}</p>}
+      </div>
+      
     </div>
   )
 }
