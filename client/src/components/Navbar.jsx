@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-17 20:28:18
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-08-12 17:43:09
+ * @LastEditTime: 2024-10-10 10:42:16
  * @FilePath: \my-app\src\components\Navbar.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -13,7 +13,7 @@ import { faBed, faCar, faPlane, faTaxi, faToriiGate } from '@fortawesome/free-so
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
-import { toggleTheme  } from '../redux/userSlice'
+import { toggleTheme } from '../redux/userSlice'
 const Navbar = () => {
     const [activeItem, setActiveItem] = useState('住宿')
 
@@ -46,7 +46,7 @@ const Navbar = () => {
 
     // 切換主題白天/夜晚狀態
     const toggleThemeHandler = () => {
-        dispatch(toggleTheme()) 
+        dispatch(toggleTheme())
     }
 
     // (夜晚主題)添加類dark-theme
@@ -67,13 +67,9 @@ const Navbar = () => {
                         <span className="logo" onClick={handleClickToHome}>MIKE.BOOKING</span>
                     </div>
                     <div className="right">
-                        <button className="navButton" onClick={handleClickToSignUp}>註冊</button>
-
                         {login ? (
                             <button className="navButton" onClick={handleClickToPersonal}>我的帳戶</button>
-                        ) : (<button className="navButton"
-                            onClick={handleClickToLogIn}>登入</button>
-                        )}
+                        ) : <></>}
 
                     </div>
                 </div>

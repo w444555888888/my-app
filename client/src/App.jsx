@@ -18,6 +18,7 @@ import SignUp from "./pages/SignUp"
 import LogIn from "./pages/LogIn"
 import Forgot from "./pages/Forgot"
 import Personal from "./pages/Personal"
+import ResetPassword from "./pages/ResetPassword"
 import axios from 'axios'
 
 function App () {
@@ -43,6 +44,8 @@ function App () {
           <Route path="/logIn" element={<LogIn />} />
 
           <Route path="/forgot" element={<Forgot />} />
+
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
 
           <Route path="/hotelsList" element={<PrivateRoute login={login}><HotelsList /></PrivateRoute>} />
 

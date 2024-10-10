@@ -33,7 +33,7 @@ const userSlice = createSlice({
     error: null,
   },
   reducers: {
-    logIn: (state) => {
+    logIn: (state) => { 
       state.login = true
     },
     logOut: (state) => {

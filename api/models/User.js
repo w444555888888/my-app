@@ -26,5 +26,11 @@ const UserSchma = new mongoose.Schema({
         type: String,
         required: false,
     },
+    resetPasswordToken: {  //忘記密碼重置令牌
+        type: String,
+    },
+    resetPasswordExpires: { //忘記密碼重置令牌
+        type: Date,
+    },
 }, { timestamps: true })
 export default mongoose.model("User", UserSchma)

@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-18 20:24:17
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-08-06 15:33:37
+ * @LastEditTime: 2024-10-10 10:41:52
  * @FilePath: \my-app\client\src\pages\LogIn.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -37,6 +37,10 @@ const LogIn = () => {
 
     const handleClickToForgot = () => {
         navigate('/forgot')
+    }
+
+    const handleClickToSignUp = () => {
+        navigate('/signUp')
     }
 
     const handleLogIn = async (event) => {
@@ -95,8 +99,12 @@ const LogIn = () => {
                     </div>
                     <button type="submit">LogIn</button>
                 </form>
-                <button className="forgotBtn" onClick={handleClickToForgot}>forgot account <FontAwesomeIcon icon={faQuestion} /></button>
-                {message && <p>{message}</p>}
+                <div className='buttonGroup'>
+                    <button className="forgotBtn" onClick={handleClickToForgot}>forgot account <FontAwesomeIcon icon={faQuestion} /></button>
+                    <button className="signUpBtn" onClick={handleClickToSignUp}>Sign Up</button>
+                    {message && <p>{message}</p>}
+                </div>
+
             </div>
         </div>
     )

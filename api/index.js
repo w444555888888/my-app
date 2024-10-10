@@ -10,7 +10,7 @@ import cookieParser from "cookie-parser"
 import cors from "cors"
 
 const app = express()
-dotenv.config()
+dotenv.config() //加載環境變數
 
 const connect = async () => {
     try {
