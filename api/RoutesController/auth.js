@@ -94,7 +94,7 @@ export const forgotPassword = async (req, res, next) => {
       service: 'gmail', // gamil郵件服務
       auth: {
         /**
-         * .env 用dotenv.config() //加載環境變數去撈資料
+         * .env 用dotenv.config() //加載環境變數去撈發送郵件帳號
          * 預設發出去的郵件類型
          * 帳號 
          * 密碼: 二次驗證 > 用google應用專用密
@@ -139,7 +139,7 @@ export const resetPassword = async (req, res, next) => {
       resetPasswordToken: token,
       resetPasswordExpires: { $gt: Date.now() },
     })
-    
+
     if (!user) {
       return next(errorMessage(404, "重置令牌無效或已過期"))
     }
