@@ -6,13 +6,13 @@
  * @FilePath: \my-app\api\RoutesController\auth.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import bcrypt from "bcryptjs"
+import bcrypt from "bcryptjs" //密碼加密
 import { errorMessage } from "../errorMessage.js"
 import User from "../models/User.js"
 
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken" //身份驗證
 import nodemailer from 'nodemailer'  //發送電子郵件
-import crypto from 'crypto' //令牌
+import crypto from 'crypto' //隨機令牌
 
 
 export const register = async (req, res, next) => {
