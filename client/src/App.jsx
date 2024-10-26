@@ -59,7 +59,7 @@ function App () {
 }
 
 const PrivateRoute = ({ children, login }) => {
-  return login ? children : <Navigate to="/logIn" replace />
+  return login ? children : children
 }
 
 
