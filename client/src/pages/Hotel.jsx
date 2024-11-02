@@ -1,6 +1,6 @@
-import { faLocationDot, faPeopleGroup, faSmokingBan, faWifi, faXmark, faAngleLeft, faAngleRight, faUserLarge } from '@fortawesome/free-solid-svg-icons'
+import { faLocationDot, faPeopleGroup, faSmokingBan, faWifi, faXmark, faAngleLeft, faAngleRight, faUserLarge, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { IoBed } from "react-icons/io5"
-import { MdFreeBreakfast } from "react-icons/md";
+import { MdFreeBreakfast } from "react-icons/md"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useRef, useState, useEffect } from 'react'
 import Footer from '../components/Footer'
@@ -28,6 +28,9 @@ const Hotel = () => {
       try {
         const response = await axios.get(`http://localhost:5000/api/v1/rooms/findHotel/${location.state.hotel._id}`)
         setRooms(response.data)
+        console.log('====================================')
+        console.log(response.data, 'response.data')
+        console.log('====================================')
       } catch (error) {
         console.error('Error fetching hotels:', error)
       }
@@ -36,7 +39,7 @@ const Hotel = () => {
     axiosRooms()
   }, [location])
 
-  
+
   const handleHover = () => {
     gsap.to(comments.current, {
       css: {
@@ -164,7 +167,16 @@ const Hotel = () => {
                 <tbody>
                   {rooms.map((e) => (
                     <tr key={e._id}>
-                      <td><span>{e.title}</span> <IoBed /> <br /> {e.bedNumber}<br />{e.desc}</td>
+                      <td>
+                        <span>{e.title}</span>
+                        <IoBed /> <br />
+                        <span className='bedNumber'>{e.bedNumber}</span><br />
+                        {e.desc.map((item, index) => (
+                          <span className='desc' key={index}>
+                            <FontAwesomeIcon icon={faCheck} className="iconCheck" />
+                            {item}
+                          </span>
+                        ))}</td>
                       <td>
                         {Array.from({ length: e.maxPeople }).map((_, index) => (
                           <FontAwesomeIcon key={index} icon={faUserLarge} />
@@ -172,17 +184,28 @@ const Hotel = () => {
                       </td>
 
                       <td className='twd'>$TWD {e.price}</td>
-                      <td><ul>
-                        <li>
-                          不可退款
-                        </li>
-                        <li>
-                          透過 Booking.com 安全地在線上付款
-                        </li>
-                        <div className='breakFast'>
-                          {e.breakFast === true ? <li> <MdFreeBreakfast   className="breakfast-icon"/>含早餐－評價超棒</li> : ''}
-                        </div>
-                      </ul></td>
+                      <td>
+                        <ul>
+                          {e.bookingPolicies.map((policy, index) => (
+                            <li key={index}>
+                               <strong>{policy.type}</strong>:
+                              {index === 0 && (
+                                <strong>{policy.refundable === true ? '可退款' : '不可退款'}</strong> 
+                              )}<br />
+                             
+                              <span>{policy.description}</span>
+                            </li>
+                          ))}
+                          <div className='breakFast'>
+                            {e.breakFast === true ? (
+                              <li>
+                                <MdFreeBreakfast className="breakfast-icon" />含早餐
+                              </li>
+                            ) : null}
+                          </div>
+                        </ul>
+
+                      </td>
                       <td>
                         <button>現在就預定</button>
                       </td>

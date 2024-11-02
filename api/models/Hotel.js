@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-25 13:15:20
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-08-14 13:16:52
+ * @LastEditTime: 2024-11-02 13:02:48
  * @FilePath: \my-app\api\models\Hotel.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -26,10 +26,10 @@ const HotelSchema = new mongoose.Schema({
     },
     distance: {
         type: String,//這欄可寫可不寫是模擬到市中心的距離
-       
+
     },
     photos: {
-        type: [String],//因為會有很多住宿照片所以使用array
+        type: [String],//因為會有多張住宿照片所以使用array
         required: true,
     },
     title: {//飯店的標題
@@ -41,7 +41,7 @@ const HotelSchema = new mongoose.Schema({
         required: true,
     },
     rating: {
-        type: Number,//型態就跟上面不同為數字 並可以打分0~10
+        type: Number,//可以打分0~10
         min: 0,
         max: 10,
     },
@@ -57,7 +57,7 @@ const HotelSchema = new mongoose.Schema({
         type: Boolean, //最熱門住宿
         default: false,
     },
-    comments: { 
+    comments: {
         type: Number,
         default: 0,
     }

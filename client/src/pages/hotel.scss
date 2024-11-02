@@ -168,7 +168,7 @@
 
               td:nth-child(1) {
                 width: 40%;
-                line-height: 40px;
+                line-height: 30px;
 
                 svg {
                   width: 20px;
@@ -179,14 +179,31 @@
                 span {
                   font-weight: bold;
                   font-size: 16px;
-                  color: var(--primary-color);
+                }
+
+                .bedNumber {
+                  font-weight: bold;
+                  font-size: 14px;
+                }
+
+                .desc {
+                  font-weight: bold;
+                  font-size: 12px;
+                  margin-left: 5px;
+
+                  .iconCheck {
+                    color: rgb(0, 0, 0);
+                  }
                 }
               }
 
               td:nth-child(2),
-              td:nth-child(3),
-              td:nth-child(4) {
+              td:nth-child(3) {
                 width: 15%;
+              }
+
+              td:nth-child(4) {
+                width: 20%;
               }
 
               td:nth-child(5) {

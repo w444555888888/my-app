@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-18 20:24:17
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-08-12 15:15:30
+ * @LastEditTime: 2024-10-27 20:37:02
  * @FilePath: \my-app\src\App.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -25,7 +25,7 @@ function App () {
   // 跨域請求cookie
   axios.defaults.withCredentials = true
 
-  
+
   // 請求飯店資料
   const dispatch = useDispatch()
   const { login } = useSelector((state) => state.user)
@@ -59,7 +59,7 @@ function App () {
 }
 
 const PrivateRoute = ({ children, login }) => {
-  return login ? children : children
+  return login ? children : <Navigate to="/logIn" replace />
 }
 
 
