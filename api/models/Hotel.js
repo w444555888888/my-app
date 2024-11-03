@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-25 13:15:20
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-11-02 13:02:48
+ * @LastEditTime: 2024-11-03 13:21:05
  * @FilePath: \my-app\api\models\Hotel.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -49,10 +49,10 @@ const HotelSchema = new mongoose.Schema({
         type: [Number], //要串接到rooms房型資料
 
     },
-    cheapestPrice: {//住宿的價格 這邊為什麼不是用price
-        type: Number,//是因為通常到時候真正要顯示的是room不同房型的價格
+    cheapestPrice: {
+        type: Number,
         required: true,  //這邊搜尋後希望是通常都會展示最便宜的那個房型價格
-    },//所以會跟rooms的價格串接，而這邊就是那邊最便宜得那一個
+    },
     popularHotel: {
         type: Boolean, //最熱門住宿
         default: false,

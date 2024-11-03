@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-25 13:15:20
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-08-18 21:13:43
+ * @LastEditTime: 2024-11-03 13:19:18
  * @FilePath: \my-app\api\RoutesController\hotels.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -12,53 +12,72 @@ import { errorMessage } from "../errorMessage.js"
 
 // 獲取所有 || 搜尋飯店資料(價格抓取rooms最便宜的)
 export const getAllHotels = async (req, res, next) => {
-    const { name, minPrice, maxPrice } = req.query
+    const { name, minPrice, maxPrice, startDate, endDate } = req.query
     let query = {}
 
     const minPriceNumber = Number(minPrice)
     const maxPriceNumber = Number(maxPrice)
+    const startDateObj = new Date(startDate)
+    const endDateObj = new Date(endDate)
 
+
+    // 根據飯店名稱進行查詢
     if (name) {
-        query.name = new RegExp(name, 'i')
+        query.name = new RegExp(name, 'i') // 使用正則表達式進行模糊匹配
     }
 
     try {
-        // 所有符合查詢的飯店
+        // 查詢所有符合條件的飯店
         const hotels = await Hotel.find(query)
 
-        // 迴圈飯店，查找最低價的房間
+        // 更新飯店資訊
         const updatedHotels = await Promise.all(
-            hotels.map(async (e) => {
-                const roomTypes = e.rooms // e.rooms的數組
-                const cheapestRoom = await Room.find({ roomType: { $in: roomTypes } })
-                    .sort({ price: 1 }) // 升序排序
-                    .limit(1) // 找最便宜第一個
-                const filterRoom = await Room.find({ roomType: { $in: roomTypes } })
-                    .sort({ price: 1 }) // 升序排序
+            hotels.map(async (hotel) => {
+                const roomTypes = hotel.rooms // 獲取飯店的房型ID數組
 
-                // 返回帶有最便宜的價格
+                // 查找符合日期範圍的可用房型
+                const availableRooms = await Room.find({
+                    roomType: { $in: roomTypes },
+                    availability: {
+                        $elemMatch: {
+                            startDate: { $lte: startDateObj },
+                            endDate: { $gte: endDateObj },
+                            isAvailable: true
+                        }
+                    }
+                })
+
+                const cheapestRoom = availableRooms.reduce((cheapest, room) => {
+                    if (!cheapest || room.price < cheapest.price) {
+                        return room
+                        //當前遍歷的房型比目前記錄的最便宜房型更便宜，返回當前的 room，成為新的cheapest
+                    }
+                    return cheapest  //當前的房型價格不低於已經找到的最便宜房型的價格，保持原來的cheapest
+                }, null)
+
                 return {
-                    ...e._doc, //._doc = Mongoose 模型中的原始对象
-                    filterRoom,
-                    cheapestPrice: cheapestRoom.length > 0 ? cheapestRoom[0].price : null, // 設置最低房間價格
+                    ...hotel._doc,
+                    availableRooms, // 包含所有可用房型
+                    cheapestPrice: cheapestRoom ? cheapestRoom.price : null
+                    // 最便宜的房型價格渲染到hotel資料
                 }
             })
         )
 
-
-        // 如果有最低最高價格區間，!isNaN判斷是否為數字
+        // 篩選最低和最高價格 || 未設置最低和最高價格返回原資料
         const filterPriceHotels = (!isNaN(minPriceNumber) && !isNaN(maxPriceNumber))
             ? updatedHotels.filter(hotel =>
                 hotel.cheapestPrice >= minPriceNumber && hotel.cheapestPrice <= maxPriceNumber
             )
             : updatedHotels
 
-
+        // 返回最終的飯店資料
         res.status(200).json(filterPriceHotels)
     } catch (err) {
-        next(errorMessage(500, "獲取資料失敗"))
+        next(errorMessage(500, "獲取資料失敗")) // 錯誤處理
     }
 }
+
 
 export const createHotel = async (req, res, next) => { //新增next
     const newHotel = new Hotel(req.body)

@@ -7,19 +7,26 @@ import { DateRange } from 'react-date-range'
 import format from 'date-fns/format'
 import { useNavigate } from 'react-router-dom'
 import "./header.scss"
-import axios from 'axios'
 const Header = () => {
+    // 路由導航
+    const navigate = useNavigate()
+    // 預設日期為今天和一周後
+    const today = new Date();
+    const nextWeek = new Date();
+    nextWeek.setDate(today.getDate() + 7);
 
     const [openConditions, setOpenConditions] = useState(false)
     const [openCalendar, setOpenCalendar] = useState(false)
     const [destination, setDestination] = useState('')
-    const [dates, setDates] = useState([
-        {
-            startDate: new Date(),
-            endDate: new Date(),
-            key: 'selection',
-        }
-    ])
+    const [startDate, setStartDate] = useState(format(today, "yyyy-MM-dd"));
+    const [endDate, setEndDate] = useState(format(nextWeek, "yyyy-MM-dd"));
+
+    const [dates, setDates] = useState([{
+        startDate: startDate ? new Date(startDate) : new Date(),
+        endDate: endDate ? new Date(endDate) : new Date(),
+        key: 'selection'
+    }])
+
     const [conditions, setConditions] = useState(
         {
             adult: 1,  //初始人數,房間數為一
@@ -35,16 +42,27 @@ const Header = () => {
         })
     }
 
-    const navigate = useNavigate()
-    const handleSearchClick = async (event) => {
-        navigate(`/hotelsList?name=${destination}`, {
+
+
+    const handleDateChange = (item) => {
+        setDates([item.selection])
+        setStartDate(format(item.selection.startDate, "yyyy-MM-dd"))
+        setEndDate(format(item.selection.endDate, "yyyy-MM-dd"))
+    }
+
+    const handleSearchClick = async (e) => {
+        navigate(`/hotelsList?name=${destination}&startDate=${startDate}&endDate=${endDate}`, {
             state: {
                 destination,
                 dates,
                 conditions,
+                startDate,
+                endDate
             },
         })
     }
+
+
 
     return (
         <div className='header'>
@@ -69,7 +87,7 @@ const Header = () => {
                         </span>
                         {openCalendar && <DateRange
                             editableDateInputs={true}
-                            onChange={item => setDates([item.selection])}
+                            onChange={handleDateChange}
                             moveRangeOnFirstSelection={false}
                             className="calendar"
                             ranges={dates}

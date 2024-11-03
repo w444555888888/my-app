@@ -9,24 +9,40 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 const HotelsList = () => {
+    // 路由導航
+    const navigate = useNavigate()
+
+    // 預設日期為今天和一周後
+    const today = new Date()
+    const nextWeek = new Date()
+    nextWeek.setDate(today.getDate() + 7)
+
     // 路由傳遞數據
     const location = useLocation()
-    const { destination: locationdestination, dates: locationDates, conditions: locationConditions } = location.state || {}
+    const { destination: locationDestination, dates: locationDates, conditions: locationConditions, startDate: locationStartDate, endDate: locationEndDate } = location.state || {}
 
     const [openConditions, setOpenConditions] = useState(false)
     const [openCalendar, setOpenCalendar] = useState(false)
 
     // 搜尋欄
-    const [destinationState, setDestinationState] = useState(locationdestination || '')
+    const [destinationState, setDestinationState] = useState(locationDestination || '')
+
+    // 飯店列表數據
+    const [hotels, setHotels] = useState([])
+    const [minPrice, setMinPrice] = useState('')
+    const [maxPrice, setMaxPrice] = useState('')
+    const [startDate, setStartDate] = useState(locationStartDate || format(today, "yyyy-MM-dd"))
+    const [endDate, setEndDate] = useState(locationEndDate || format(nextWeek, "yyyy-MM-dd"))
 
     // 日期
     const [dates, setDates] = useState(locationDates || [
         {
-            startDate: new Date(),
-            endDate: new Date(),
+            startDate: startDate ? new Date(startDate) : new Date(),
+            endDate: endDate ? new Date(endDate) : new Date(),
             key: 'selection',
         }
     ])
+
 
     // 人數/房間數
     const [conditions, setConditions] = useState(locationConditions || {
@@ -34,21 +50,21 @@ const HotelsList = () => {
         room: 1,
     })
 
-    // 飯店列表數據
-    const [hotels, setHotels] = useState([])
+    const handleDateChange = (item) => {
+        setDates([item.selection])
+        setStartDate(format(item.selection.startDate, "yyyy-MM-dd"))
+        setEndDate(format(item.selection.endDate, "yyyy-MM-dd"))
+    }
 
-    const [minPrice, setMinPrice] = useState('')
-    const [maxPrice, setMaxPrice] = useState('')
 
 
-    const navigate = useNavigate()
-    // 飯店name搜尋完，根據name搜尋範圍價格
+
+
+    // 搜尋飯店條件
     const handleSearchHotelsPrice = () => {
         const params = new URLSearchParams(location.search)
         const paramsName = params.get('name')
-        navigate(`/hotelsList?name=${paramsName}&minPrice=${minPrice}&maxPrice=${maxPrice}`, {
-
-        })
+        navigate(`/hotelsList?name=${paramsName}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}`)
     }
 
     // 副作用監聽的路由網址，發送請求
@@ -57,15 +73,14 @@ const HotelsList = () => {
         const paramsName = params.get('name')
         const paramsMinPrice = params.get('minPrice')
         const paramsMaxPrice = params.get('maxPrice')
+        const paramsStartDate = params.get('startDate')
+        const paramsEndDate = params.get('endDate')
 
         const axiosHotels = async () => {
             try {
-
-                 const queryString = `${paramsName ? `name=${paramsName}` : ''}${paramsMinPrice ? `&minPrice=${paramsMinPrice}` : ''}${paramsMaxPrice ? `&maxPrice=${paramsMaxPrice}` : ''}`
-
+                const queryString = `${paramsName ? `name=${paramsName}` : ''}${paramsMinPrice ? `&minPrice=${paramsMinPrice}` : ''}${paramsMaxPrice ? `&maxPrice=${paramsMaxPrice}` : ''}${paramsStartDate ? `&startDate=${paramsStartDate}` : ''}${paramsEndDate ? `&endDate=${paramsEndDate}` : ''}`
                 const response = await axios.get(`http://localhost:5000/api/v1/hotels?${queryString}`)
-                console.log(response.data,'responseresponseresponse');
-                
+
                 setHotels(response.data)
             } catch (error) {
                 console.error('Error fetching hotels:', error)
@@ -103,7 +118,7 @@ const HotelsList = () => {
                                     </div>
                                     {openCalendar && <DateRange
                                         editableDateInputs={true}
-                                        onChange={item => setDates([item.selection])}
+                                        onChange={handleDateChange}
                                         moveRangeOnFirstSelection={false}
                                         ranges={dates}
                                         className="date"
@@ -117,22 +132,22 @@ const HotelsList = () => {
                                     <span className="limitTitle">
                                         每晚最低價格
                                     </span>
-                                    <input type="text" className='searchInput' 
-                                    value={minPrice}
-                                    onChange={(e)=>setMinPrice(e.target.value)}
-                                    required/>
+                                    <input type="text" className='searchInput'
+                                        value={minPrice}
+                                        onChange={(e) => setMinPrice(e.target.value)}
+                                        required />
 
 
-                                 
+
                                 </div>
                                 <div className="listItemLimitPrice">
                                     <span className="limitTitle">
                                         每晚最高價格
                                     </span>
-                                    <input type="text" className='searchInput' 
-                                    value={maxPrice}
-                                    onChange={(e)=>setMaxPrice(e.target.value)}
-                                    required/>
+                                    <input type="text" className='searchInput'
+                                        value={maxPrice}
+                                        onChange={(e) => setMaxPrice(e.target.value)}
+                                        required />
 
                                 </div>
                                 <span className="limitTitle">
@@ -156,7 +171,8 @@ const HotelsList = () => {
 
                             {/* 飯店列表數據 */}
                             {hotels.map(hotel => (
-                                <SearchItem key={hotel._id} hotel={hotel} />
+                                hotel.availableRooms.length > 0 ?
+                                    <SearchItem key={hotel._id} hotel={hotel} /> : <></>
                             ))}
                         </div>
                     </div>

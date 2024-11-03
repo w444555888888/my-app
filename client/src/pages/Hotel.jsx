@@ -28,9 +28,6 @@ const Hotel = () => {
       try {
         const response = await axios.get(`http://localhost:5000/api/v1/rooms/findHotel/${location.state.hotel._id}`)
         setRooms(response.data)
-        console.log('====================================')
-        console.log(response.data, 'response.data')
-        console.log('====================================')
       } catch (error) {
         console.error('Error fetching hotels:', error)
       }
@@ -166,9 +163,9 @@ const Hotel = () => {
                 </thead>
                 <tbody>
                   {rooms.map((e) => (
-                    <tr key={e._id}>
+                    <tr key={e._id}  className={e._id}>
                       <td>
-                        <span>{e.title}</span>
+                        <span className="roomTitle">{e.title}</span>
                         <IoBed /> <br />
                         <span className='bedNumber'>{e.bedNumber}</span><br />
                         {e.desc.map((item, index) => (
@@ -183,7 +180,7 @@ const Hotel = () => {
                         ))}
                       </td>
 
-                      <td className='twd'>$TWD {e.price}</td>
+                      <td className='twd'>$TWD {e.price}<br /> <span>包含稅費與其他費用</span></td>
                       <td>
                         <ul>
                           {e.bookingPolicies.map((policy, index) => (
