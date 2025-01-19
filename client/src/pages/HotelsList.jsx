@@ -62,37 +62,28 @@ const HotelsList = () => {
 
     // 搜尋飯店條件
     const handleSearchHotelsPrice = () => {
-        const params = new URLSearchParams(location.search)
-        const paramsName = params.get('name')
-        navigate(`/hotelsList?name=${paramsName}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}`)
+        navigate(`/hotelsList?name=${destinationState}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}`)
     }
 
     // 副作用監聽的路由網址，發送請求
     useEffect(() => {
-        const params = new URLSearchParams(location.search)
-        const paramsName = params.get('name')
-        const paramsMinPrice = params.get('minPrice')
-        const paramsMaxPrice = params.get('maxPrice')
-        const paramsStartDate = params.get('startDate')
-        const paramsEndDate = params.get('endDate')
-
         const axiosHotels = async () => {
             try {
-                const queryString = `${paramsName ? `name=${paramsName}` : ''}${paramsMinPrice ? `&minPrice=${paramsMinPrice}` : ''}${paramsMaxPrice ? `&maxPrice=${paramsMaxPrice}` : ''}${paramsStartDate ? `&startDate=${paramsStartDate}` : ''}${paramsEndDate ? `&endDate=${paramsEndDate}` : ''}`
-                const response = await axios.get(`http://localhost:5000/api/v1/hotels?${queryString}`)
-
-                setHotels(response.data)
+                const params = new URLSearchParams(location.search);
+                const queryString = Array.from(params.entries())
+                    .map(([key, value]) => `${key}=${value}`)
+                    .join('&');
+                    
+                const response = await axios.get(`http://localhost:5000/api/v1/hotels?${queryString}`);
+                setHotels(response.data);
             } catch (error) {
-                console.error('Error fetching hotels:', error)
+                console.error('Error fetching hotels:', error);
             }
-        }
-
-        axiosHotels()
-    }, [location.search])
-
-
-
-
+        };
+    
+        axiosHotels();
+    }, [location.search]);
+    
 
 
     return (
@@ -171,8 +162,9 @@ const HotelsList = () => {
 
                             {/* 飯店列表數據 */}
                             {hotels.map(hotel => (
-                                hotel.availableRooms.length > 0 ?
-                                    <SearchItem key={hotel._id} hotel={hotel} /> : <></>
+                                hotel.availableRooms.length > 0
+                                    ? <SearchItem key={hotel._id} hotel={hotel}/>
+                                    : null
                             ))}
                         </div>
                     </div>

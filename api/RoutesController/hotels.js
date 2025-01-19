@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-25 13:15:20
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-11-03 13:19:18
+ * @LastEditTime: 2025-01-18 16:03:28
  * @FilePath: \my-app\api\RoutesController\hotels.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -13,68 +13,89 @@ import { errorMessage } from "../errorMessage.js"
 // 獲取所有 || 搜尋飯店資料(價格抓取rooms最便宜的)
 export const getAllHotels = async (req, res, next) => {
     const { name, minPrice, maxPrice, startDate, endDate } = req.query
-    let query = {}
+
+    // 都沒有提供則回傳所有飯店
+    if (!name && !minPrice && !maxPrice && !startDate && !endDate) {
+        try {
+            const hotels = await Hotel.find()
+            res.status(200).json(hotels)
+        } catch (err) {
+            next(errorMessage(500, "獲取全部飯店資料失敗")) // 錯誤處理
+        }
+    }
+
 
     const minPriceNumber = Number(minPrice)
     const maxPriceNumber = Number(maxPrice)
     const startDateObj = new Date(startDate)
     const endDateObj = new Date(endDate)
 
+    // 驗證日期參數是否合法
+    if (isNaN(startDateObj) || isNaN(endDateObj)) {
+        return next(errorMessage(400, "請提供有效的開始和結束日期"))
+    }
 
-    // 根據飯店名稱進行查詢
+    let query = {} // 查詢條件
     if (name) {
-        query.name = new RegExp(name, 'i') // 使用正則表達式進行模糊匹配
+        query.name = new RegExp(name, 'i')// 根據飯店名稱進行查詢
     }
 
     try {
         // 查詢所有符合條件的飯店
         const hotels = await Hotel.find(query)
-
-        // 更新飯店資訊
-        const updatedHotels = await Promise.all(
-            hotels.map(async (hotel) => {
-                const roomTypes = hotel.rooms // 獲取飯店的房型ID數組
-
-                // 查找符合日期範圍的可用房型
-                const availableRooms = await Room.find({
-                    roomType: { $in: roomTypes },
-                    availability: {
-                        $elemMatch: {
+        // 收集所有房型ID
+        const roomIds = hotels.flatMap(hotel => hotel.rooms)
+        // 查找符合日期範圍的房型（合併查詢以提升性能）
+        const allAvailableRooms = await Room.find({
+            roomType: { $in: roomIds },
+            availability: {
+                $elemMatch: {
+                    $or: [
+                        {
                             startDate: { $lte: startDateObj },
                             endDate: { $gte: endDateObj },
                             isAvailable: true
+                        },
+                        {
+                            startDate: { $gte: startDateObj, $lte: endDateObj },
+                            isAvailable: true
                         }
-                    }
-                })
-
-                const cheapestRoom = availableRooms.reduce((cheapest, room) => {
-                    if (!cheapest || room.price < cheapest.price) {
-                        return room
-                        //當前遍歷的房型比目前記錄的最便宜房型更便宜，返回當前的 room，成為新的cheapest
-                    }
-                    return cheapest  //當前的房型價格不低於已經找到的最便宜房型的價格，保持原來的cheapest
-                }, null)
-
-                return {
-                    ...hotel._doc,
-                    availableRooms, // 包含所有可用房型
-                    cheapestPrice: cheapestRoom ? cheapestRoom.price : null
-                    // 最便宜的房型價格渲染到hotel資料
+                    ]
                 }
-            })
-        )
+            }
+        })
 
-        // 篩選最低和最高價格 || 未設置最低和最高價格返回原資料
+        // 將房型按飯店ID分組
+        const roomsByHotel = allAvailableRooms.reduce((acc, room) => {
+            acc[room.roomType] = acc[room.roomType] || []
+            acc[room.roomType].push(room)
+            return acc
+        }, {})
+
+        // 更新飯店資料
+        const updatedHotels = hotels.map(hotel => {
+            const availableRooms = hotel.rooms.flatMap(roomId => roomsByHotel[roomId] || [])
+            const cheapestRoom = availableRooms.reduce((cheapest, room) => {
+                return !cheapest || room.price < cheapest.price ? room : cheapest
+            }, null)
+
+            return {
+                ...hotel._doc,
+                availableRooms,
+                cheapestPrice: cheapestRoom ? cheapestRoom.price : null
+            }
+        })
+
+        // 根據價格篩選飯店
         const filterPriceHotels = (!isNaN(minPriceNumber) && !isNaN(maxPriceNumber))
             ? updatedHotels.filter(hotel =>
                 hotel.cheapestPrice >= minPriceNumber && hotel.cheapestPrice <= maxPriceNumber
             )
             : updatedHotels
 
-        // 返回最終的飯店資料
         res.status(200).json(filterPriceHotels)
     } catch (err) {
-        next(errorMessage(500, "獲取資料失敗")) // 錯誤處理
+        next(errorMessage(500, "查詢飯店失敗")) // 錯誤處理
     }
 }
 

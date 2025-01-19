@@ -21,20 +21,11 @@ const Hotel = () => {
 
   // 路由傳遞資料
   const location = useLocation()
-
-
   useEffect(() => {
-    const axiosRooms = async () => {
-      try {
-        const response = await axios.get(`http://localhost:5000/api/v1/rooms/findHotel/${location.state.hotel._id}`)
-        setRooms(response.data)
-      } catch (error) {
-        console.error('Error fetching hotels:', error)
-      }
+    if (location.state && location.state.hotel) {
+      setRooms(location.state.hotel.availableRooms)
     }
-
-    axiosRooms()
-  }, [location])
+  }, [location.state])
 
 
   const handleHover = () => {
@@ -163,7 +154,7 @@ const Hotel = () => {
                 </thead>
                 <tbody>
                   {rooms.map((e) => (
-                    <tr key={e._id}  className={e._id}>
+                    <tr key={e._id} className={e._id}>
                       <td>
                         <span className="roomTitle">{e.title}</span>
                         <IoBed /> <br />
@@ -185,11 +176,11 @@ const Hotel = () => {
                         <ul>
                           {e.bookingPolicies.map((policy, index) => (
                             <li key={index}>
-                               <strong>{policy.type}</strong>:
+                              <strong>{policy.type}</strong>:
                               {index === 0 && (
-                                <strong>{policy.refundable === true ? '可退款' : '不可退款'}</strong> 
+                                <strong>{policy.refundable === true ? '可退款' : '不可退款'}</strong>
                               )}<br />
-                             
+
                               <span>{policy.description}</span>
                             </li>
                           ))}

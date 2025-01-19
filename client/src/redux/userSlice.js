@@ -11,7 +11,7 @@ import axios from 'axios'
 
 
 
-export const axiosHotels = createAsyncThunk('axiosHotels', async () => {
+export const axiosHotels = createAsyncThunk('', async () => {
   const response = await axios.get('http://localhost:5000/api/v1/hotels')
   return response.data
 })
