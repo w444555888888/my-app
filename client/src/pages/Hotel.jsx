@@ -1,4 +1,4 @@
-import { faLocationDot, faPeopleGroup, faSmokingBan, faWifi, faXmark, faAngleLeft, faAngleRight, faUserLarge, faCheck } from '@fortawesome/free-solid-svg-icons'
+import { faLocationDot, faPeopleGroup, faSmokingBan, faWifi, faXmark, faAngleLeft, faAngleRight, faUserLarge, faCalendar, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { IoBed } from "react-icons/io5"
 import { MdFreeBreakfast } from "react-icons/md"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -8,6 +8,10 @@ import Navbar from '../components/Navbar'
 import { gsap } from "gsap"
 import "./hotel.scss"
 import { useLocation } from 'react-router-dom'
+import { DateRange } from 'react-date-range'
+import format from 'date-fns/format'
+import 'react-date-range/dist/styles.css' // main css file
+import 'react-date-range/dist/theme/default.css' // theme css file
 import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
 
@@ -18,6 +22,27 @@ const Hotel = () => {
   const [sliderIndex, setSiderIndex] = useState(0)
   const [rooms, setRooms] = useState([])
   const comments = useRef(null)
+  // 日期
+  // 預設日期為今天和一周後
+  const today = new Date()
+  const nextWeek = new Date()
+  nextWeek.setDate(today.getDate() + 7)
+  const [openCalendar, setOpenCalendar] = useState(false)
+  const [startDate, setStartDate] = useState(format(today, "yyyy-MM-dd"))
+  const [endDate, setEndDate] = useState(format(nextWeek, "yyyy-MM-dd"))
+  const [dates, setDates] = useState([
+    {
+      startDate: startDate ? new Date(startDate) : new Date(),
+      endDate: endDate ? new Date(endDate) : new Date(),
+      key: 'selection'
+    }
+  ])
+
+  const handleDateChange = (item) => {
+    setDates([item.selection])
+    setStartDate(format(item.selection.startDate, "yyyy-MM-dd"))
+    setEndDate(format(item.selection.endDate, "yyyy-MM-dd"))
+  }
 
   // 路由傳遞資料
   const location = useLocation()
@@ -125,9 +150,26 @@ const Hotel = () => {
               {location.state.hotel.title}
               <br />
               {location.state.hotel.desc}
-              <h1>熱門設施</h1>
+              <h2>熱門設施</h2>
               <p className='textIcon'><FontAwesomeIcon icon={faWifi} className="wifi" />
                 免費無線網路 <FontAwesomeIcon icon={faSmokingBan} />禁菸客房</p>
+              <h2>空房情況</h2>
+              <div className='SearchBarItem'>
+                <FontAwesomeIcon icon={faCalendar} onClick={() => setOpenCalendar(!openCalendar)} />
+                <span className="SearchText" onClick={() => setOpenCalendar(!openCalendar)} >
+                  {format(dates[0].startDate, "MM/dd/yyyy")} - {format(dates[0].endDate, "MM/dd/yyyy")}
+                </span>
+                {openCalendar && <DateRange
+                  editableDateInputs={true}
+                  onChange={handleDateChange}
+                  moveRangeOnFirstSelection={false}
+                  className="calendar"
+                  ranges={dates}
+                  minDate={new Date()}
+                />}</div>
+
+            </div>
+            <div>
             </div>
             <div className="hotelDesPrice">
               <h2>住宿特色</h2>

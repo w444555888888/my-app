@@ -99,6 +99,27 @@
       margin-top: 10px;
       .hotelDesText {
         line-height: 2.5; //行距
+
+        .SearchBarItem {
+          height: 50px;
+          width: 320px;
+          font-size: 16px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          color: black;
+          background-color: rgb(246, 246, 246);
+        
+          border-radius: 2px;
+          cursor: pointer;
+          .calendar {
+            position: absolute;
+            top: 56px;
+            border: 1px lightgray solid;
+            box-shadow: 0px 0px 15px lightgray;
+          }
+        }
       }
       .hotelDesPrice {
         height: min-content;
