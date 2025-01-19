@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-17 20:28:18
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2025-01-18 16:27:40
+ * @LastEditTime: 2025-01-19 22:03:52
  * @FilePath: \my-app\src\components\SearchItem.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -20,14 +20,15 @@ const SearchItem = ({ hotel }) => {
 
   //SearchItem的active狀態
   const [addactive, setAddActive] = useState(false)
-
-  const handleClickActive = () => {
-    setAddActive(!addactive)
-  }
+  const handleMouseEnter = () => { setAddActive(true) }
+  const handleMouseLeave = () => { setAddActive(false) }
 
 
   return (
-    <div className={`SearchItem ${addactive ? 'active' : ''}`} onClick={handleClickActive}>
+    <div className={`SearchItem ${addactive ? 'active' : ''}`}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}>
+
       <img className="itemImg" src={hotel.photos[0]} alt="" />
       <div className="itemInfo">
         <div className="infoTitle">
