@@ -53,19 +53,21 @@ export const getAllRooms = async (req, res, next) => {
 // 獲取特定id飯店的所有房型
 export const getHotelRooms = async (req, res, next) => {
   // 飯店id
-  const gethotel = req.params.hotelid
+  const gethotel = req.params.hotelid;
 
   try {
-    // 飯店id對應資料
-    const hoteldata = await Hotel.findById(gethotel)
+    // 確保 `Hotel` 存在
+    const hoteldata = await Hotel.findById(gethotel);
+    if (!hoteldata) {
+      return res.status(404).json({ message: "找不到該飯店" });
+    }
 
-    // 查詢 hoteldata.rooms(array) 匹配 roomType房型種類
-    const roomsList = await Room.find({
-      roomType: { $in: hoteldata.rooms }
-    })
+    // 直接查找 rooms，條件改為匹配 `hotelId`
+    const roomsList = await Room.find({ hotelId: gethotel });
 
-    res.status(200).json(roomsList)
+    res.status(200).json(roomsList);
   } catch (error) {
-    next(errorMessage(500, "找尋房型時發生錯誤，可能為 Room 資料庫問題", error))
+    next(errorMessage(500, "找尋房型時發生錯誤，可能為 Room 資料庫問題", error));
   }
-}
+};
+

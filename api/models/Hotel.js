@@ -45,10 +45,6 @@ const HotelSchema = new mongoose.Schema({
         min: 0,
         max: 10,
     },
-    rooms: {
-        type: [Number], //要串接到rooms房型資料
-
-    },
     cheapestPrice: {
         type: Number,
         required: true,  //這邊搜尋後希望是通常都會展示最便宜的那個房型價格

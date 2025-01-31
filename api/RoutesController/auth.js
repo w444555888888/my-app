@@ -15,6 +15,7 @@ import nodemailer from 'nodemailer'  //發送電子郵件
 import crypto from 'crypto' //隨機令牌
 
 
+
 export const register = async (req, res, next) => {
   const registerData = req.body
   try {
@@ -41,33 +42,59 @@ export const register = async (req, res, next) => {
   }
 }
 
-//account 可以輸入 信箱與使用者姓名
 export const login = async (req, res, next) => {
-  const loginData = req.body
+  const loginData = req.body;
+  console.log("收到的登入資料:", loginData);
+
   try {
-    const userData = await User.findOne({ username: loginData.account }) || await User.findOne({ email: loginData.account })
-    if (!userData) return (next(errorMessage(404, "沒有此使用者")))
+    // 嘗試用 `username` 或 `email` 查找用戶
+    const userData = 
+      await User.findOne({ username: loginData.account }) || 
+      await User.findOne({ email: loginData.account }); // 這裡 `email` 應該也要對應 `account`，不然會找不到
 
-    const isPasswordCorrect = await bcrypt.compare(loginData.password, userData.password)
-    if (!isPasswordCorrect) return (next(errorMessage(404, "輸入密碼錯誤")))
+    console.log("查找的使用者:", userData);
 
-    //process.env.JWT
-    const token = jwt.sign({ id: userData._id, isAdmin: userData.isAdmin }, process.env.JWT)
+    if (!userData) {
+      console.log("找不到該使用者");
+      return next(errorMessage(404, "沒有此使用者"));
+    }
 
-    //排除密碼 && isAdmin ，只返回其餘對象
-    const { password, isAdmin, ...userDetails } = userData._doc
+    // 驗證密碼
+    const isPasswordCorrect = await bcrypt.compare(loginData.password, userData.password);
+    console.log("密碼比對結果:", isPasswordCorrect);
+
+    if (!isPasswordCorrect) {
+      console.log("密碼錯誤");
+      return next(errorMessage(404, "輸入密碼錯誤"));
+    }
+
+    // 生成 JWT Token
+    if (!process.env.JWT) {
+      console.error("環境變數 JWT 未設定");
+      return next(errorMessage(500, "伺服器錯誤，JWT 未定義"));
+    }
+
+    const token = jwt.sign({ id: userData._id, isAdmin: userData.isAdmin }, process.env.JWT);
+    console.log("生成的 JWT:", token);
+
+    // 排除密碼和 isAdmin，回傳其餘用戶資訊
+    const { password, isAdmin, ...userDetails } = userData._doc;
+    console.log("回傳的使用者資訊:", userDetails);
+
     res
-      .cookie('JWT_token', token, {
+      .cookie("JWT_token", token, {
         httpOnly: true,
         secure: false,
-        path: '/',
+        path: "/",
       })
-      .status(200).json({ userDetails })
+      .status(200)
+      .json({ userDetails });
 
   } catch (error) {
-    next(errorMessage(500, "登入失敗", error))
+    console.error("登入錯誤:", error);
+    next(errorMessage(500, "登入失敗", error));
   }
-}
+};
 
 
 

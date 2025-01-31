@@ -28,12 +28,12 @@ const RoomSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    roomType: {
-        type: Number,
-        required: true,
-    },
     breakFast: {
         type: Boolean,
+        required: true,
+    },
+    hotelId: {  //對應hotels的id
+        type: String,
         required: true,
     },
     bookingPolicies: [
@@ -43,24 +43,7 @@ const RoomSchema = new mongoose.Schema({
             refundable: { type: Boolean, default: false }, // 是否可退款
             paymentMethod: { type: String, default: null } // 付款方式，如 "Booking.com"
         }
-    ],
-    availability: [ //訂房日期是否可以訂購
-        {
-            startDate: {
-                type: Date,
-                required: true
-            },
-            endDate: {
-                type: Date,
-                required: true
-            },
-            isAvailable: {
-                type: Boolean,
-                required: true,
-                default: true
-            }
-        }
-    ],
+    ]
 
 }, { timestamps: true })
 export default mongoose.model("Room", RoomSchema)

@@ -12,76 +12,42 @@ import { errorMessage } from "../errorMessage.js"
 
 // 獲取所有 || 搜尋飯店資料(價格抓取rooms最便宜的)
 export const getAllHotels = async (req, res, next) => {
-    const { name, minPrice, maxPrice, startDate, endDate } = req.query
+    const { name, minPrice, maxPrice } = req.query
 
-    // 都沒有提供則回傳所有飯店
-    if (!name && !minPrice && !maxPrice && !startDate && !endDate) {
-        try {
-            const hotels = await Hotel.find()
-            res.status(200).json(hotels)
-        } catch (err) {
-            next(errorMessage(500, "獲取全部飯店資料失敗")) // 錯誤處理
-        }
-    }
-
-
+    // 轉換為數字型態
     const minPriceNumber = Number(minPrice)
     const maxPriceNumber = Number(maxPrice)
-    const startDateObj = new Date(startDate)
-    const endDateObj = new Date(endDate)
-
-    // 驗證日期參數是否合法
-    if (isNaN(startDateObj) || isNaN(endDateObj)) {
-        return next(errorMessage(400, "請提供有效的開始和結束日期"))
-    }
 
     let query = {} // 查詢條件
     if (name) {
-        query.name = new RegExp(name, 'i')// 根據飯店名稱進行查詢
+        query.name = new RegExp(name, 'i') // 根據飯店名稱進行查詢
     }
 
     try {
         // 查詢所有符合條件的飯店
         const hotels = await Hotel.find(query)
-        // 收集所有房型ID
-        const roomIds = hotels.flatMap(hotel => hotel.rooms)
-        // 查找符合日期範圍的房型（合併查詢以提升性能）
-        const allAvailableRooms = await Room.find({
-            roomType: { $in: roomIds },
-            availability: {
-                $elemMatch: {
-                    $or: [
-                        {
-                            startDate: { $lte: startDateObj },
-                            endDate: { $gte: endDateObj },
-                            isAvailable: true
-                        },
-                        {
-                            startDate: { $gte: startDateObj, $lte: endDateObj },
-                            isAvailable: true
-                        }
-                    ]
-                }
-            }
-        })
 
-        // 將房型按飯店ID分組
-        const roomsByHotel = allAvailableRooms.reduce((acc, room) => {
-            acc[room.roomType] = acc[room.roomType] || []
-            acc[room.roomType].push(room)
+        // 查找所有符合飯店 ID 的房型
+        const hotelIds = hotels.map(hotel => hotel._id)
+        const allRooms = await Room.find({ hotelId: { $in: hotelIds } })
+
+        // 將房型按 `hotelId` 分組
+        const roomsByHotel = allRooms.reduce((acc, room) => {
+            acc[room.hotelId] = acc[room.hotelId] || []
+            acc[room.hotelId].push(room)
             return acc
         }, {})
 
-        // 更新飯店資料
+        // 更新飯店資料，計算最便宜房型
         const updatedHotels = hotels.map(hotel => {
-            const availableRooms = hotel.rooms.flatMap(roomId => roomsByHotel[roomId] || [])
-            const cheapestRoom = availableRooms.reduce((cheapest, room) => {
+            const hotelRooms = roomsByHotel[hotel._id] || []
+            const cheapestRoom = hotelRooms.reduce((cheapest, room) => {
                 return !cheapest || room.price < cheapest.price ? room : cheapest
             }, null)
 
             return {
                 ...hotel._doc,
-                availableRooms,
+                availableRooms: hotelRooms, // 該飯店所有房型
                 cheapestPrice: cheapestRoom ? cheapestRoom.price : null
             }
         })
@@ -98,6 +64,7 @@ export const getAllHotels = async (req, res, next) => {
         next(errorMessage(500, "查詢飯店失敗")) // 錯誤處理
     }
 }
+
 
 
 export const createHotel = async (req, res, next) => { //新增next
