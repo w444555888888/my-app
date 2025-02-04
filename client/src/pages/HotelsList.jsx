@@ -69,21 +69,20 @@ const HotelsList = () => {
     useEffect(() => {
         const axiosHotels = async () => {
             try {
-                const params = new URLSearchParams(location.search);
+                const params = new URLSearchParams(location.search)
                 const queryString = Array.from(params.entries())
                     .map(([key, value]) => `${key}=${value}`)
-                    .join('&');
-                    
-                const response = await axios.get(`http://localhost:5000/api/v1/hotels?${queryString}`);
-                setHotels(response.data);
+                    .join('&')
+
+                const response = await axios.get(`http://localhost:5000/api/v1/hotels?${queryString}`)
+                setHotels(response.data)
             } catch (error) {
-                console.error('Error fetching hotels:', error);
+                console.error('Error fetching hotels:', error)
             }
-        };
-    
-        axiosHotels();
-    }, [location.search]);
-    
+        }
+
+        axiosHotels()
+    }, [location.search])
 
 
     return (
@@ -162,8 +161,8 @@ const HotelsList = () => {
 
                             {/* 飯店列表數據 */}
                             {hotels.map(hotel => (
-                                hotel.availableRooms.length > 0
-                                    ? <SearchItem key={hotel._id} hotel={hotel}/>
+                                hotel ?
+                                    <SearchItem key={hotel._id} hotel={hotel} />
                                     : null
                             ))}
                         </div>
