@@ -2,12 +2,14 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-17 20:28:18
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2025-01-19 22:03:52
+ * @LastEditTime: 2025-02-09 19:05:58
  * @FilePath: \my-app\src\components\SearchItem.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { useState } from 'react'
 import "./searchItem.scss"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faThumbsUp } from '@fortawesome/free-solid-svg-icons'
 import { useNavigate } from 'react-router-dom'
 
 const SearchItem = ({ hotel }) => {
@@ -47,7 +49,9 @@ const SearchItem = ({ hotel }) => {
           <span className="far">{hotel.distance}</span>
           {hotel.popularHotel && (
             <>
-              <span className="prompt">接駁車接送</span><span className="prompt">附早餐</span>
+              <span className="popular-icon">
+                <FontAwesomeIcon icon={faThumbsUp} />
+              </span>
             </>)}
           <div className="infoDetail">
             <div className="detailLeft">

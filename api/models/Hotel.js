@@ -9,53 +9,85 @@
 import mongoose from 'mongoose'
 const HotelSchema = new mongoose.Schema({
     name: {
-        type: String,//住宿名稱
+        type: String, // 住宿名稱
         required: true,
     },
     type: {
-        type: String,//住宿型態，到時候會有飯店、公寓、民宿等等的
+        type: String, // 住宿型態，飯店、公寓、民宿等
         required: true,
     },
     city: {
-        type: String,//同於地址的城市
+        type: String, // 城市名稱
         required: true,
     },
     address: {
-        type: String,//在城市住址
+        type: String, // 住宿地址
         required: true,
     },
     distance: {
-        type: String,//這欄可寫可不寫是模擬到市中心的距離
-
+        type: String, // 到市中心或其他地標的距離 (可選)
     },
     photos: {
-        type: [String],//因為會有多張住宿照片所以使用array
+        type: [String], // 住宿照片列表
         required: true,
     },
-    title: {//飯店的標題
-        type: String,
+    title: {
+        type: String, // 飯店標題
         required: true,
     },
-    desc: {//飯店的詳細描述
-        type: String,
+    desc: {
+        type: String, // 飯店詳細描述
         required: true,
     },
     rating: {
-        type: Number,//可以打分0~10
+        type: Number, // 住宿評分，範圍0-10
         min: 0,
         max: 10,
     },
     cheapestPrice: {
-        type: Number,
-        required: true,  //這邊搜尋後希望是通常都會展示最便宜的那個房型價格
+        type: Number, // 最便宜房型價格
+        required: true,
     },
     popularHotel: {
-        type: Boolean, //最熱門住宿
+        type: Boolean, // 是否為熱門住宿
         default: false,
     },
     comments: {
-        type: Number,
+        type: Number, // 評論數量
         default: 0,
-    }
-})
+    },
+    facilities: {
+        wifi: { type: Boolean, default: false }, // 是否有wifi
+        parking: { type: Boolean, default: false }, // 是否有停車場
+        pool: { type: Boolean, default: false }, // 是否有游泳池
+        gym: { type: Boolean, default: false }, // 是否有健身房
+        spa: { type: Boolean, default: false }, // 是否有SPA
+        restaurant: { type: Boolean, default: false }, // 是否有餐廳
+        bar: { type: Boolean, default: false }, // 是否有酒吧
+    },
+    checkInTime: {
+        type: String, // 住宿登記時間
+        required: true,
+    },
+    checkOutTime: {
+        type: String, // 住宿退房時間
+        required: true,
+    },
+    coordinates: {
+        latitude: { type: Number, required: true }, // 緯度
+        longitude: { type: Number, required: true }, // 經度
+    },
+    email: {
+        type: String, // 聯絡郵箱
+        required: true,
+    },
+    nearbyAttractions: {
+        type: [String], // 附近景點列表
+        required: true,
+    },
+    phone: {
+        type: String, // 聯絡電話
+        required: true,
+    },
+});
 export default mongoose.model("Hotel", HotelSchema)

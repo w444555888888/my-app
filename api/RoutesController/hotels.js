@@ -2,57 +2,93 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-25 13:15:20
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2025-01-18 16:03:28
+ * @LastEditTime: 2025-02-09 22:53:02
  * @FilePath: \my-app\api\RoutesController\hotels.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import Hotel from "../models/Hotel.js"
 import Room from "../models/Room.js"
+import { addDays, format, isSameDay, parseISO } from 'date-fns'
 import { errorMessage } from "../errorMessage.js"
 
-// 獲取所有 || 搜尋飯店資料(價格抓取rooms最便宜的)
+// 獲取所有 || 飯店資料
 export const getAllHotels = async (req, res, next) => {
-    const { name, minPrice, maxPrice } = req.query
-
-    // 轉換為數字型態
+    const { name, minPrice, maxPrice, startDate, endDate } = req.query
     const minPriceNumber = Number(minPrice)
     const maxPriceNumber = Number(maxPrice)
 
-    let query = {} // 查詢條件
+    let query = {}
     if (name) {
-        query.name = new RegExp(name, 'i') // 根據飯店名稱進行查詢
+        query.name = new RegExp(name, 'i')
     }
 
     try {
-        // 查詢所有符合條件的飯店
         const hotels = await Hotel.find(query)
-
-        // 查找所有符合飯店 ID 的房型
         const hotelIds = hotels.map(hotel => hotel._id)
         const allRooms = await Room.find({ hotelId: { $in: hotelIds } })
 
-        // 將房型按 `hotelId` 分組
         const roomsByHotel = allRooms.reduce((acc, room) => {
             acc[room.hotelId] = acc[room.hotelId] || []
             acc[room.hotelId].push(room)
             return acc
         }, {})
 
-        // 更新飯店資料，計算最便宜房型
         const updatedHotels = hotels.map(hotel => {
             const hotelRooms = roomsByHotel[hotel._id] || []
-            const cheapestRoom = hotelRooms.reduce((cheapest, room) => {
-                return !cheapest || room.price < cheapest.price ? room : cheapest
-            }, null)
+            let cheapestPrice = Infinity
+            let totalHotelPrice = 0
+
+            hotelRooms.forEach(room => {
+                let roomTotalPrice = 0
+                let dayCount = 0
+
+                // 處理日期範圍
+                const start = parseISO(startDate)
+                const end = parseISO(endDate)
+                console.log(room.holidays, '2222')
+
+                // 逐日計算價格
+                for (let d = start; isSameDay(d, end) || d < end; d = addDays(d, 1)) {
+                    dayCount++
+                    const dayOfWeek = d.getDay()
+                    const dateString = format(d, 'yyyy-MM-dd')
+                    let dailyPrice = null
+
+
+                    // 檢查是否為假日價格
+                    room.holidays?.forEach(holiday => {
+                        if (holiday.date === dateString) {
+                            dailyPrice = holiday.price
+                        }
+                    })
+
+                    // 若非假日，則按照星期價格計算
+                    if (dailyPrice === null) {
+                        room.pricing?.forEach(priceOption => {
+                            if (priceOption.days_of_week?.includes(dayOfWeek)) {
+                                dailyPrice = priceOption.price
+                            }
+                        })
+                    }
+
+                    if (dailyPrice !== null) {
+                        roomTotalPrice += dailyPrice
+                    }
+                }
+
+                totalHotelPrice += roomTotalPrice
+                const averageRoomPrice = dayCount > 0 ? roomTotalPrice / dayCount : Infinity
+                cheapestPrice = Math.min(cheapestPrice, averageRoomPrice)
+            })
 
             return {
                 ...hotel._doc,
-                availableRooms: hotelRooms, // 該飯店所有房型
-                cheapestPrice: cheapestRoom ? cheapestRoom.price : null
+                availableRooms: hotelRooms,
+                totalPrice: totalHotelPrice,
+                cheapestPrice: cheapestPrice === Infinity ? null : cheapestPrice
             }
         })
 
-        // 根據價格篩選飯店
         const filterPriceHotels = (!isNaN(minPriceNumber) && !isNaN(maxPriceNumber))
             ? updatedHotels.filter(hotel =>
                 hotel.cheapestPrice >= minPriceNumber && hotel.cheapestPrice <= maxPriceNumber
@@ -61,9 +97,11 @@ export const getAllHotels = async (req, res, next) => {
 
         res.status(200).json(filterPriceHotels)
     } catch (err) {
-        next(errorMessage(500, "查詢飯店失敗")) // 錯誤處理
+        next(errorMessage(500, "查詢飯店失敗"))
     }
 }
+
+
 
 
 
