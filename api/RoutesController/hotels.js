@@ -48,17 +48,13 @@ export const getAllHotels = async (req, res, next) => {
                     const dateString = format(currentDate, 'yyyy-MM-dd')  // 格式化日期
                     let dailyPrice = null  // 該日的房價
 
-                    // 先檢查該日期是否為假日
+                    // 先檢查該日期是否為假日(指特定假日)
                     const holiday = room.holidays?.find(h => h.date == dateString)
                     if (holiday) {
                         dailyPrice = holiday.price  // 如果是假日，使用假日價格
-                        console.log(dailyPrice,'假日');
-                        
-                    }else{
-                        
                     }
 
-                    // 如果不是假日，則使用對應的星期價格
+                    // 如果不是假日(指特定假日)，則使用對應的星期價格
                     if (!dailyPrice) {
                         const priceOption = room.pricing?.find(p => p.days_of_week.includes(dayOfWeek))
                         if (priceOption) {
