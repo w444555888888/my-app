@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-25 13:15:20
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2025-02-10 00:06:33
+ * @LastEditTime: 2025-02-11 19:40:34
  * @FilePath: \my-app\api\RoutesController\hotels.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -19,91 +19,94 @@ export const getAllHotels = async (req, res, next) => {
 
     let query = {}
     if (name) {
-        query.name = new RegExp(name, 'i')
+        query.name = new RegExp(name, "i")
     }
 
     try {
+        // 查詢所有符合條件的酒店
         const hotels = await Hotel.find(query)
         const hotelIds = hotels.map(hotel => hotel._id)
+
+        // 查詢這些酒店對應的所有房型
         const allRooms = await Room.find({ hotelId: { $in: hotelIds } })
 
+        // 按 hotelId 分組房型
         const roomsByHotel = allRooms.reduce((acc, room) => {
             acc[room.hotelId] = acc[room.hotelId] || []
             acc[room.hotelId].push(room)
             return acc
         }, {})
 
+
+
+        // 處理每間飯店的價格計算
         const updatedHotels = hotels.map(hotel => {
-            const hotelRooms = roomsByHotel[hotel._id] || []
-            let cheapestPrice = Infinity  // 該 hotel 在符合條件房型中的最便宜價格總和
-            let totalHotelPrice = 0  // 酒店所有房型的總價
-
-            hotelRooms.forEach(room => {
-                let roomTotalPrice = 0  // 該房型在所有日期內的總價
-
-                // 只計算 `startDate` 到 `endDate` - 1 晚的價格
-                let currentDate = parseISO(startDate)  // 住宿的第一晚
+            const hotelRooms = roomsByHotel[String(hotel._id)] || []
+            console.log(`Hotel ${hotel.name} has ${hotelRooms.length} room(s)`) // 🔧 檢查房型數量
+        
+            let cheapestPrice = null // 🔧 確保 `cheapestPrice` 初始值正確
+            let totalHotelPrice = 0 
+        
+            const updatedRooms = hotelRooms.map(room => {
+                let roomTotalPrice = 0 
+        
+                let currentDate = parseISO(startDate) 
                 while (currentDate < parseISO(endDate)) {
-                    const dayOfWeek = currentDate.getDay()  // 當前日期的星期
-                    const dateString = format(currentDate, 'yyyy-MM-dd')  // 格式化日期
-                    let dailyPrice = null  // 該日的房價
-
-                    // 先檢查該日期是否為假日(指特定假日)
+                    const dayOfWeek = currentDate.getDay()
+                    const dateString = format(currentDate, "yyyy-MM-dd")
+                    let dailyPrice = null 
+        
                     const holiday = room.holidays?.find(h => h.date == dateString)
                     if (holiday) {
-                        dailyPrice = holiday.price  // 如果是假日，使用假日價格
+                        dailyPrice = holiday.price
                     }
-
-                    // 如果不是假日(指特定假日)，則使用對應的星期價格
+        
                     if (!dailyPrice) {
                         const priceOption = room.pricing?.find(p => p.days_of_week.includes(dayOfWeek))
                         if (priceOption) {
                             dailyPrice = priceOption.price
-
-                            console.log(dailyPrice,'星期');
                         }
                     }
-
-                    // 若找到價格則累加
+        
                     if (dailyPrice !== null) {
                         roomTotalPrice += dailyPrice
                     }
-
-                    // 移動到下一天（這裡是計算每一晚的價格，所以只加一天）
+        
                     currentDate = addDays(currentDate, 1)
                 }
-
-                // 取該 hotel 所有房型中最便宜的加總
-                cheapestPrice = Math.min(cheapestPrice, roomTotalPrice)
-
-                // 總酒店價格加總
+        
+                if (cheapestPrice === null || roomTotalPrice < cheapestPrice) { // 🔧 修正
+                    cheapestPrice = roomTotalPrice
+                }
+        
                 totalHotelPrice += roomTotalPrice
+        
+                return { ...room.toObject(), roomTotalPrice }
             })
-
+        
             return {
-                ...hotel._doc,
-                availableRooms: hotelRooms,
-                totalPrice: totalHotelPrice,  // 該 hotel 的所有房型加總價格
-                cheapestPrice: cheapestPrice === Infinity ? null : cheapestPrice  // 該 hotel 的最便宜房型總價
+                ...hotel.toObject(),
+                availableRooms: updatedRooms,
+                totalPrice: totalHotelPrice,
+                cheapestPrice
             }
         })
 
-
-
-
-
-        const filterPriceHotels = (!isNaN(minPriceNumber) && !isNaN(maxPriceNumber))
-            ? updatedHotels.filter(hotel =>
-                hotel.cheapestPrice >= minPriceNumber && hotel.cheapestPrice <= maxPriceNumber
-            )
-            : updatedHotels
+        // 根據 minPrice 和 maxPrice 過濾飯店
+        const filterPriceHotels =
+            !isNaN(minPriceNumber) && !isNaN(maxPriceNumber)
+                ? updatedHotels.filter(
+                    hotel =>
+                        hotel.cheapestPrice >= minPriceNumber &&
+                        hotel.cheapestPrice <= maxPriceNumber
+                )
+                : updatedHotels
 
         res.status(200).json(filterPriceHotels)
     } catch (err) {
         next(errorMessage(500, "查詢飯店失敗"))
     }
 }
-
 
 
 
