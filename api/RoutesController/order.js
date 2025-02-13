@@ -6,6 +6,8 @@
  * @FilePath: \my-app\api\RoutesController\hotels.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
+import Hotel from "../models/Hotel.js";
+import Room  from "../models/Room.js";
 import Order  from "../models/Order.js"
 import { errorMessage } from "../errorMessage.js"
 
@@ -21,14 +23,32 @@ export const getAllOrders = async (req, res) => {
   
   // 新訂單
   export const createOrder = async (req, res) => {
-    const newOrder = new Order(req.body);
+    const { hotelId, roomId } = req.body;  // 解構傳入的訂單資料
+  
     try {
+      // 檢查酒店是否存在
+      const hotel = await Hotel.findById(hotelId);
+      if (!hotel) {
+        return res.status(404).json({ message: "Hotel not found" });
+      }
+  
+      // 檢查房間是否存在
+      const room = await Room.findById(roomId);
+      if (!room) {
+        return res.status(404).json({ message: "Room not found" });
+      }
+  
+      // 如果酒店和房間都存在，創建新的訂單
+      const newOrder = new Order(req.body);
       const savedOrder = await newOrder.save();
+  
+      // 返回創建成功的訂單
       res.status(201).json(savedOrder);
     } catch (err) {
       res.status(500).json({ message: errorMessage(err) });
     }
   };
+  
   
   //根據id查找
   export const getOrderById = async (req, res) => {
