@@ -10,7 +10,7 @@ import React, { useState, useEffect } from 'react'
 import "./app.scss"
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { axiosHotels } from './redux/userSlice'
+import { reduxAsyncGetAllHotels } from './redux/userSlice'
 import Home from "./pages/Home"
 import HotelsList from "./pages/HotelsList"
 import Hotel from "./pages/Hotel"
@@ -30,7 +30,7 @@ function App () {
   const dispatch = useDispatch()
   const { login } = useSelector((state) => state.user)
   useEffect(() => {
-    dispatch(axiosHotels())
+    dispatch(reduxAsyncGetAllHotels())
   }, [dispatch])
 
   return (

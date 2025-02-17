@@ -9,11 +9,10 @@ import { gsap } from "gsap"
 import "./hotel.scss"
 import { useLocation } from 'react-router-dom'
 import { DateRange } from 'react-date-range'
-import format from 'date-fns/format'
+import { differenceInDays, format } from "date-fns";
 import 'react-date-range/dist/styles.css' // main css file
 import 'react-date-range/dist/theme/default.css' // theme css file
-import { useDispatch, useSelector } from 'react-redux'
-import axios from 'axios'
+
 
 
 const Hotel = () => {
@@ -21,8 +20,9 @@ const Hotel = () => {
   const [openSlider, setOpenSlider] = useState(false)
   const [sliderIndex, setSiderIndex] = useState(0)
   const [rooms, setRooms] = useState([])
+  const [night, setNight] = useState('')
   const comments = useRef(null)
-  // 日期
+ 
   // 預設日期為今天和一周後
   const today = new Date()
   const nextWeek = new Date()
@@ -37,6 +37,12 @@ const Hotel = () => {
       key: 'selection'
     }
   ])
+
+  // 晚數
+  useEffect(() => {
+    setNight(differenceInDays(dates[0].endDate, dates[0].startDate));
+  }, [dates]);
+  
 
   const handleDateChange = (item) => {
     setDates([item.selection])
@@ -173,9 +179,11 @@ const Hotel = () => {
             </div>
             <div className="hotelDesPrice">
               <h2>住宿特色</h2>
-              <h3> 2024/09/15 - 2024/09/20</h3>
-              <p>入住 {'1'} 晚的最佳選擇！
-                此住宿位於台南評分最高的地區，地理位置評分高達 {location.state.hotel.rating} 分
+              <h3>
+                {format(dates[0].startDate, "MM/dd/yyyy")} - {format(dates[0].endDate, "MM/dd/yyyy")}
+              </h3>
+              <p>入住 {night} 晚的最佳選擇！
+                此住宿位於{location.state.hotel.city}的地區，地理位置評分高達 {location.state.hotel.rating} 分
                 深受獨行旅客歡迎</p>
               <h2>TWD {location.state.hotel.cheapestPrice}</h2>
               <button>現在就預訂</button>

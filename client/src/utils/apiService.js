@@ -2,8 +2,8 @@ import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:5000/api/v1';
 
-export const request = async (method, endpoint, data = {}, setLoading, setMessage) => {
-    setLoading(true);  
+export const request = async (method, endpoint, data = {}, setLoading = () => {}, setMessage) => {
+    if (setLoading) setLoading(true);   
     try {
         const config = {
             method, 
@@ -18,6 +18,6 @@ export const request = async (method, endpoint, data = {}, setLoading, setMessag
         setMessage(error.response?.data?.Message || '請求失敗');
         return { success: false, message: error.response?.data?.Message || '請求失敗' };
     } finally {
-        setLoading(false); 
+        if (setLoading) setLoading(false);  
     }
 };

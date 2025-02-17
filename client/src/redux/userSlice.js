@@ -2,19 +2,28 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-18 22:29:00
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-08-12 17:38:38
+ * @LastEditTime: 2025-02-17 21:07:42
  * @FilePath: \my-app\src\redux\userSlice.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
-import { request } from '../utils/apiService';
+import { request } from '../utils/apiService'
 
 
-export const axiosHotels = createAsyncThunk('', async () => {
-  const response = await axios.get('http://localhost:5000/api/v1/hotels')
-  return response.data   
+
+
+export const reduxAsyncGetAllHotels = createAsyncThunk('user/fetchHotels', async (_, { rejectWithValue }) => {
+  try {
+    const response = await request('GET', '/hotels')
+    return response.success ? response.data : rejectWithValue(response.message)
+  } catch (err) {
+    console.error('reduxAsyncGetAllHotels error:', err)
+    return rejectWithValue('reduxAsyncGetAllHotels error')
+  }
 })
+
+
 
 
 /**
@@ -32,7 +41,7 @@ const userSlice = createSlice({
     error: null,
   },
   reducers: {
-    logIn: (state) => { 
+    logIn: (state) => {
       state.login = true
     },
     logOut: (state) => {
@@ -45,14 +54,14 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(axiosHotels.pending, (state) => {
+      .addCase(reduxAsyncGetAllHotels.pending, (state) => {
         state.status = 'loading'
       })
-      .addCase(axiosHotels.fulfilled, (state, action) => {
+      .addCase(reduxAsyncGetAllHotels.fulfilled, (state, action) => {
         state.status = 'succeeded'
         state.Hotels = action.payload
       })
-      .addCase(axiosHotels.rejected, (state, action) => {
+      .addCase(reduxAsyncGetAllHotels.rejected, (state, action) => {
         state.status = 'failed'
         state.error = action.error.message
       })
