@@ -18,7 +18,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { logIn } from '../redux/userSlice'
-import axios from 'axios'
+import { request } from '../utils/apiService';
 import "./logIn.scss"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleRight, faQuestion } from '@fortawesome/free-solid-svg-icons'
@@ -27,7 +27,7 @@ const LogIn = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [message, setMessage] = useState('')
-
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
@@ -43,23 +43,14 @@ const LogIn = () => {
         navigate('/signUp')
     }
 
-    const handleLogIn = async (event) => {
-        event.preventDefault()
-        try {
-            const response = await axios.post('http://localhost:5000/api/v1/auth/login', {
-                account: email, password: password
-            })
+    const handleLogIn = async () => {
+        const result = await request('POST', '/auth/login', { account: email, password }, setLoading, setMessage);
 
-            // 登入把登入帳號資料存到本地存儲
-            if (response.data) {
-                // 物件轉換字串
-                localStorage.setItem('username', JSON.stringify(response.data.userDetails))
-                dispatch(logIn())
-                navigate('/')
-            }
-        } catch (error) {
-            console.error('Error:', error)
-            setMessage(error.response.data.Message)
+        if (result.success) {
+            const { userDetails } = result.data;
+            localStorage.setItem('username', JSON.stringify(userDetails)); // 儲存用戶資料
+            dispatch(logIn());  // 登入動作
+            navigate('/'); // 跳轉到首頁
         }
     }
 
@@ -97,7 +88,9 @@ const LogIn = () => {
                             required
                         />
                     </div>
-                    <button type="submit">LogIn</button>
+                    <button type="submit" disabled={loading}>
+                        {loading ? 'Loading...' : 'LogIn'}
+                    </button>
                 </form>
                 <div className='buttonGroup'>
                     <button className="forgotBtn" onClick={handleClickToForgot}>forgot account <FontAwesomeIcon icon={faQuestion} /></button>

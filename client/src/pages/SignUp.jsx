@@ -3,31 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import "./signUp.scss";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleRight } from '@fortawesome/free-solid-svg-icons'
-import axios from 'axios'
+import { request } from '../utils/apiService';
 const SignUp = () => {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
-
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const handleClickToHome = () => {
         navigate('/');
     };
 
-    const handleSignUp = async (event) => {
-        event.preventDefault()
-        try {
-            const response = await axios.post('http://localhost:5000/api/v1/auth/register', {
-                email:email, username: username, password: password
-            })
-            if(response.data){
-                navigate('/login')
-            }
+    const handleSignUp = async () => {
+        const result = await request('POST', '/auth/register', { email, username, password }, setLoading, setMessage);
 
-        } catch (error) {
-            console.error('Error:', error)
-            setMessage(error.response.data.Message)
+        if (result.success) {
+            navigate('/login');
         }
     };
 
@@ -75,8 +67,10 @@ const SignUp = () => {
                             required
                         />
                     </div>
-                   
-                    <button type="submit">Sign Up</button>
+
+                    <button type="submit" disabled={loading}>
+                        {loading ? 'Loading...' : 'Sign Up'}
+                        </button>
                 </form>
                 {message && <p>{message}</p>}
             </div>

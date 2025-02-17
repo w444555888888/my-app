@@ -11,10 +11,11 @@ import { useNavigate } from 'react-router-dom'
 import "./forgot.scss"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleRight } from '@fortawesome/free-solid-svg-icons'
-import axios from 'axios'
+import { request } from '../utils/apiService';
 const Forgot = () => {
-    const [email, setEmail] = useState('')
-    const [message, setMessage] = useState('')
+    const [email, setEmail] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState('');
 
     const navigate = useNavigate()
     const handleClickToLogin = () => {
@@ -22,20 +23,14 @@ const Forgot = () => {
     }
 
 
-    // 這裡handleForgotPassword 我還不知道怎麼寫
-    const handleForgotPassword = async (event) => {
-        event.preventDefault()
-        try {
-            const response = await axios.post('http://localhost:5000/api/v1/auth/forgot-password', {
-                email: email
-            })
-            setMessage('重置密碼鏈接已發送到您的郵箱')
+    // 忘記密碼方送信箱
+    const handleForgotPassword = async () => {
+        const result = await request('POST', '/auth/forgot-password', { email }, setLoading, setMessage);
 
-        } catch (error) {
-            console.error('Error:', error)
-            setMessage(error.response.data.Message)
+        if (result.success) {
+            setMessage('重置密碼鏈接已發送到您的郵箱');
         }
-    }
+    };
 
     return (
         <div className='logInUpWrapper'>
@@ -62,7 +57,9 @@ const Forgot = () => {
                             required
                         />
                     </div>
-                    <button type="submit">Send to Email</button>
+                    <button type="submit" disabled={loading}>
+                        {loading ? 'Loading...' : 'Send Reset Password Link to Email'}
+                    </button>
                 </form>
                 {message && <p>{message}</p>}
             </div>

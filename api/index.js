@@ -64,5 +64,6 @@ app.use((error, req, res, next) => {
     return res.status(errorStatus).json({
         status: errorStatus,
         Message: errorMessage,
+        success: errorStatus == 200 ? true : false 
     })
 })
