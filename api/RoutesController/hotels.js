@@ -11,8 +11,23 @@ import Room from "../models/Room.js"
 import { addDays, format, isSameDay, parseISO } from 'date-fns'
 import { errorMessage } from "../errorMessage.js"
 
-// 獲取所有 || 飯店資料
+// 獲取所有飯店資料（不帶任何過濾條件）
 export const getAllHotels = async (req, res, next) => {
+    try {
+        // 查詢所有飯店資料
+        const hotels = await Hotel.find({}) 
+        console.log('====================================');
+        console.log(hotels,'hotels');
+        console.log('====================================');
+        res.status(200).json(hotels)
+    } catch (err) {
+        next(errorMessage(500, "查詢飯店資料失敗"))
+    }
+}
+
+
+// 獲取所有 || 飯店資料
+export const getSearchHotels = async (req, res, next) => {
     const { name, minPrice, maxPrice, startDate, endDate } = req.query
     const minPriceNumber = Number(minPrice)
     const maxPriceNumber = Number(maxPrice)
@@ -42,7 +57,7 @@ export const getAllHotels = async (req, res, next) => {
         // 處理每間飯店的價格計算
         const updatedHotels = hotels.map(hotel => {
             const hotelRooms = roomsByHotel[String(hotel._id)] || []
-            console.log(`Hotel ${hotel.name} has ${hotelRooms.length} room(s)`) // 🔧 檢查房型數量
+            // console.log(`Hotel ${hotel.name} has ${hotelRooms.length} room(s)`)
         
             let cheapestPrice = null // 🔧 確保 `cheapestPrice` 初始值正確
             let totalHotelPrice = 0 

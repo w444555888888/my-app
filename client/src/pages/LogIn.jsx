@@ -43,7 +43,8 @@ const LogIn = () => {
         navigate('/signUp')
     }
 
-    const handleLogIn = async () => {
+    const handleLogIn = async (e) => {
+        e.preventDefault()
         const result = await request('POST', '/auth/login', { account: email, password }, setLoading, setMessage);
 
         if (result.success) {

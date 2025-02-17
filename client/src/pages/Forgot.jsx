@@ -24,7 +24,8 @@ const Forgot = () => {
 
 
     // 忘記密碼方送信箱
-    const handleForgotPassword = async () => {
+    const handleForgotPassword = async (e) => {
+        e.preventDefault()
         const result = await request('POST', '/auth/forgot-password', { email }, setLoading, setMessage);
 
         if (result.success) {

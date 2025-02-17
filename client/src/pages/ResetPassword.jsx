@@ -15,10 +15,12 @@ const ResetPassword = () => {
   const { token } = useParams() // 從 URL 中獲取 token
   const [newPassword, setNewPassword] = useState('')
   const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false);
 
-  const handlePasswordReset = async () => {
+  // 重置密碼
+  const handlePasswordReset = async (e) => {
+    e.preventDefault()
     const result = await request('POST', `/auth/reset-password/${token}`, { password: newPassword }, setLoading, setMessage);
-
     if (result.success) {
       setMessage('密碼重置成功');
     }

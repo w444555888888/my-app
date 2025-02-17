@@ -63,7 +63,7 @@ const Navbar = () => {
                     <button className="navButton" onClick={toggleThemeHandler}>
                         {theme === 'light' ? '夜晚模式' : '白天模式'}
                     </button>
-                    <div className="left">
+                    <div className="left"> 
                         <span className="logo" onClick={handleClickToHome}>MIKE.BOOKING</span>
                     </div>
                     <div className="right">

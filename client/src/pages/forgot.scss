@@ -87,3 +87,41 @@
         }
     }
 }
+
+
+@media screen and (max-width: 768px) {
+    .logInContainer {
+        max-width: 90%;
+        padding: 15px;
+    }
+
+    .logInTitle {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .logo {
+        font-size: 20px;
+    }
+
+    .navButton {
+        font-size: 12px;
+        padding: 4px 10px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .logInContainer {
+        padding: 10px;
+    }
+
+    .logo {
+        font-size: 18px;
+    }
+
+    button[type="submit"] {
+        font-size: 14px;
+        padding: 8px;
+    }
+}

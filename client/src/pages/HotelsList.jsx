@@ -6,7 +6,7 @@ import { DateRange } from 'react-date-range'
 import { format } from 'date-fns'
 import { useLocation } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import { request } from '../utils/apiService';
 
 const HotelsList = () => {
     // 路由導航
@@ -33,6 +33,10 @@ const HotelsList = () => {
     const [maxPrice, setMaxPrice] = useState('')
     const [startDate, setStartDate] = useState(locationStartDate || format(today, "yyyy-MM-dd"))
     const [endDate, setEndDate] = useState(locationEndDate || format(nextWeek, "yyyy-MM-dd"))
+
+    // post
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState('');
 
     // 日期
     const [dates, setDates] = useState(locationDates || [
@@ -68,16 +72,14 @@ const HotelsList = () => {
     // 副作用監聽的路由網址，發送請求
     useEffect(() => {
         const axiosHotels = async () => {
-            try {
-                const params = new URLSearchParams(location.search)
-                const queryString = Array.from(params.entries())
-                    .map(([key, value]) => `${key}=${value}`)
-                    .join('&')
+            const params = new URLSearchParams(location.search)
+            const queryString = Array.from(params.entries())
+                .map(([key, value]) => `${key}=${value}`)
+                .join('&')
 
-                const response = await axios.get(`http://localhost:5000/api/v1/hotels?${queryString}`)
-                setHotels(response.data)
-            } catch (error) {
-                console.error('Error fetching hotels:', error)
+            const result = await request('GET', `/hotels/search?${queryString}`, {}, setLoading, setMessage);
+            if (result.success) {
+                setHotels(result.data);
             }
         }
 

@@ -1,34 +1,39 @@
 .SearchItem {
-    height: 240px; //整欄高
-    width: 720px; //這邊都有算好
+    height: 240px;
+    width: 720px;
     display: flex;
     align-items: center;
     gap: 15px;
     border: 1px solid lightblue;
     border-radius: 3px;
     margin-bottom: 15px;
-    padding: 0px 15px; //這邊上下
+    padding: 0px 15px;
+
     img {
-        height: 210px; //240px欄高跟他差padding上下15px*2
+        height: 210px;
         width: 200px;
         object-fit: cover;
         border-radius: 3px;
     }
+
     .itemInfo {
-        width: 505px; //200px+505px+gap 15px=總欄寬720px
-        height: 210px; //240px欄高跟他差padding上下15px*2
+        width: 505px;
+        height: 210px;
 
         .infoTitle {
             display: flex;
             justify-content: space-between;
+
             h2 {
                 font-size: 20px;
                 width: 300px;
             }
+
             .infoTitleRight {
                 display: flex;
-                gap: 5px; //9.5與傑出間距
-                text-align: right; //讓傑出等字眼靠右
+                gap: 5px;
+                text-align: right;
+
                 button {
                     display: flex;
                     align-items: center;
@@ -44,6 +49,7 @@
                 }
             }
         }
+
         .infoDes {
             .far {
                 color: var(--primary-color);
@@ -51,6 +57,7 @@
                 font-size: 12px;
                 margin-right: 5px;
             }
+
             .popular-icon {
                 align-items: center;
                 justify-content: center;
@@ -60,7 +67,6 @@
                 padding: 5px;
                 margin-right: 5px;
                 border: none;
-                
             }
         }
     }
@@ -70,24 +76,29 @@
     margin-top: 10px;
     display: flex;
     justify-content: space-between;
-    align-items: flex-end; //整個都靠下
+    align-items: flex-end;
+
     .detailLeft {
         border-left: 3px solid lightgray;
         padding: 15px 5px;
         font-size: 12px;
+
         .detailDes {
             margin-top: 10px;
             font-weight: bolder;
             color: green;
+
             b {
-                color: red; //剩一間警告
+                color: red;
             }
         }
     }
+
     .detailRight {
         font-size: 12px;
+
         .btn {
-            margin-top: 10px; //把查看客房跟上面做一下區分
+            margin-top: 10px;
             width: 200px;
             color: white;
             font-size: 18px;
@@ -96,13 +107,14 @@
             background-color: rgb(121, 120, 120);
             border-radius: 20px;
             cursor: pointer;
+
             &:hover {
                 background-color: var(--primary-color);
             }
         }
 
         .no-btn {
-            margin-top: 10px; //把查看客房跟上面做一下區分
+            margin-top: 10px;
             width: 200px;
             color: white;
             font-size: 18px;
@@ -112,21 +124,83 @@
             border-radius: 20px;
             cursor: not-allowed;
         }
+
         span {
             display: flex;
             justify-content: flex-end;
         }
+
         .price {
             font-size: 20px;
             font-weight: 500;
         }
+
         .tax {
             color: gray;
         }
     }
 }
 
-.active{
-    background-color:rgba(94, 57, 227, 0.2) ;
+.active {
+    background-color: rgba(94, 57, 227, 0.2);
     box-shadow: 0px 0px 15px var(--primary-color);
+}
+
+
+@media screen and (max-width: 768px) {
+    .SearchItem {
+        width: 100%;
+        height: auto;
+        flex-direction: column;
+        padding: 10px;
+
+        img {
+            width: 100%;
+            height: auto;
+        }
+
+        .itemInfo {
+            width: 100%;
+            height: auto;
+        }
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .SearchItem {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .itemInfo {
+        width: 100%;
+    }
+
+    .infoTitle h2 {
+        font-size: 18px;
+    }
+
+    .infoTitleRight button {
+        font-size: 16px;
+    }
+
+    .infoDes .far {
+        font-size: 10px;
+    }
+
+    .infoDes .popular-icon {
+        font-size: 12px;
+    }
+
+    .detailLeft,
+    .detailRight {
+        font-size: 10px;
+    }
+
+    .btn,
+    .no-btn {
+        width: 100%;
+        font-size: 16px;
+        margin-top: 5px;
+    }
 }

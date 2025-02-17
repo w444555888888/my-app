@@ -96,6 +96,7 @@
         font-size: 13px;
         font-weight: bold;
       }
+
       .signUpBtn {
         width: 14%;
         margin-top: 10px;
@@ -116,5 +117,133 @@
         color: red;
       }
     }
+  }
+}
+
+
+@media (max-width: 1024px) {
+  .logInWrapper {
+    padding: 10px;
+  }
+
+  .logInContainer {
+    width: 100%;
+    max-width: 400px;
+    padding: 15px;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  .navButton {
+    font-size: 12px;
+  }
+
+  .formGroup input {
+    padding: 10px;
+  }
+
+  button[type='submit'] {
+    font-size: 14px;
+  }
+
+  .forgotBtn,
+  .signUpBtn {
+    width: 48%;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .buttonGroup .forgotBtn,
+  .buttonGroup .signUpBtn {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .logInWrapper {
+    padding: 10px;
+  }
+
+  .logInContainer {
+    max-width: 350px;
+  }
+
+  .logo {
+    font-size: 18px;
+  }
+
+  .navButton {
+    font-size: 12px;
+  }
+
+  button[type='submit'] {
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  .forgotBtn,
+  .signUpBtn {
+    width: 45%;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .buttonGroup .forgotBtn,
+  .buttonGroup .signUpBtn {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logInWrapper {
+    padding: 10px;
+  }
+
+  .logInContainer {
+    max-width: 90%;
+    padding: 10px;
+  }
+
+  .logo {
+    font-size: 16px;
+  }
+
+  .navButton {
+    font-size: 12px;
+  }
+
+  .formGroup input {
+    padding: 12px;
+  }
+
+  button[type='submit'] {
+    font-size: 14px;
+    padding: 15px;
+  }
+
+  .forgotBtn,
+  .signUpBtn {
+    width: 100%;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .buttonGroup .forgotBtn,
+  .buttonGroup .signUpBtn {
+    width: 100%;
+    margin-top: 10px;
   }
 }

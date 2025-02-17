@@ -20,14 +20,14 @@ const Feature = () => {
         <div className='feature'>
             <div className="container">
                 <div className="listTitle">
-                    <h2>依住宿類型瀏覽</h2>
+                    <span>依住宿類型瀏覽</span>
                 </div>
                 <div className="listItems">
                     <Categories dataArray={hotels} />
                 </div>
 
                 <div className="listTitle">
-                    <h2>近期受歡迎飯店</h2>
+                    <span>近期受歡迎飯店</span>
                 </div>
                 <div className="listItems">
                     <PopularHotels dataArray={populatHotel} />

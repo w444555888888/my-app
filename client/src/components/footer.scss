@@ -5,6 +5,7 @@
     align-items: center;
     background-color: rgb(97, 97, 97);
     font-weight: bold;
+    
     .title {
         font-weight: 100;
         margin-top: 20px;
@@ -20,6 +21,7 @@
             color: rgb(0, 0, 0);
         }
     }
+
     .emailcontainer {
         padding: 20px;
         max-width: 1024px;
@@ -47,7 +49,7 @@
                 color: white;
                 border-radius: 2px;
                 font-size: 20px;
-                background-color:var(--primary-color);
+                background-color: var(--primary-color);
             }
         }
         .checktext {
@@ -57,11 +59,12 @@
             }
         }
     }
+
     .subcontainer {
         display: flex;
         flex-direction: column;
         align-items: center;
-       justify-content: center;
+        justify-content: center;
         height: 80px;
         width: 100%;
         gap: 20px;
@@ -69,5 +72,64 @@
             display: flex;
             gap: 20px;
         }
+    }
+}
+
+
+@media screen and (max-width: 768px) {
+    .footer {
+        padding: 20px;
+    }
+
+    .footer .title {
+        font-size: 20px;
+        span {
+            font-size: 16px;
+        }
+    }
+
+    .footer .emailcontainer {
+        padding: 20px 15px;
+    }
+
+    .footer .emailcontainer .wrapper {
+        flex-direction: column;
+        padding: 0 10px;
+        align-items: stretch;
+    }
+
+    .footer .emailcontainer .wrapper .email {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .footer .emailcontainer .wrapper button {
+        width: 100%;
+    }
+
+    .footer .subcontainer ul {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .footer .title {
+        font-size: 18px;
+        padding-top: 10px;
+    }
+
+    .footer .emailcontainer .wrapper .email {
+        font-size: 18px;
+        height: 40px;
+    }
+
+    .footer .emailcontainer .wrapper button {
+        font-size: 18px;
+        height: 40px;
+    }
+
+    .footer .subcontainer ul {
+        gap: 8px;
     }
 }

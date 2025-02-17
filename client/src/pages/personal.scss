@@ -101,3 +101,128 @@
     }
   }
 }
+
+
+@media (max-width: 1024px) {
+  .personalWrapper {
+    padding: 10px;
+  }
+
+  .personalContainer {
+    width: 100%;
+    max-width: 400px;
+    padding: 15px;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  .navButton {
+    font-size: 12px;
+  }
+
+  .formGroup input {
+    padding: 10px;
+  }
+
+  button[type='submit'],
+  button {
+    font-size: 14px;
+  }
+
+  button[type='submit'] {
+    width: 48%;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .buttonGroup button {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .personalWrapper {
+    padding: 10px;
+  }
+
+  .personalContainer {
+    max-width: 350px;
+  }
+
+  .logo {
+    font-size: 18px;
+  }
+
+  .navButton {
+    font-size: 12px;
+  }
+
+  button[type='submit'] {
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .buttonGroup button {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .personalWrapper {
+    padding: 10px;
+  }
+
+  .personalContainer {
+    max-width: 90%;
+    padding: 10px;
+  }
+
+  .logo {
+    font-size: 16px;
+  }
+
+  .navButton {
+    font-size: 12px;
+  }
+
+  .formGroup input {
+    padding: 12px;
+  }
+
+  button[type='submit'] {
+    font-size: 14px;
+    padding: 15px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 15px;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .buttonGroup button {
+    width: 100%;
+    margin-top: 10px;
+  }
+}

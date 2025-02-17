@@ -15,9 +15,10 @@ const SignUp = () => {
         navigate('/');
     };
 
-    const handleSignUp = async () => {
+    // 註冊
+    const handleSignUp = async (e) => {
+        e.preventDefault()
         const result = await request('POST', '/auth/register', { email, username, password }, setLoading, setMessage);
-
         if (result.success) {
             navigate('/login');
         }

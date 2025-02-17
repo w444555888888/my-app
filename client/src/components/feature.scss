@@ -2,18 +2,60 @@
     width: 100%;
     height: auto;
     display: flex;
-    justify-content: center;//新增的 
-    overflow: hidden;//新增的 
+    justify-content: center;
+    overflow: hidden;
+
     .container {
         width: 100%;
         max-width: 1024px;
+
         .listTitle {
             padding: 15px 10px;
+            span {
+                font-size: 18px;
+            }
         }
+
         .listItems {
             padding: 0px 10px;
-            display: flex;//新增的 
-            overflow-x:scroll; //新增的 
+            display: flex;
+            overflow-x: scroll;
+            -webkit-overflow-scrolling: touch;
         }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .feature .container {
+        padding: 0 15px;
+    }
+
+    .feature .listItems {
+        padding: 0 5px;
+        overflow-x: auto;
+    }
+
+    .feature .listItems::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .feature .listItems::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+    }
+
+    .feature .listItems::-webkit-scrollbar-track {
+        background: transparent;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .feature .container {
+        padding: 0 10px;
+    }
+
+    .feature .listItems {
+        flex-direction: column;
+        gap: 10px;
     }
 }

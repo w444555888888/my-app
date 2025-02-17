@@ -33,7 +33,7 @@ const Announcement = ({ type }) => {
                                 <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/160108451.jpg?k=276db1cee9672c663e0c40ab4ca7460dd21569524bf5542918acab6b6fe3ac1e&o=&hp=1" alt="" />
                             </div>
                             <div className="right">
-                                <h2>暑假優惠</h2>
+                                <span>暑假優惠</span>
                                 <span>2024 年 9 月 30 日前預訂並住房就優惠最高20%</span>
                                 <button>逛逛優惠</button>
                             </div>

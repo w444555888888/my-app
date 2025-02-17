@@ -3,28 +3,35 @@
     display: flex;
     justify-content: center;
     height: auto;
+
     .container {
         max-width: 1024px;
         width: 100%;
         padding: 0 20px;
+
         .infoDes {
             margin-top: 50px;
-            border: 1px lightgrey solid;
-            height: 80px;
-            display: flex;
-            align-items: center;
-            padding: 0px 20px;
+    border: 1px solid lightgrey;
+    height: auto;
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+
             svg {
-                display: flex;
+                flex-shrink: 0;
                 color: rgb(251, 251, 251);
                 background-color: rgb(125, 125, 125);
                 padding: 10px;
-                height: 20px;
-                width: 20px;
-                margin-right: 20px;
-                border-radius: 20px;
+                height: 24px;
+                width: 24px;
+                margin-right: 15px;
+                border-radius: 50%;
             }
         }
+
         .discountInfo {
             margin-top: 20px;
             display: flex;
@@ -34,18 +41,26 @@
             height: 160px;
             padding: 5px 20px;
             box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.145);
+
             .left {
                 width: 150px;
+
                 img {
                     display: flex;
                     width: 100%;
                     height: auto;
                 }
             }
+
             .right {
                 display: flex;
                 flex-direction: column;
                 gap: 5px;
+
+                span {
+                    font-size: 12px;
+                }
+
                 button {
                     width: 80px;
                     padding: 10px 5px;
@@ -60,6 +75,34 @@
     }
 }
 
+
+@media screen and (max-width: 768px) {
+    .announcement .infoDes {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    .announcement .infoDes svg {
+        margin-bottom: 10px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .announcement .infoDes {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+
+    .announcement .infoDes svg {
+        height: 20px;
+        width: 20px;
+    }
+}
+
+
+
 .GlobalBanner {
     margin-top: 20px;
     display: flex;
@@ -68,21 +111,24 @@
     padding: 5px 20px;
     height: 200px;
     border: 1px lightgrey solid;
-    background-repeat: no-repeat; //背景圖導入方式
-    background-position: right; //背景圖是那個世界地圖
+    background-repeat: no-repeat;
+    background-position: right;
     background-image: url("https://cf.bstatic.com/static/img/genius-banner-world-bg/2b5cdbad7b92073bc396b8b59d0bb421b3a01cba.png");
+
     img {
-        display: flex; //左邊
+        display: flex;
         width: 180px;
     }
+
     .BannerInfoDes {
-        //右邊
         display: flex;
         flex-direction: column;
-        gap: 20px; //讓span title btn有間距
+        gap: 20px;
+
         .Bannerbtn {
             display: flex;
-            gap: 10px; //登入 註冊btn 有間距
+            gap: 10px;
+
             button {
                 border: none;
                 padding: 8px 15px;
@@ -90,13 +136,44 @@
                 color: var(--primary-color);
                 background-color: white;
                 cursor: pointer;
+
                 &:hover {
                     background-color: rgba(119, 119, 119, 0.1);
                 }
             }
+
             .buttonActive {
                 border: 2px var(--primary-color) solid;
             }
         }
+    }
+}
+
+
+@media screen and (max-width: 768px) {
+    .GlobalBanner {
+        height: 160px;
+        flex-direction: column;
+        background-position: center;
+    }
+
+    .GlobalBanner img {
+        width: 150px;
+        margin-bottom: 10px;
+    }
+
+    .GlobalBanner .BannerInfoDes {
+        align-items: center;
+        gap: 10px;
+    }
+
+    .GlobalBanner .Bannerbtn {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .GlobalBanner .Bannerbtn button {
+        width: 100%;
+        padding: 12px 0;
     }
 }
