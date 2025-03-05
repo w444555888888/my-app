@@ -7,12 +7,18 @@
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import "./popularHotels.scss"
 const PopularHotels = ({ dataArray }) => {
+    const navigate = useNavigate()
+    
+      const handleHotelClick = (item) => {
+        navigate(`/hotels?hotelId=${item._id}`)
+      }
     return (
         <div className='popularHotels'>
             {dataArray.map((item, index) =>
-                <div className="item" key={index}>
+                <div className="item" key={index} onClick={() => handleHotelClick(item)}>
                     <img src={item.photos[0]} />
                     <div className="itemInfo">
                         <div className="title">
