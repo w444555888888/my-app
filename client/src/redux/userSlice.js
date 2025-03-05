@@ -7,6 +7,7 @@
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+<<<<<<< HEAD
 import axios from 'axios'
 import { request } from '../utils/apiService'
 
@@ -23,12 +24,13 @@ export const reduxAsyncGetAllHotels = createAsyncThunk('user/fetchHotels', async
   }
 })
 
+=======
+>>>>>>> caa9c78 (HOME飯店數據直接寫 取消狀態管理)
 
 
 
 /**
  * 登入狀態 : login
- * 全部飯店 : Hotels
  * 主題 : theme
 */
 const userSlice = createSlice({
@@ -37,7 +39,7 @@ const userSlice = createSlice({
     login: !!localStorage.getItem('username'),
     Hotels: [],
     theme: 'light',
-    status: '',
+    loading: false,
     error: null,
   },
   reducers: {
@@ -51,6 +53,7 @@ const userSlice = createSlice({
     toggleTheme: (state) => {
       state.theme = state.theme === 'light' ? 'dark' : 'light'
     }
+<<<<<<< HEAD
   },
   extraReducers: (builder) => {
     builder
@@ -66,6 +69,9 @@ const userSlice = createSlice({
         state.error = action.error.message
       })
   },
+=======
+  }
+>>>>>>> caa9c78 (HOME飯店數據直接寫 取消狀態管理)
 })
 
 export const { logIn, logOut, toggleTheme } = userSlice.actions

@@ -6,14 +6,25 @@
  * @FilePath: \my-app\src\components\Feature.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Categories from '../subcomponents/Categories'
 import PopularHotels from '../subcomponents/PopularHotels'
-
-import { useSelector } from 'react-redux'
+import { request } from '../utils/apiService'
 import "./feature.scss"
 const Feature = () => {
-    const hotels = useSelector((state) => state.user.Hotels)
+    const [hotels, setHotels] = useState([])
+
+    useEffect(() => {
+        const fetchHotels = async () => {
+            const response = await request('GET', '/hotels', {});
+            if (response.success) {
+                setHotels(response.data);
+            }
+        };
+
+        fetchHotels();
+    }, []);
+
     const populatHotel = hotels.filter((e) => { return e.popularHotel === true })
 
     return (
