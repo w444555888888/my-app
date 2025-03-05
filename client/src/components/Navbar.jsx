@@ -9,7 +9,7 @@
 import React, { useState, useEffect } from 'react'
 import "./navbar.scss"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBed, faCar, faPlane, faTaxi, faToriiGate } from '@fortawesome/free-solid-svg-icons'
+import { faSun, faMoon, faBed, faCar, faPlane, faTaxi, faToriiGate } from '@fortawesome/free-solid-svg-icons'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
@@ -61,9 +61,9 @@ const Navbar = () => {
             <div className="navbarContainer">
                 <div className="lineOne">
                     <button className="navButton" onClick={toggleThemeHandler}>
-                        {theme === 'light' ? '夜晚模式' : '白天模式'}
+                        {theme === 'light' ? <FontAwesomeIcon icon={faSun} /> : <FontAwesomeIcon icon={faMoon} />}
                     </button>
-                    <div className="left"> 
+                    <div className="left">
                         <span className="logo" onClick={handleClickToHome}>MIKE.BOOKING</span>
                     </div>
                     <div className="right">

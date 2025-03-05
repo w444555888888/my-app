@@ -15,10 +15,8 @@
     .lineOne {
       display: flex;
       height: 60%;
-      /* nav整個欄高的一半 */
       align-items: center;
       justify-content: space-between;
-      /* 分開左右半部 */
 
       .navButton {
         font-size: 14px;
@@ -48,7 +46,7 @@
           font-size: 14px;
           margin-left: 10px;
           border: none;
-          border-radius: 2px;
+          border-radius: 25px;
           padding: 8px 16px;
           cursor: pointer;
           color: var(--primary-color);
@@ -92,6 +90,7 @@
     flex-direction: column;
     justify-content: center;
     height: 80%;
+
     .left {
       span {
         font-size: 18px;
@@ -107,6 +106,7 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 15px;
+
     .item {
       justify-content: center;
       padding: 8px 12px;
@@ -130,6 +130,7 @@
     align-items: center;
     height: auto;
     margin-bottom: 10px;
+
     .left {
       span {
         font-size: 16px;
@@ -148,6 +149,7 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 10px;
+
     .item {
       flex-direction: row;
       align-items: center;
@@ -166,6 +168,7 @@
     flex-direction: column;
     align-items: center;
     height: auto;
+
     .left {
       span {
         font-size: 14px;
@@ -187,6 +190,7 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 8px;
+
     .item {
       flex-direction: row;
       align-items: center;

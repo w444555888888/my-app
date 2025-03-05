@@ -10,7 +10,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-  
+
 
     .HotelHeaderBtn {
       display: flex;
@@ -93,11 +93,7 @@
           font-size: 16px;
           border-radius: 2px;
           color: white;
-
-          &:hover {
-            opacity: 0.8;
-            cursor: pointer;
-          }
+          cursor: pointer;
         }
       }
     }
@@ -192,16 +188,20 @@
 
           tbody {
             tr {
-              &:hover {
-                background-color: #f1f1f1;
-              }
-
               td {
-                padding: 10px 15px;
+                padding: 10px 30px;
                 border-top: 3px solid rgba(169, 169, 169, 0.5);
                 border-right: 3px solid rgba(169, 169, 169, 0.5);
                 border-bottom: 3px solid rgba(169, 169, 169, 0.5);
                 border-left: none;
+
+                button{
+                  border: none;
+                  cursor: pointer;
+                  background: var(--primary-color);
+                  color: white;
+                  border-radius: 2px;
+                }
               }
             }
           }
