@@ -29,28 +29,37 @@ export const getSearchHotels = async (req, res, next) => {
     const minPriceNumber = Number(minPrice)
     const maxPriceNumber = Number(maxPrice)
 
+
+     // 只有hotelId，沒有日期 && 不用顯示房型
+     if (hotelId && !name && !minPrice && !maxPrice && !startDate && !endDate) {
+        try {
+            const hotel = await Hotel.findById(hotelId)
+            if (!hotel) {
+                return next(errorMessage(404, "單查詢hotel: no found  this hotel"))
+            }
+            return res.status(200).json([hotel])
+        } catch (err) {
+            return next(errorMessage(500, "單查詢hotel: Error"))
+        }
+    }
+
     let query = {}
     if (name) {
         query.name = new RegExp(name, "i")
     }
 
-    if (hotelId && !name && !minPrice && !maxPrice && !startDate && !endDate) {
-        try {
-            const hotel = await Hotel.findById(hotelId)
-            if (!hotel) {
-                return next(errorMessage(404, "找不到此查詢酒店id"))
-            }
-            return res.status(200).json(hotel)
-        } catch (err) {
-            return next(errorMessage(500, "查詢酒店id失敗"))
-        }
+    if (hotelId) {
+        query._id = hotelId
     }
 
     try {
         // 查詢所有符合條件的酒店
         const hotels = await Hotel.find(query)
-        const hotelIds = hotels.map(hotel => hotel._id)
+        if (hotels.length === 0) {
+            return next(errorMessage(404, "找不到符合條件的酒店"))
+        }
 
+        const hotelIds = hotels.map(hotel => hotel._id)
         // 查詢這些酒店對應的所有房型
         const allRooms = await Room.find({ hotelId: { $in: hotelIds } })
 

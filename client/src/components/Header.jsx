@@ -51,7 +51,11 @@ const Header = () => {
     }
 
     const handleSearchClick = async (e) => {
-        navigate(`/hotelsList?name=${destination}&startDate=${startDate}&endDate=${endDate}`, {
+        const queryParams = new URLSearchParams();
+        if (destination) queryParams.set('name', destination);
+        if (startDate) queryParams.set('startDate', startDate);
+        if (endDate) queryParams.set('endDate', endDate);
+        navigate(`/hotelsList?${queryParams.toString()}`, {
             state: {
                 destination,
                 dates,
@@ -59,8 +63,9 @@ const Header = () => {
                 startDate,
                 endDate
             },
-        })
+        });
     }
+    
 
 
 

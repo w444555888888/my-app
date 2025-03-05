@@ -65,9 +65,16 @@ const HotelsList = () => {
 
 
     // 搜尋飯店條件
-    const handleSearchHotelsPrice = () => {
-        navigate(`/hotelsList?name=${destinationState}&minPrice=${minPrice}&maxPrice=${maxPrice}&startDate=${startDate}&endDate=${endDate}`)
-    }
+   const handleSearchHotelsPrice = () => {
+    const params = new URLSearchParams();
+    if (destinationState) params.set('name', destinationState);
+    if (minPrice) params.set('minPrice', minPrice);
+    if (maxPrice) params.set('maxPrice', maxPrice);
+    if (startDate) params.set('startDate', startDate);
+    if (endDate) params.set('endDate', endDate);
+    navigate(`/hotelsList?${params.toString()}`);
+}
+
 
     // 副作用監聽的路由網址，發送請求
     useEffect(() => {

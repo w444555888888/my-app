@@ -17,7 +17,7 @@ import 'react-date-range/dist/theme/default.css' // theme css file
 
 
 const Hotel = () => {
-  const { id } = useParams()
+  const location = useLocation()
   const [hotelData, setHotelData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState(true)
@@ -45,14 +45,20 @@ const Hotel = () => {
   // 獲取酒店數據
   useEffect(() => {
     const fetchHotelData = async () => {
-      const result = await request('GET', `/hotels/search?hotelId=${id}`, {}, setLoading, setMessage);
+      const params = new URLSearchParams(location.search);
+      const queryString = Array.from(params.entries())
+        .map(([key, value]) => `${key}=${value}`)
+        .join('&');
+
+      const result = await request('GET', `/hotels/search?${queryString}`, {}, setLoading, setMessage);
       if (result.success) {
-        setHotelData(result?.data)
-        setRooms(result?.data?.availableRooms)
+        setHotelData(result?.data?.[0]);
+        setRooms(result?.data?.[0]?.availableRooms);
       }
-    }
-    fetchHotelData()
-  }, [id])
+    };
+
+    fetchHotelData();
+  }, [location.search]);
 
   // 晚數
   useEffect(() => {

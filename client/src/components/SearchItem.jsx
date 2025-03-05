@@ -10,15 +10,20 @@ import React, { useState } from 'react'
 import "./searchItem.scss"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faThumbsUp } from '@fortawesome/free-solid-svg-icons'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const SearchItem = ({ hotel }) => {
-  const navigate = useNavigate()
+
+  const location = useLocation();
+  const navigate = useNavigate();
+ 
   const handleHotelDetail = () => {
-    navigate(`/hotel/${hotel._id}`, {
+    navigate(`/hotels${location.search}&hotelId=${hotel._id}`, {
       state: { hotel },
-    })
-  }
+    });
+  };
+
+  
 
   //SearchItem的active狀態
   const [addactive, setAddActive] = useState(false)

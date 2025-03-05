@@ -41,7 +41,7 @@ function App () {
 
           <Route path="/hotelsList" element={<PrivateRoute login={login}><HotelsList /></PrivateRoute>} />
 
-          <Route path="/hotel/:id" element={<PrivateRoute login={login}><Hotel /></PrivateRoute>} />
+          <Route path="/hotels" element={<PrivateRoute login={login}><Hotel /></PrivateRoute>} />
 
           <Route path="/personal" element={<PrivateRoute login={login}><Personal /></PrivateRoute>} />
         </Routes>

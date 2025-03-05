@@ -13,7 +13,7 @@ const Categories = ({ dataArray }) => {
   const navigate = useNavigate()
 
   const handleHotelClick = (item) => {
-    navigate(`/hotel/${item._id}`)
+    navigate(`/hotels?hotelId=${item._id}`)
   }
   return (
     <div className='categories'>
