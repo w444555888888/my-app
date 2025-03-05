@@ -10,11 +10,7 @@ import React, { useState, useEffect } from 'react'
 import "./app.scss"
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-<<<<<<< HEAD
-import { reduxAsyncGetAllHotels } from './redux/userSlice'
-=======
 import { request } from './utils/apiService';
->>>>>>> caa9c78 (HOME飯店數據直接寫 取消狀態管理)
 import Home from "./pages/Home"
 import HotelsList from "./pages/HotelsList"
 import Hotel from "./pages/Hotel"
@@ -29,13 +25,6 @@ function App () {
   axios.defaults.withCredentials = true
 
   const { login } = useSelector((state) => state.user)
-<<<<<<< HEAD
-  useEffect(() => {
-    dispatch(reduxAsyncGetAllHotels())
-  }, [dispatch])
-
-=======
->>>>>>> caa9c78 (HOME飯店數據直接寫 取消狀態管理)
   return (
     <div className="App">
       <Router>

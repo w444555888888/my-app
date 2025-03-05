@@ -7,25 +7,6 @@
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-<<<<<<< HEAD
-import axios from 'axios'
-import { request } from '../utils/apiService'
-
-
-
-
-export const reduxAsyncGetAllHotels = createAsyncThunk('user/fetchHotels', async (_, { rejectWithValue }) => {
-  try {
-    const response = await request('GET', '/hotels')
-    return response.success ? response.data : rejectWithValue(response.message)
-  } catch (err) {
-    console.error('reduxAsyncGetAllHotels error:', err)
-    return rejectWithValue('reduxAsyncGetAllHotels error')
-  }
-})
-
-=======
->>>>>>> caa9c78 (HOME飯店數據直接寫 取消狀態管理)
 
 
 
@@ -53,25 +34,7 @@ const userSlice = createSlice({
     toggleTheme: (state) => {
       state.theme = state.theme === 'light' ? 'dark' : 'light'
     }
-<<<<<<< HEAD
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(reduxAsyncGetAllHotels.pending, (state) => {
-        state.status = 'loading'
-      })
-      .addCase(reduxAsyncGetAllHotels.fulfilled, (state, action) => {
-        state.status = 'succeeded'
-        state.Hotels = action.payload
-      })
-      .addCase(reduxAsyncGetAllHotels.rejected, (state, action) => {
-        state.status = 'failed'
-        state.error = action.error.message
-      })
-  },
-=======
   }
->>>>>>> caa9c78 (HOME飯店數據直接寫 取消狀態管理)
 })
 
 export const { logIn, logOut, toggleTheme } = userSlice.actions
