@@ -5,9 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useRef, useState, useEffect } from 'react'
 import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
+import { request } from '../utils/apiService';
 import { gsap } from "gsap"
 import "./hotel.scss"
-import { useLocation } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import { DateRange } from 'react-date-range'
 import { differenceInDays, format } from "date-fns";
 import 'react-date-range/dist/styles.css' // main css file
@@ -16,13 +17,16 @@ import 'react-date-range/dist/theme/default.css' // theme css file
 
 
 const Hotel = () => {
-  // modal
+  const { id } = useParams()
+  const [hotelData, setHotelData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [message, setMessage] = useState(true)
   const [openSlider, setOpenSlider] = useState(false)
   const [sliderIndex, setSiderIndex] = useState(0)
   const [rooms, setRooms] = useState([])
   const [night, setNight] = useState('')
   const comments = useRef(null)
- 
+
   // 預設日期為今天和一周後
   const today = new Date()
   const nextWeek = new Date()
@@ -38,25 +42,30 @@ const Hotel = () => {
     }
   ])
 
+  // 獲取酒店數據
+  useEffect(() => {
+    const fetchHotelData = async () => {
+      const result = await request('GET', `/hotels/search?hotelId=${id}`, {}, setLoading, setMessage);
+      if (result.success) {
+        setHotelData(result?.data)
+        setRooms(result?.data?.availableRooms)
+      }
+    }
+    fetchHotelData()
+  }, [id])
+
   // 晚數
   useEffect(() => {
     setNight(differenceInDays(dates[0].endDate, dates[0].startDate));
   }, [dates]);
-  
+
 
   const handleDateChange = (item) => {
     setDates([item.selection])
     setStartDate(format(item.selection.startDate, "yyyy-MM-dd"))
     setEndDate(format(item.selection.endDate, "yyyy-MM-dd"))
+    setOpenCalendar(false)
   }
-
-  // 路由傳遞資料
-  const location = useLocation()
-  useEffect(() => {
-    if (location.state && location.state.hotel) {
-      setRooms(location.state.hotel.availableRooms)
-    }
-  }, [location.state])
 
 
   const handleHover = () => {
@@ -87,7 +96,7 @@ const Hotel = () => {
 
   const slideDirection = (direction) => {
     let newSliderIndex
-    let lastPicutre = location.state.hotel.photos.length - 1
+    let lastPicutre = hotelData.photos.length - 1
     if (direction === "left") {
       sliderIndex === 0 ? newSliderIndex = lastPicutre : newSliderIndex = sliderIndex - 1
       setSiderIndex(newSliderIndex)
@@ -97,6 +106,8 @@ const Hotel = () => {
     }
   }
 
+  if (!hotelData) return <div>找不到酒店資訊</div>
+
   return (
     <div className='hotel'>
       <Navbar />
@@ -104,13 +115,13 @@ const Hotel = () => {
         <div className="slider">
           <div className="sliderWrapper">
             <div className="wrapperTitle">
-              <div className='TitleName'>{location.state.hotel.name}</div>
+              <div className='TitleName'>{hotelData.name}</div>
               <span className="CloseSign" onClick={() => setOpenSlider(false)}>關閉
                 <FontAwesomeIcon icon={faXmark} /></span>
             </div>
             <div className="wrapperBody">
               <FontAwesomeIcon icon={faAngleLeft} className="arrow" onClick={() => slideDirection("left")} />
-              <img src={location.state.hotel.photos[sliderIndex]} />
+              <img src={hotelData.photos[sliderIndex]} />
               <FontAwesomeIcon icon={faAngleRight} className="arrow" onClick={() => slideDirection("right")} />
             </div>
           </div>
@@ -126,10 +137,10 @@ const Hotel = () => {
           </div>
           <div className="hotelTitle">
             <div className="titleLeft">
-              <span className="type">{location.state.hotel.type}</span>
-              <span className='hotelName'>{location.state.hotel.name}</span>
+              <span className="type">{hotelData.type}</span>
+              <span className='hotelName'>{hotelData.name}</span>
               <span className='recommend'><span className="recommendSvg"><FontAwesomeIcon icon={faPeopleGroup} /></span>推薦四人住宿</span>
-              <div className="address"><FontAwesomeIcon icon={faLocationDot} /> {location.state.hotel.address} </div>
+              <div className="address"><FontAwesomeIcon icon={faLocationDot} /> {hotelData.address} </div>
             </div>
             <div className="titleRight">
               <button className="reservationBtn">現在就預訂</button>
@@ -138,13 +149,13 @@ const Hotel = () => {
           <div className="hotelImgWrapper">
             <div className="popupcomment" onMouseEnter={handleHover} onMouseOut={handleHoverExit}>
               <div className='commentInfo' ref={comments}>
-                <button className='commentRate'>{location.state.hotel.rating}</button>
+                <button className='commentRate'>{hotelData.rating}</button>
                 傑出<br />
-                {location.state.hotel.comments}則評論
+                {hotelData.comments}則評論
               </div>
             </div>
             <div className="hotelImg">
-              {location.state.hotel.photos.map((e, index) => (
+              {hotelData.photos.map((e, index) => (
                 <div key={index} className="Imgwrap" onClick={() => clickSlider(index)}>
                   <img src={e} key={index} />
                 </div>
@@ -153,9 +164,9 @@ const Hotel = () => {
           </div>
           <div className="hotelDes">
             <div className="hotelDesText">
-              {location.state.hotel.title}
+              {hotelData.title}
               <br />
-              {location.state.hotel.desc}
+              {hotelData.desc}
               <h2>熱門設施</h2>
               <p className='textIcon'><FontAwesomeIcon icon={faWifi} className="wifi" />
                 免費無線網路 <FontAwesomeIcon icon={faSmokingBan} />禁菸客房</p>
@@ -183,14 +194,14 @@ const Hotel = () => {
                 {format(dates[0].startDate, "MM/dd/yyyy")} - {format(dates[0].endDate, "MM/dd/yyyy")}
               </h3>
               <p>入住 {night} 晚的最佳選擇！
-                此住宿位於{location.state.hotel.city}的地區，地理位置評分高達 {location.state.hotel.rating} 分
+                此住宿位於{hotelData.city}的地區，地理位置評分高達 {hotelData.rating} 分
                 深受獨行旅客歡迎</p>
-              <h2>TWD {location.state.hotel.cheapestPrice}</h2>
+              <h2>TWD {hotelData.cheapestPrice}</h2>
               <button>現在就預訂</button>
             </div>
           </div>
           <hr />
-          <div className="roomDes">
+          {rooms && <div className="roomDes">
             <div className="roomDesText">
               <table>
                 <thead>
@@ -252,7 +263,7 @@ const Hotel = () => {
                 </tbody>
               </table>
             </div>
-          </div>
+          </div>}
         </div>
       </div>
       <Footer />

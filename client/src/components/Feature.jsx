@@ -15,17 +15,17 @@ const Feature = () => {
     const [hotels, setHotels] = useState([])
 
     useEffect(() => {
-        const fetchHotels = async () => {
-            const response = await request('GET', '/hotels', {});
-            if (response.success) {
-                setHotels(response.data);
+        const allHotels = async () => {
+            const result = await request('GET', '/hotels', {});
+            if (result.success) {
+                setHotels(result.data);
             }
         };
 
-        fetchHotels();
+        allHotels();
     }, []);
 
-    const populatHotel = hotels.filter((e) => { return e.popularHotel === true })
+    const populatHotels = hotels.filter((e) => { return e.popularHotel === true })
 
     return (
         <div className='feature'>
@@ -41,7 +41,7 @@ const Feature = () => {
                     <span>近期受歡迎飯店</span>
                 </div>
                 <div className="listItems">
-                    <PopularHotels dataArray={populatHotel} />
+                    <PopularHotels dataArray={populatHotels} />
                 </div>
             </div>
         </div>

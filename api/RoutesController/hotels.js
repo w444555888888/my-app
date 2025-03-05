@@ -15,10 +15,7 @@ import { errorMessage } from "../errorMessage.js"
 export const getAllHotels = async (req, res, next) => {
     try {
         // 查詢所有飯店資料
-        const hotels = await Hotel.find({}) 
-        console.log('====================================');
-        console.log(hotels,'hotels');
-        console.log('====================================');
+        const hotels = await Hotel.find({})
         res.status(200).json(hotels)
     } catch (err) {
         next(errorMessage(500, "查詢飯店資料失敗"))
@@ -26,15 +23,27 @@ export const getAllHotels = async (req, res, next) => {
 }
 
 
-// 獲取所有 || 飯店資料
+// 搜尋飯店資料
 export const getSearchHotels = async (req, res, next) => {
-    const { name, minPrice, maxPrice, startDate, endDate } = req.query
+    const { name, minPrice, maxPrice, startDate, endDate, hotelId } = req.query
     const minPriceNumber = Number(minPrice)
     const maxPriceNumber = Number(maxPrice)
 
     let query = {}
     if (name) {
         query.name = new RegExp(name, "i")
+    }
+
+    if (hotelId && !name && !minPrice && !maxPrice && !startDate && !endDate) {
+        try {
+            const hotel = await Hotel.findById(hotelId)
+            if (!hotel) {
+                return next(errorMessage(404, "找不到此查詢酒店id"))
+            }
+            return res.status(200).json(hotel)
+        } catch (err) {
+            return next(errorMessage(500, "查詢酒店id失敗"))
+        }
     }
 
     try {
@@ -58,47 +67,47 @@ export const getSearchHotels = async (req, res, next) => {
         const updatedHotels = hotels.map(hotel => {
             const hotelRooms = roomsByHotel[String(hotel._id)] || []
             // console.log(`Hotel ${hotel.name} has ${hotelRooms.length} room(s)`)
-        
+
             let cheapestPrice = null // 🔧 確保 `cheapestPrice` 初始值正確
-            let totalHotelPrice = 0 
-        
+            let totalHotelPrice = 0
+
             const updatedRooms = hotelRooms.map(room => {
-                let roomTotalPrice = 0 
-        
-                let currentDate = parseISO(startDate) 
+                let roomTotalPrice = 0
+
+                let currentDate = parseISO(startDate)
                 while (currentDate < parseISO(endDate)) {
                     const dayOfWeek = currentDate.getDay()
                     const dateString = format(currentDate, "yyyy-MM-dd")
-                    let dailyPrice = null 
-        
+                    let dailyPrice = null
+
                     const holiday = room.holidays?.find(h => h.date == dateString)
                     if (holiday) {
                         dailyPrice = holiday.price
                     }
-        
+
                     if (!dailyPrice) {
                         const priceOption = room.pricing?.find(p => p.days_of_week.includes(dayOfWeek))
                         if (priceOption) {
                             dailyPrice = priceOption.price
                         }
                     }
-        
+
                     if (dailyPrice !== null) {
                         roomTotalPrice += dailyPrice
                     }
-        
+
                     currentDate = addDays(currentDate, 1)
                 }
-        
+
                 if (cheapestPrice === null || roomTotalPrice < cheapestPrice) { // 🔧 修正
                     cheapestPrice = roomTotalPrice
                 }
-        
+
                 totalHotelPrice += roomTotalPrice
-        
+
                 return { ...room.toObject(), roomTotalPrice }
             })
-        
+
             return {
                 ...hotel.toObject(),
                 availableRooms: updatedRooms,
