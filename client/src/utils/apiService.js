@@ -15,7 +15,7 @@ axios.interceptors.request.use(
     }
 );
 
-export const request = async (method, endpoint, data = {}, setLoading = () => { }, setMessage) => {
+export const request = async (method, endpoint, data = {}, setLoading = () => { }, setMessage= () => { }) => {
     if (setLoading) setLoading(true);
     try {
         const config = {
@@ -28,7 +28,7 @@ export const request = async (method, endpoint, data = {}, setLoading = () => { 
         return { success: true, data: response.data };
     } catch (error) {
         console.error('Error:', error);
-        setMessage(error.response?.data?.Message || '請求失敗');
+        if (setMessage) setMessage(error.response?.data?.Message || '請求失敗');
         return { success: false, message: error.response?.data?.Message || '請求失敗' };
     } finally {
         if (setLoading) setLoading(false);

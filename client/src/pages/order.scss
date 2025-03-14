@@ -1,0 +1,110 @@
+.order {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+  
+    .order-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+  
+      .order-wrapper {
+        background-color: white;
+        border-radius: 8px;
+        padding: 30px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+        .progress-step {
+          margin-bottom: 30px;
+        }
+  
+        .order-content {
+          .hotel-info {
+            margin-bottom: 30px;
+  
+            h2 {
+              font-size: 24px;
+              margin-bottom: 10px;
+            }
+  
+            .address {
+              color: #666;
+              margin-bottom: 10px;
+            }
+  
+            .rating {
+              .score {
+                background-color: #003580;
+                color: white;
+                padding: 5px 5px;
+                border-radius: 4px;
+              }
+            }
+          }
+  
+          .booking-info {
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            margin-bottom: 30px;
+  
+            h3 {
+              font-size: 20px;
+              margin-bottom: 20px;
+            }
+  
+            .dates {
+              display: flex;
+              gap: 40px;
+              margin-bottom: 20px;
+  
+              .check-in,
+              .check-out {
+                h4 {
+                  font-size: 16px;
+                  margin-bottom: 10px;
+                }
+  
+                p {
+                  color: #666;
+                  margin-bottom: 5px;
+                }
+              }
+            }
+  
+            .room-details {
+              h4 {
+                font-size: 16px;
+                margin-bottom: 10px;
+              }
+  
+              p {
+                color: #666;
+              }
+            }
+          }
+  
+          .price-details {
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+  
+            h3 {
+              font-size: 20px;
+              margin-bottom: 20px;
+            }
+  
+            .total-price {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              font-size: 18px;
+  
+              .price {
+                font-weight: bold;
+                color: #003580;
+              }
+            }
+          }
+        }
+      }
+    }
+  }

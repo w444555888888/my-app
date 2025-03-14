@@ -7,6 +7,7 @@
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import mongoose from 'mongoose'
+import crypto from 'crypto';
 const OrderSchema = new mongoose.Schema(
     {
         userId: {
@@ -45,7 +46,7 @@ const OrderSchema = new mongoose.Schema(
             method: {
                 type: String,
                 enum: ['credit_card', 'paypal', 'bank_transfer'],
-                required: true,
+                default: 'paypal',
             },
             status: {
                 type: String,
@@ -55,7 +56,10 @@ const OrderSchema = new mongoose.Schema(
             transactionId: {
                 type: String,
                 required: true,
-            },
+                default: function () {
+                  return crypto.randomBytes(16).toString('hex'); 
+                },
+              },
         },
     },
     { timestamps: true }

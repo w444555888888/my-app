@@ -1,94 +1,103 @@
-/*
- * @Author: w444555888 w444555888@yahoo.com.tw
- * @Date: 2024-07-25 13:15:20
- * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2025-02-11 19:40:34
- * @FilePath: \my-app\api\RoutesController\hotels.js
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- */
 import Hotel from "../models/Hotel.js";
-import Room  from "../models/Room.js";
-import Order  from "../models/Order.js"
+import Room from "../models/Room.js";
+import Order from "../models/Order.js"
 import { errorMessage } from "../errorMessage.js"
 
 // 全部訂單
-export const getAllOrders = async (req, res) => {
-    try {
-      const orders = await Order.find();
-      res.status(200).json(orders);
-    } catch (err) {
-      res.status(500).json({ message: errorMessage(err) });
+export const getAllOrders = async (req, res, next) => {
+  try {
+    const orders = await Order.find();
+    res.status(200).json(orders);
+  } catch (error) {
+    return next(errorMessage(500, "查詢全部訂單: Error", error))
+  }
+};
+
+// 新訂單
+export const createOrder = async (req, res, next) => {
+  const { hotelId, roomId, userId } = req.body;  // 解構傳入的訂單資料
+
+  try {
+    // 檢查是否已存在相同的訂單
+    const existingOrder = await Order.findOne({
+      hotelId,
+      roomId,
+      userId,
+      status: { $ne: 'completed' }  // 排除已完成的訂單
+    });
+
+    if (existingOrder) {
+      return next(errorMessage(400, "此飯店房型尚有未處理訂單，請先處理完成現有訂單"))
     }
-  };
-  
-  // 新訂單
-  export const createOrder = async (req, res) => {
-    const { hotelId, roomId } = req.body;  // 解構傳入的訂單資料
-  
-    try {
-      // 檢查酒店是否存在
-      const hotel = await Hotel.findById(hotelId);
-      if (!hotel) {
-        return res.status(404).json({ message: "Hotel not found" });
-      }
-  
-      // 檢查房間是否存在
-      const room = await Room.findById(roomId);
-      if (!room) {
-        return res.status(404).json({ message: "Room not found" });
-      }
-  
-      // 如果酒店和房間都存在，創建新的訂單
-      const newOrder = new Order(req.body);
-      const savedOrder = await newOrder.save();
-  
-      // 返回創建成功的訂單
-      res.status(201).json(savedOrder);
-    } catch (err) {
-      res.status(500).json({ message: errorMessage(err) });
+
+    // 檢查酒店是否存在
+    const hotel = await Hotel.findById(hotelId);
+    if (!hotel) {
+      return next(errorMessage(404, "新訂單 Hotel not found"))
     }
-  };
-  
-  
-  //根據id查找
-  export const getOrderById = async (req, res) => {
-    try {
-      const order = await Order.findById(req.params.id);
-      if (!order) {
-        return res.status(404).json({ message: "Order not found" });
-      }
-      res.status(200).json(order);
-    } catch (err) {
-      res.status(500).json({ message: errorMessage(err) });
+
+    // 檢查房間是否存在
+    const room = await Room.findById(roomId);
+    if (!room) {
+      return next(errorMessage(404, "新訂單 Room not found"))
     }
-  };
-  
-  // 根據id更新訂單
-  export const updateOrder = async (req, res) => {
-    try {
-      const updatedOrder = await Order.findByIdAndUpdate(
-        req.params.id,
-        { $set: req.body },
-        { new: true }
-      );
-      if (!updatedOrder) {
-        return res.status(404).json({ message: "Order not found" });
-      }
-      res.status(200).json(updatedOrder);
-    } catch (err) {
-      res.status(500).json({ message: errorMessage(err) });
+
+    // 如果酒店和房間都存在，創建新的訂單
+    const newOrder = new Order(req.body);
+    const savedOrder = await newOrder.save();
+
+    // 返回創建成功的訂單
+    res.status(201).json(savedOrder);
+  } catch (error) {
+    return next(errorMessage(500, "新訂單: Error", error))
+  }
+};
+
+
+//根據id查找
+export const getOrderById = async (req, res, next) => {
+  try {
+    // Order model 設定 ref
+    const order = await Order.findById(req.params.id)
+      .populate('hotelId')
+      .populate('roomId');
+
+    if (!order) {
+      return next(errorMessage(404, "訂單不存在"))
     }
-  };
-  
-  // 根據id刪除訂單
-  export const deleteOrder = async (req, res) => {
-    try {
-      const deletedOrder = await Order.findByIdAndDelete(req.params.id);
-      if (!deletedOrder) {
-        return res.status(404).json({ message: "Order not found" });
-      }
-      res.status(200).json({ message: "Order deleted successfully" });
-    } catch (err) {
-      res.status(500).json({ message: errorMessage(err) });
+
+    res.status(200).json(order);
+  } catch (error) {
+    return next(errorMessage(500, "訂單id查找: Error", error))
+  }
+};
+
+// 根據id更新訂單
+export const updateOrder = async (req, res, next) => {
+  try {
+    const updatedOrder = await Order.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },
+      { new: true }
+    );
+    if (!updatedOrder) {
+      return next(errorMessage(404, "訂單不存在"))
     }
-  };
+    res.status(200).json(updatedOrder);
+  } catch (error) {
+    return next(errorMessage(500, "訂單id更新訂單: Error", error))
+  }
+};
+
+// 根據id刪除訂單
+export const deleteOrder = async (req, res, next) => {
+  try {
+    const deletedOrder = await Order.findByIdAndDelete(req.params.id);
+    if (!deletedOrder) {
+      return next(errorMessage(404, "訂單不存在"))
+    }
+    res.status(200).json({ message: "訂單刪除成功" });
+  } catch (error) {
+    return next(errorMessage(500, "訂單id刪除訂單: Error", error))
+  }
+};

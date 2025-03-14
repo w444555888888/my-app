@@ -19,8 +19,9 @@ import LogIn from "./pages/LogIn"
 import Forgot from "./pages/Forgot"
 import Personal from "./pages/Personal"
 import ResetPassword from "./pages/ResetPassword"
+import Order from "./pages/Order"
 import axios from 'axios'
-function App () {
+function App() {
   // 跨域請求cookie
   axios.defaults.withCredentials = true
 
@@ -44,6 +45,8 @@ function App () {
           <Route path="/hotels" element={<PrivateRoute login={login}><Hotel /></PrivateRoute>} />
 
           <Route path="/personal" element={<PrivateRoute login={login}><Personal /></PrivateRoute>} />
+
+          <Route path="/order/:startDate/:endDate/:hotelId/:roomId" element={<PrivateRoute login={login}><Order /></PrivateRoute>} />
         </Routes>
       </Router>
     </div>

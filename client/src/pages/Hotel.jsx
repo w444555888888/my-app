@@ -8,16 +8,20 @@ import Navbar from '../components/Navbar'
 import { request } from '../utils/apiService';
 import { gsap } from "gsap"
 import "./hotel.scss"
-import { useLocation, useParams } from 'react-router-dom'
+import { useLocation, useParams, useSearchParams, useNavigate } from 'react-router-dom'
 import { DateRange } from 'react-date-range'
 import { differenceInDays, format } from "date-fns";
 import 'react-date-range/dist/styles.css' // main css file
 import 'react-date-range/dist/theme/default.css' // theme css file
-
+import { useDispatch } from 'react-redux';
+import { setCurrentHotel, setAvailableRooms } from '../../src/redux/hotelSlice';
 
 
 const Hotel = () => {
   const location = useLocation()
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const dispatch = useDispatch();
   const [hotelData, setHotelData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState(true)
@@ -26,14 +30,18 @@ const Hotel = () => {
   const [rooms, setRooms] = useState([])
   const [night, setNight] = useState('')
   const comments = useRef(null)
+ 
 
-  // 預設日期為今天和一周後
-  const today = new Date()
-  const nextWeek = new Date()
-  nextWeek.setDate(today.getDate() + 7)
+  // 查詢路由參數
+  const hotelIdRouter = searchParams.get('hotelId');
+  const startDateRouter = searchParams.get('startDate');
+  const endDateRouter = searchParams.get('endDate');
+
+
+  // 日期
   const [openCalendar, setOpenCalendar] = useState(false)
-  const [startDate, setStartDate] = useState(format(today, "yyyy-MM-dd"))
-  const [endDate, setEndDate] = useState(format(nextWeek, "yyyy-MM-dd"))
+  const [startDate, setStartDate] = useState(format(startDateRouter, "yyyy-MM-dd"))
+  const [endDate, setEndDate] = useState(format(endDateRouter, "yyyy-MM-dd"))
   const [dates, setDates] = useState([
     {
       startDate: startDate ? new Date(startDate) : new Date(),
@@ -45,8 +53,7 @@ const Hotel = () => {
   // 獲取酒店數據
   useEffect(() => {
     const fetchHotelData = async () => {
-      const params = new URLSearchParams(location.search);
-      const queryString = Array.from(params.entries())
+      const queryString = Array.from(searchParams.entries())
         .map(([key, value]) => `${key}=${value}`)
         .join('&');
 
@@ -54,11 +61,13 @@ const Hotel = () => {
       if (result.success) {
         setHotelData(result?.data?.[0]);
         setRooms(result?.data?.[0]?.availableRooms);
+        dispatch(setCurrentHotel(result?.data?.[0]));
+        dispatch(setAvailableRooms(result?.data?.[0]?.availableRooms));
       }
     };
 
     fetchHotelData();
-  }, [location.search]);
+  }, [location.search, dispatch]);
 
   // 晚數
   useEffect(() => {
@@ -111,6 +120,11 @@ const Hotel = () => {
       setSiderIndex(newSliderIndex)
     }
   }
+
+  const handleNavigateToOrder = async (roomId) => {
+    navigate(`/order/${startDateRouter}/${endDateRouter}/${hotelIdRouter}/${roomId}`);
+  };
+
 
   if (!hotelData) return <div>找不到酒店資訊</div>
 
@@ -262,7 +276,7 @@ const Hotel = () => {
 
                       </td>
                       <td>
-                        <button>現在就預定</button>
+                        <button onClick={() => handleNavigateToOrder(e._id)}>現在就預定</button>
                       </td>
                     </tr>
                   ))}
