@@ -4,13 +4,13 @@ import Navbar from '../components/Navbar'
 import "./hotelsList.scss"
 import { DateRange } from 'react-date-range'
 import { format } from 'date-fns'
-import { useLocation } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { request } from '../utils/apiService';
 
 const HotelsList = () => {
-    // 路由導航
+    // 路由
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams();
 
     // 預設日期為今天和一周後
     const today = new Date()
@@ -79,8 +79,7 @@ const HotelsList = () => {
     // 副作用監聽的路由網址，發送請求
     useEffect(() => {
         const axiosHotels = async () => {
-            const params = new URLSearchParams(location.search)
-            const queryString = Array.from(params.entries())
+            const queryString = Array.from(searchParams.entries())
                 .map(([key, value]) => `${key}=${value}`)
                 .join('&')
 
