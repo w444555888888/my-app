@@ -45,10 +45,6 @@ const RoomSchema = new mongoose.Schema({
             refundable: {
                 type: Boolean,
                 default: false, // 是否可退款
-            },
-            paymentMethod: {
-                type: String,
-                default: null, // 付款方式分類
             }
         }
     ],
