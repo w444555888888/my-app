@@ -114,11 +114,11 @@ const Order = () => {
 
             {/* 價格明細 */}
             <div className="price-details">
-              <h3>房價明細</h3>
+              <div className="price-title">房價明細</div>
               <div className="total-price">
-                <span>總金額</span>
+                <span>付款方式</span>
                 <div className="booking-policies">
-                  {selectedRoom.bookingPolicies.map(policy => (
+                  {selectedRoom.paymentOptions.map(policy => (
                     <div key={policy._id} className="policy-item">
                       <div className="policy-type">{policy.type}</div>
                       <div className="policy-description">{policy.description}</div>

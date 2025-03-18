@@ -258,7 +258,7 @@ const Hotel = () => {
                       <td className='twd'>$TWD {e.roomTotalPrice}<br /> <span>包含稅費與其他費用</span></td>
                       <td>
                         <ul>
-                          {e.bookingPolicies.map((policy, index) => (
+                          {e.paymentOptions.map((policy, index) => (
                             <li key={index}>
                               <strong>{policy.type}</strong>:
                               {index === 0 && (

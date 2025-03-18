@@ -32,15 +32,15 @@ const RoomSchema = new mongoose.Schema({
         type: String,
         required: true, // 對應的飯店 ID
     },
-    bookingPolicies: [
+    paymentOptions: [
         {
             type: {
                 type: String,
-                required: true, // 政策類型 (如退款政策、付款方式)
+                required: true, //付款類型
             },
             description: {
                 type: String,
-                required: true, // 政策詳細描述
+                required: true, // 付款詳細描述
             },
             refundable: {
                 type: Boolean,
@@ -48,7 +48,7 @@ const RoomSchema = new mongoose.Schema({
             },
             paymentMethod: {
                 type: String,
-                default: null, // 付款方式，如信用卡、轉帳等
+                default: null, // 付款方式分類
             }
         }
     ],
