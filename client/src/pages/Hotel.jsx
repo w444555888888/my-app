@@ -36,12 +36,12 @@ const Hotel = () => {
   const hotelIdRouter = searchParams.get('hotelId');
   const startDateRouter = searchParams.get('startDate');
   const endDateRouter = searchParams.get('endDate');
+  const today = format(new Date(), "yyyy-MM-dd");
 
-
-  // 日期
+  // 日期 ? 路由沒有日期(首頁)，填上今天日期 
   const [openCalendar, setOpenCalendar] = useState(false)
-  const [startDate, setStartDate] = useState(format(startDateRouter, "yyyy-MM-dd"))
-  const [endDate, setEndDate] = useState(format(endDateRouter, "yyyy-MM-dd"))
+  const [startDate, setStartDate] = useState(startDateRouter ? format(new Date(startDateRouter), "yyyy-MM-dd") : today);
+  const [endDate, setEndDate] = useState(endDateRouter ? format(new Date(endDateRouter), "yyyy-MM-dd") : today);
   const [dates, setDates] = useState([
     {
       startDate: startDate ? new Date(startDate) : new Date(),
@@ -268,7 +268,7 @@ const Hotel = () => {
                               <span>{policy.description}</span>
                             </li>
                           ))}
-                          <div className='breakFast'>
+                          <div className="breakFast">
                             {e.breakFast === true ? (
                               <li>
                                 <MdFreeBreakfast className="breakfast-icon" />含早餐

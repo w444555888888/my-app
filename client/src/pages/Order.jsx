@@ -18,7 +18,7 @@ import Navbar from '../components/Navbar'
 import { format } from "date-fns";
 import "./order.scss"
 import Skeleton from 'react-loading-skeleton';
-
+import { MdFreeBreakfast } from "react-icons/md"
 
 const Order = () => {
   const { startDate, endDate, hotelId, roomId } = useParams();
@@ -81,7 +81,6 @@ const Order = () => {
               </div>
             </div>
 
-
             {/* 訂房信息 */}
             <div className="booking-info">
               <h3>您的訂房資訊</h3>
@@ -98,8 +97,18 @@ const Order = () => {
                 </div>
               </div>
               <div className="room-details">
-                <h4>已選擇：</h4>
-                <p>{selectedRoom.title} ({selectedRoom.maxPeople} 位成人)</p>
+                <div className="room-title">已選擇：</div>
+                <div className="room-info">
+                  <div className="room-people">
+                    {selectedRoom.title} ({selectedRoom.maxPeople} 位成人)
+                  </div>
+                  {selectedRoom.breakFast && (
+                    <div className="breakfast-info">
+                      <MdFreeBreakfast className="breakfast-icon" />
+                      <span>含早餐</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 

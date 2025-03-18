@@ -36,6 +36,7 @@
 
           .inform {
             margin: 20px 20px 20px 0;
+
             .inform-item {
               background-color: #3888f8;
               color: white;
@@ -78,13 +79,34 @@
           }
 
           .room-details {
-            h4 {
+            .room-title {
               font-size: 16px;
-              margin-bottom: 10px;
+              margin-bottom: 12px;
+              color: #333;
             }
 
-            p {
-              color: #666;
+            .room-info {
+              .room-people {
+                font-size: 15px;
+                color: #666;
+                margin-bottom: 8px;
+              }
+
+              .breakfast-info {
+                display: flex;
+                align-items: center;
+                font-weight: 500;
+                font-size: 14px;
+                color: #666;
+                .breakfast-icon {
+                  font-size: 18px;
+                  margin-right: 6px;
+                }
+
+                span {
+                  line-height: 1;
+                }
+              }
             }
           }
         }
@@ -92,16 +114,16 @@
         .price-details {
           border-top: 1px solid #eee;
           padding-top: 20px;
-        
+
           h3 {
             font-size: 20px;
             margin-bottom: 20px;
           }
-        
+
           .total-price {
             .booking-policies {
               margin-bottom: 20px;
-              
+
               .policy-item {
                 padding: 15px;
                 border: 1px solid #e0e0e0;
@@ -113,25 +135,25 @@
                   background-color: rgba(94, 57, 227, 0.2);
                   box-shadow: 0px 0px 15px var(--primary-color);
                 }
-                
+
                 .policy-type {
                   font-weight: bold;
                   margin-bottom: 8px;
                   color: #333;
                 }
-                
+
                 .policy-description {
                   color: #666;
                   margin-bottom: 8px;
                   line-height: 1.4;
                 }
-                
+
                 .policy-payment {
                   font-size: 0.9em;
                   color: #444;
                   margin-bottom: 5px;
                 }
-                
+
                 .policy-refund {
                   font-size: 0.9em;
                   color: #444;
@@ -142,7 +164,7 @@
                 }
               }
             }
-        
+
             .price-summary {
               display: flex;
               justify-content: space-between;
@@ -150,7 +172,7 @@
               font-size: 18px;
               padding-top: 15px;
               border-top: 1px solid #eee;
-        
+
               .price {
                 font-weight: bold;
                 color: #003580;
