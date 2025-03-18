@@ -1,153 +1,200 @@
 .listContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+
+  .listWrapper {
+    width: 100%;
+    max-width: 1024px;
+    gap: 40px;
     display: flex;
-    justify-content: center;
-    margin-top: 30px;
-  
-    .listWrapper {
-      width: 100%;
-      max-width: 1024px;
-      gap: 40px;
-      display: flex;
-    }
   }
-  
-  .listSearch {
-    background-color: rgb(241, 241, 241);
-    padding: 30px;
-    border-radius: 10px;
-    position: sticky;
-    height: max-content;
-    top: 10px;
-  
-    .searchTitle {
-      color: black;
-      font-size: 22px;
-    }
+}
+
+.listSearch {
+  background-color: rgb(241, 241, 241);
+  padding: 30px;
+  border-radius: 10px;
+  position: sticky;
+  height: max-content;
+  top: 10px;
+
+  .searchTitle {
+    color: black;
+    font-size: 22px;
   }
-  
-  .listItem {
-    width: 300px; // Default width for larger screens
-    margin-top: 20px; // Margin between items
-    display: flex;
-    flex-direction: column;
-    font-size: 12px;
-    color: rgba(0, 0, 0);
-  
-    .searchInput {
-      border: none;
-      padding: 10px 5px;
-      border-radius: 5px;
-    }
-  
-    .dates {
-      background-color: #fff;
-      border: none;
-      border-radius: 2px;
-    }
-  
-    .searchbtn {
-      padding: 10px;
-      border-radius: 5px;
-      border: none;
-      font-size: 20px;
-      color: #fff;
-      cursor: pointer;
-      background-color: rgb(128, 127, 127);
-    }
-  }
-  
-  .listItemLimitPrice {
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: column;
-  
-    .searchInput {
-      border: 1px solid gray;
-      border-radius: 5px;
-    }
-  }
-  
-  .listItmConditions {
-    display: flex;
-    background-color: #fff;
+}
+
+.listItem {
+  width: 300px; 
+  margin-top: 20px; 
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  color: rgba(0, 0, 0);
+
+  .searchInput {
+    border: none;
     padding: 10px 5px;
     border-radius: 5px;
   }
-  
-  .resultTitle {
+
+  .dates {
+    background-color: #fff;
+    border: none;
+    border-radius: 2px;
+  }
+
+  .searchbtn {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    font-size: 20px;
+    color: #fff;
+    cursor: pointer;
+    background-color: rgb(128, 127, 127);
+  }
+}
+
+.listItemLimitPrice {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+
+  .searchInput {
+    border: 1px solid gray;
+    border-radius: 5px;
+  }
+}
+
+.listItmConditions {
+  display: flex;
+  background-color: #fff;
+  padding: 10px 5px;
+  border-radius: 5px;
+}
+
+.resultTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+// Responsive Design
+
+@media (max-width: 1024px) {
+  .listContainer {
+    padding: 0 10px;
+  }
+
+  .listWrapper {
+    gap: 20px;
+
+  }
+
+  .listItem {
+    width: 48%;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .listWrapper {
+    gap: 15px;
+
+  }
+
+  .listItem {
+    width: 100%;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+
+  .searchTitle {
+    font-size: 18px;
+  }
+
+  .listSearch {
+    padding: 20px;
+  }
+
+  .searchbtn {
+    font-size: 18px;
+    padding: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .listWrapper {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .listItem {
+    width: 100%;
+    font-size: 18px;
+    margin-top: 8px;
+  }
+
+  .searchTitle {
+    font-size: 16px;
+  }
+
+  .listSearch {
+    padding: 15px;
+  }
+
+  .searchbtn {
+    font-size: 16px;
+    padding: 7px;
+  }
+}
+
+
+
+.skeleton-item {
+  padding: 20px;
+  margin-bottom: 20px;
+  background: #fff;
+  border-radius: 8px;
+
+  .skeleton-wrapper {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 15px;
+    gap: 20px;
   }
-  
-  // Responsive Design
-  
-  @media (max-width: 1024px) {
-    .listContainer {
-      padding: 0 10px; 
-    }
-  
-    .listWrapper {
-      gap: 20px; 
-     
-    }
-  
-    .listItem {
-      width: 48%; 
-      font-size: 14px; 
-    }
+
+  .skeleton-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 8px;
   }
-  
-  @media (max-width: 768px) {
-    .listWrapper {
-      gap: 15px; 
-     
+
+  .skeleton-content {
+    flex: 1;
+
+    .skeleton-title {
+      height: 30px;
+      margin-bottom: 10px;
+      width: 300px;
     }
-  
-    .listItem {
-      width: 100%; 
-      font-size: 16px; 
-      margin-top: 10px; 
+
+    .skeleton-text {
+      margin-bottom: 10px;
     }
-  
-    .searchTitle {
-      font-size: 18px; 
-    }
-  
-    .listSearch {
-      padding: 20px; 
-    }
-  
-    .searchbtn {
-      font-size: 18px; 
-      padding: 8px; 
+
+    .skeleton-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .skeleton-price {
+        width: 100px;
+      }
+
+      .skeleton-button {
+        width: 100px;
+      }
     }
   }
-  
-  @media (max-width: 480px) {
-    .listWrapper {
-      gap: 10px; 
-      flex-wrap: wrap;
-    }
-  
-    .listItem {
-      width: 100%; 
-      font-size: 18px; 
-      margin-top: 8px; 
-    }
-  
-    .searchTitle {
-      font-size: 16px; 
-    }
-  
-    .listSearch {
-      padding: 15px; 
-    }
-  
-    .searchbtn {
-      font-size: 16px; 
-      padding: 7px; 
-    }
-  }
-  
+}

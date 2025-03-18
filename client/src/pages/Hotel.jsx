@@ -15,7 +15,7 @@ import 'react-date-range/dist/styles.css' // main css file
 import 'react-date-range/dist/theme/default.css' // theme css file
 import { useDispatch } from 'react-redux';
 import { setCurrentHotel, setAvailableRooms } from '../../src/redux/hotelSlice';
-
+import EmptyState from '../subcomponents/EmptyState'
 
 const Hotel = () => {
   const location = useLocation()
@@ -30,7 +30,7 @@ const Hotel = () => {
   const [rooms, setRooms] = useState([])
   const [night, setNight] = useState('')
   const comments = useRef(null)
- 
+
 
   // 查詢路由參數
   const hotelIdRouter = searchParams.get('hotelId');
@@ -126,7 +126,10 @@ const Hotel = () => {
   };
 
 
-  if (!hotelData) return <div>找不到酒店資訊</div>
+  if (!hotelData) return <EmptyState
+    title="找不到酒店資訊"
+    description="很抱歉，我們無法找到相關的酒店資訊"
+  />
 
   return (
     <div className='hotel'>

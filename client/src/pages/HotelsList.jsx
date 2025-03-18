@@ -6,7 +6,8 @@ import { DateRange } from 'react-date-range'
 import { format } from 'date-fns'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { request } from '../utils/apiService';
-
+import EmptyState from '../subcomponents/EmptyState'
+import Skeleton from 'react-loading-skeleton';
 const HotelsList = () => {
     // 路由
     const navigate = useNavigate()
@@ -65,15 +66,15 @@ const HotelsList = () => {
 
 
     // 搜尋飯店條件
-   const handleSearchHotelsPrice = () => {
-    const params = new URLSearchParams();
-    if (destinationState) params.set('name', destinationState);
-    if (minPrice) params.set('minPrice', minPrice);
-    if (maxPrice) params.set('maxPrice', maxPrice);
-    if (startDate) params.set('startDate', startDate);
-    if (endDate) params.set('endDate', endDate);
-    navigate(`/hotelsList?${params.toString()}`);
-}
+    const handleSearchHotelsPrice = () => {
+        const params = new URLSearchParams();
+        if (destinationState) params.set('name', destinationState);
+        if (minPrice) params.set('minPrice', minPrice);
+        if (maxPrice) params.set('maxPrice', maxPrice);
+        if (startDate) params.set('startDate', startDate);
+        if (endDate) params.set('endDate', endDate);
+        navigate(`/hotelsList?${params.toString()}`);
+    }
 
 
     // 副作用監聽的路由網址，發送請求
@@ -167,12 +168,33 @@ const HotelsList = () => {
                                 <h2>在{destinationState ? destinationState : '全區域搜尋'}找到{hotels.length}間房間</h2>
                             </div>
 
-                            {/* 飯店列表數據 */}
-                            {hotels.map(hotel => (
-                                hotel ?
+                            {loading ? (
+                                Array(3).fill().map((_, index) => (
+                                    <div key={index} className="skeleton-item">
+                                        <div className="skeleton-wrapper">
+                                            <Skeleton className="skeleton-image" />
+                                            <div className="skeleton-content">
+                                                <Skeleton className="skeleton-title" />
+                                                <Skeleton count={3} className="skeleton-text" />
+                                                <div className="skeleton-footer">
+                                                    <Skeleton className="skeleton-price" />
+                                                    <Skeleton className="skeleton-button" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : hotels.length > 0 ? (
+                                hotels.map(hotel => (
                                     <SearchItem key={hotel._id} hotel={hotel} />
-                                    : null
-                            ))}
+                                ))
+                            ) : (
+                                <EmptyState
+                                    title="找不到酒店資訊"
+                                    description="很抱歉，我們無法找到相關的酒店資訊"
+                                />
+                            )}
+
                         </div>
                     </div>
                 </div>
