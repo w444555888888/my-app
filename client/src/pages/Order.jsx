@@ -120,9 +120,8 @@ const Order = () => {
                 <div className="booking-policies">
                   {selectedRoom.paymentOptions.map(policy => (
                     <div key={policy._id} className="policy-item">
-                      <div className="policy-type">{policy.type}</div>
+                      <div className="policy-type">付款方式：{policy.type}</div>
                       <div className="policy-description">{policy.description}</div>
-                      <div className="policy-payment">付款方式：{policy.paymentMethod}</div>
                       <div className="policy-refund">
                         {policy?.refundable ? '可退款' : '不可退款'}
                       </div>
