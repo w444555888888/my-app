@@ -47,6 +47,7 @@ const OrderSchema = new mongoose.Schema(
                 type: String,
                 enum: ['credit_card', 'paypal', 'bank_transfer','on_site_payment'],
                 default: 'on_site_payment',
+                required: true
             },
             status: {
                 type: String,

@@ -24,7 +24,8 @@ const Order = () => {
   const { startDate, endDate, hotelId, roomId } = useParams();
   const { currentHotel, availableRooms } = useSelector(state => state.hotel);
   const [selectedRoom, setSelectedRoom] = useState(null);
-
+  // 付款方式
+  const [selectedPaymentType, setSelectedPaymentType] = useState(null);
   useEffect(() => {
     if (availableRooms && roomId) {
       const room = availableRooms.find(room => room._id === roomId);
@@ -116,11 +117,14 @@ const Order = () => {
             <div className="price-details">
               <div className="price-title">房價明細</div>
               <div className="total-price">
-                <span>付款方式</span>
                 <div className="booking-policies">
                   {selectedRoom.paymentOptions.map(policy => (
-                    <div key={policy._id} className="policy-item">
-                      <div className="policy-type">付款方式：{policy.type}</div>
+                    <div
+                      key={policy._id}
+                      className={`policy-item ${selectedPaymentType === policy.type ? 'selected' : ''}`}
+                      onClick={() => setSelectedPaymentType(policy.type)}
+                    >
+                      <div className="policy-type">支付方式：{policy.type}</div>
                       <div className="policy-description">{policy.description}</div>
                       <div className="policy-refund">
                         {policy?.refundable ? '可退款' : '不可退款'}
@@ -133,6 +137,18 @@ const Order = () => {
                   <span className="price">TWD {selectedRoom.roomTotalPrice}</span>
                 </div>
               </div>
+              <button 
+                className="confirm-button"
+                disabled={!selectedPaymentType}
+                onClick={() => {
+                  if (!selectedPaymentType) {
+                    alert('請選擇付款方式');
+                    return;
+                  }
+                }}
+              >
+                確認訂單
+              </button>
             </div>
           </div>
         </div>
