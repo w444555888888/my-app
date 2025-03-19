@@ -1,3 +1,79 @@
+.slider {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .sliderWrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    position: relative;
+
+    .wrapperTitle {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+      color: white;
+
+      .TitleName {
+        font-size: 24px;
+      }
+
+      .CloseSign {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        &:hover {
+          opacity: 0.8;
+        }
+      }
+    }
+
+    .wrapperBody {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 0 50px;
+
+      img {
+        max-width: 70%;
+        max-height: 80vh;
+        object-fit: contain;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+
+      .arrow {
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 20px;
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.1);
+          border-radius: 50%;
+        }
+      }
+    }
+  }
+}
+
 .HotelContainer {
   display: flex;
   justify-content: center;
@@ -195,7 +271,7 @@
                 border-bottom: 3px solid rgba(169, 169, 169, 0.5);
                 border-left: none;
 
-                button{
+                button {
                   border: none;
                   cursor: pointer;
                   background: var(--primary-color);

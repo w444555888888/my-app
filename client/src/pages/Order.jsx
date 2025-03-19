@@ -1,16 +1,3 @@
-
-// 
-// const userInfo = JSON.parse(localStorage.getItem('username'));
-// const selectedRoom = rooms.find(room => room._id === roomId);
-// const result = await request('POST', '/order', {
-//   hotelId: hotelIdRouter,
-//   roomId: roomId,
-//   checkInDate: startDateRouter,
-//   checkOutDate: endDateRouter,
-//   userId: userInfo._id,
-//   totalPrice: selectedRoom.roomTotalPrice 
-// });
-
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
@@ -19,13 +6,39 @@ import { format } from "date-fns";
 import "./order.scss"
 import Skeleton from 'react-loading-skeleton';
 import { MdFreeBreakfast } from "react-icons/md"
-
+import { toast } from 'react-toastify';
+import { request } from '../utils/apiService';
 const Order = () => {
   const { startDate, endDate, hotelId, roomId } = useParams();
   const { currentHotel, availableRooms } = useSelector(state => state.hotel);
   const [selectedRoom, setSelectedRoom] = useState(null);
   // 付款方式
   const [selectedPaymentType, setSelectedPaymentType] = useState(null);
+
+  const handleOrder = async() => {
+    try {
+      const userInfo = JSON.parse(localStorage.getItem('username'));
+      const result = await request('POST', '/order', {
+        hotelId: hotelId,
+        roomId: roomId,
+        checkInDate: startDate,
+        checkOutDate: endDate,
+        userId: userInfo._id,
+        totalPrice: selectedRoom.roomTotalPrice,
+        payment: {
+          method: selectedPaymentType
+        }
+      });
+      
+      if(result.success) {
+        toast.success('訂單新增成功！');
+       
+      }
+    } catch (error) {
+      toast.error('訂單建立失敗');
+    }
+  }
+
   useEffect(() => {
     if (availableRooms && roomId) {
       const room = availableRooms.find(room => room._id === roomId);
@@ -137,15 +150,10 @@ const Order = () => {
                   <span className="price">TWD {selectedRoom.roomTotalPrice}</span>
                 </div>
               </div>
-              <button 
+              <button
                 className="confirm-button"
                 disabled={!selectedPaymentType}
-                onClick={() => {
-                  if (!selectedPaymentType) {
-                    alert('請選擇付款方式');
-                    return;
-                  }
-                }}
+                onClick={handleOrder}
               >
                 確認訂單
               </button>
