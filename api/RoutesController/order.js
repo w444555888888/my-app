@@ -15,7 +15,7 @@ export const getAllOrders = async (req, res, next) => {
 
 // 新訂單
 export const createOrder = async (req, res, next) => {
-  const { hotelId, roomId, userId } = req.body;  // 解構傳入的訂單資料
+  const { hotelId, roomId, userId, totalPrice } = req.body;  // 解構傳入的訂單資料
 
   try {
     // 檢查是否已存在相同的訂單
@@ -42,8 +42,15 @@ export const createOrder = async (req, res, next) => {
       return next(errorMessage(404, "新訂單 Room not found"))
     }
 
+    // 計算手續費 10%
+    const serviceFee = totalPrice * 0.10;
+    const totalPriceWithFee = totalPrice + serviceFee;
+
     // 如果酒店和房間都存在，創建新的訂單
-    const newOrder = new Order(req.body);
+    const newOrder = new Order({
+      ...req.body,
+      totalPrice: totalPriceWithFee // 設置總價加上手續費
+    });
     const savedOrder = await newOrder.save();
 
     // 返回創建成功的訂單
