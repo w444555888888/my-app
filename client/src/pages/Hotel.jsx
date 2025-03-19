@@ -242,7 +242,7 @@ const Hotel = () => {
                       <td>
                         <span className="roomTitle">{e.title}</span>
                         <IoBed /> <br />
-                        <span className='bedNumber'>{e.bedNumber}</span><br />
+                        <span className="roomType">{e.roomType}</span><br />
                         {e.desc.map((item, index) => (
                           <span className='desc' key={index}>
                             <FontAwesomeIcon icon={faCheck} className="iconCheck" />
@@ -255,7 +255,7 @@ const Hotel = () => {
                         ))}
                       </td>
 
-                      <td className='twd'>$TWD {e.roomTotalPrice}<br /> <span>包含稅費與其他費用</span></td>
+                      <td className="twd">$TWD {e.roomTotalPrice}<br /> <span>包含稅費與其他費用</span></td>
                       <td>
                         <ul>
                           {e.paymentOptions.map((policy, index) => (

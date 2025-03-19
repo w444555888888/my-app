@@ -16,8 +16,9 @@ const RoomSchema = new mongoose.Schema({
         type: [String],
         required: true, // 房間設施清單
     },
-    bedNumber: {
+    roomType: {
         type: String,
+        enum: ['Single Room', 'Double Room', 'Twin Room', 'Family Room', 'Deluxe Room'],
         required: true, // 床型描述
     },
     maxPeople: {
