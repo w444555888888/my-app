@@ -14,6 +14,7 @@ const Order = () => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   // 付款方式
   const [selectedPaymentType, setSelectedPaymentType] = useState(null);
+  const [orderSuccess, setOrderSuccess] = useState(false);
 
   const handleOrder = async () => {
     try {
@@ -31,6 +32,7 @@ const Order = () => {
       });
 
       if (result.success) {
+        setOrderSuccess(true);
         toast.success('訂單新增成功！');
       }
     } catch (error) {
@@ -89,116 +91,142 @@ const Order = () => {
               <div className="step-number">2</div>
               <div className="step-text">填寫資料</div>
             </div>
-            <div className="step-item">
+            <div className={`step-item ${orderSuccess ? 'active' : ''}`}>
               <div className="step-number">3</div>
               <div className="step-text">完成預訂</div>
             </div>
           </div>
 
-          {/* 訂單內容區域 */}
-          <div className="order-content">
-            <div className="hotel-info">
-              <div className="hotel-name">{currentHotel.name}</div>
-              <p className="address">{currentHotel.address}</p>
-              <div className="inform">
-                <span className="inform-item">Email: {currentHotel.email}</span>
-                <span className="inform-item">Tel: {currentHotel.phone}</span>
-              </div>
-            </div>
-
-
-            {/* 客戶資訊 */}
-            <div className="customer-info">
-              <h3>訂房人資訊</h3>
-              {(() => {
-                const userInfo = JSON.parse(localStorage.getItem('username'));
-                return (
-                  <div className="customer-details">
-                    <div className="info-item">
-                      <span className="label">姓名：</span>
-                      <span>{userInfo.realName}</span>
-                    </div>
-                    <div className="info-item">
-                      <span className="label">帳號：</span>
-                      <span>{userInfo.username}</span>
-                    </div>
-                    <div className="info-item">
-                      <span className="label">電話：</span>
-                      <span>{userInfo.phoneNumber}</span>
-                    </div>
-                    <div className="info-item">
-                      <span className="label">地址：</span>
-                      <span>{userInfo.address}</span>
-                    </div>
-                  </div>
-                );
-              })()}
-            </div>
-
-            {/* 訂房信息 */}
-            <div className="booking-info">
-              <h3>您的訂房資訊</h3>
-              <div className="dates">
-                <div className="check-in">
-                  <h4>入住時間</h4>
-                  <p>{format(new Date(startDate), "yyyy 年 MM 月 dd 日")}</p>
-                  <p>下午3:00 - 下午6:00</p>
+          {orderSuccess ? (
+            <div className="order-success">
+              <div className="success-icon">✓</div>
+              <h2>訂房成功！</h2>
+              <p>感謝您的預訂，我們已收到您的訂單。</p>
+              <div className="booking-summary">
+                <h3>訂單摘要</h3>
+                <div className="summary-item">
+                  <span>飯店名稱：</span>
+                  <span>{currentHotel.name}</span>
                 </div>
-                <div className="check-out">
-                  <h4>退房時間</h4>
-                  <p>{format(new Date(endDate), "yyyy 年 MM 月 dd 日")}</p>
-                  <p>上午11:00前</p>
+                <div className="summary-item">
+                  <span>房型：</span>
+                  <span>{selectedRoom.title}</span>
                 </div>
-              </div>
-              <div className="room-details">
-                <div className="room-title">已選擇：</div>
-                <div className="room-info">
-                  <div className="room-people">
-                    {selectedRoom.title} ({selectedRoom.maxPeople} 位成人)
-                  </div>
-                  {selectedRoom.breakFast && (
-                    <div className="breakfast-info">
-                      <MdFreeBreakfast className="breakfast-icon" />
-                      <span>含早餐</span>
-                    </div>
-                  )}
+                <div className="summary-item">
+                  <span>入住日期：</span>
+                  <span>{format(new Date(startDate), "yyyy 年 MM 月 dd 日")}</span>
+                </div>
+                <div className="summary-item">
+                  <span>退房日期：</span>
+                  <span>{format(new Date(endDate), "yyyy 年 MM 月 dd 日")}</span>
+                </div>
+                <div className="summary-item">
+                  <span>總金額：</span>
+                  <span>TWD {selectedRoom.roomTotalPrice}</span>
                 </div>
               </div>
             </div>
+          ) : (
+            <div className="order-content">
+              <div className="hotel-info">
+                <div className="hotel-name">{currentHotel.name}</div>
+                <p className="address">{currentHotel.address}</p>
+                <div className="inform">
+                  <span className="inform-item">Email: {currentHotel.email}</span>
+                  <span className="inform-item">Tel: {currentHotel.phone}</span>
+                </div>
+              </div>
 
-            {/* 價格明細 */}
-            <div className="price-details">
-              <div className="price-title">房價明細</div>
-              <div className="total-price">
-                <div className="booking-policies">
-                  {selectedRoom.paymentOptions.map(policy => (
-                    <div
-                      key={policy._id}
-                      className={`policy-item ${selectedPaymentType === policy.type ? 'selected' : ''}`}
-                      onClick={() => setSelectedPaymentType(policy.type)}
-                    >
-                      <div className="policy-type">支付方式：{policy.type}</div>
-                      <div className="policy-description">{policy.description}</div>
-                      <div className="policy-refund">
-                        {policy?.refundable ? '可退款' : '不可退款'}
+              <div className="customer-info">
+                <h3>訂房人資訊</h3>
+                {(() => {
+                  const userInfo = JSON.parse(localStorage.getItem('username'));
+                  return (
+                    <div className="customer-details">
+                      <div className="info-item">
+                        <span className="label">姓名：</span>
+                        <span>{userInfo.realName}</span>
+                      </div>
+                      <div className="info-item">
+                        <span className="label">帳號：</span>
+                        <span>{userInfo.username}</span>
+                      </div>
+                      <div className="info-item">
+                        <span className="label">電話：</span>
+                        <span>{userInfo.phoneNumber}</span>
+                      </div>
+                      <div className="info-item">
+                        <span className="label">地址：</span>
+                        <span>{userInfo.address}</span>
                       </div>
                     </div>
-                  ))}
+                  );
+                })()}
+              </div>
+
+              <div className="booking-info">
+                <h3>您的訂房資訊</h3>
+                <div className="dates">
+                  <div className="check-in">
+                    <h4>入住時間</h4>
+                    <p>{format(new Date(startDate), "yyyy 年 MM 月 dd 日")}</p>
+                    <p>下午3:00 - 下午6:00</p>
+                  </div>
+                  <div className="check-out">
+                    <h4>退房時間</h4>
+                    <p>{format(new Date(endDate), "yyyy 年 MM 月 dd 日")}</p>
+                    <p>上午11:00前</p>
+                  </div>
                 </div>
-                <div className="price-summary">
-                  <span>總金額</span>
-                  <span className="price">TWD {selectedRoom.roomTotalPrice}</span>
+                <div className="room-details">
+                  <div className="room-title">已選擇：</div>
+                  <div className="room-info">
+                    <div className="room-people">
+                      {selectedRoom.title} ({selectedRoom.maxPeople} 位成人)
+                    </div>
+                    {selectedRoom.breakFast && (
+                      <div className="breakfast-info">
+                        <MdFreeBreakfast className="breakfast-icon" />
+                        <span>含早餐</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-              <button
-                className="confirm-button"
-                disabled={!selectedPaymentType}
-                onClick={handleOrder}
-              >
-                確認訂單
-              </button>
+
+              <div className="price-details">
+                <div className="price-title">房價明細</div>
+                <div className="total-price">
+                  <div className="booking-policies">
+                    {selectedRoom.paymentOptions.map(policy => (
+                      <div
+                        key={policy._id}
+                        className={`policy-item ${selectedPaymentType === policy.type ? 'selected' : ''}`}
+                        onClick={() => setSelectedPaymentType(policy.type)}
+                      >
+                        <div className="policy-type">支付方式：{policy.type}</div>
+                        <div className="policy-description">{policy.description}</div>
+                        <div className="policy-refund">
+                          {policy?.refundable ? '可退款' : '不可退款'}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="price-summary">
+                    <span>總金額</span>
+                    <span className="price">TWD {selectedRoom.roomTotalPrice}</span>
+                  </div>
+                </div>
+                <button
+                  className="confirm-button"
+                  disabled={!selectedPaymentType}
+                  onClick={handleOrder}
+                >
+                  確認訂單
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div >
