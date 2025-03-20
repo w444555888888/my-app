@@ -8,7 +8,7 @@ import { errorMessage } from "../errorMessage.js"
 export const getAllOrders = async (req, res, next) => {
   try {
     const orders = await Order.find();
-    res.status(200).json(orders);
+    sendResponse(res, 200, orders);
   } catch (error) {
     return next(errorMessage(500, "查詢全部訂單: Error", error))
   }
@@ -81,7 +81,7 @@ export const getOrderById = async (req, res, next) => {
       return next(errorMessage(404, "訂單不存在"))
     }
 
-    res.status(200).json(order);
+    sendResponse(res, 200, order);
   } catch (error) {
     return next(errorMessage(500, "訂單id查找: Error", error))
   }
@@ -98,7 +98,7 @@ export const updateOrder = async (req, res, next) => {
     if (!updatedOrder) {
       return next(errorMessage(404, "訂單不存在"))
     }
-    res.status(200).json(updatedOrder);
+    sendResponse(res, 200, updatedOrder);
   } catch (error) {
     return next(errorMessage(500, "訂單id更新訂單: Error", error))
   }
@@ -111,7 +111,7 @@ export const deleteOrder = async (req, res, next) => {
     if (!deletedOrder) {
       return next(errorMessage(404, "訂單不存在"))
     }
-    res.status(200).json({ message: "訂單刪除成功" });
+    sendResponse(res, 200, { message: "訂單刪除成功" });
   } catch (error) {
     return next(errorMessage(500, "訂單id刪除訂單: Error", error))
   }

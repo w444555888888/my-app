@@ -8,7 +8,7 @@ export const createRoom = async (req, res, next) => {
 
   try {
     const saveRoom = await newRoom.save()
-    res.status(200).json(saveRoom)
+    sendResponse(res, 200, saveRoom);
   } catch (error) {
     next(errorMessage(500, "房型創建失敗，可能為格式錯誤", error))
   }
@@ -20,7 +20,7 @@ export const updatedRoom = async (req, res, next) => {
 
   try {
     const updatedRoom = await Room.findByIdAndUpdate(roomId, { $set: req.body }, { new: true })
-    res.status(200).json(updatedRoom)
+    sendResponse(res, 200, updatedRoom);
   } catch (error) {
     next(errorMessage(500, "房型更新失敗，可能為格式錯誤或找不到其 ID", error))
   }
@@ -32,7 +32,7 @@ export const deleteRoom = async (req, res, next) => {
 
   try {
     await Room.findByIdAndDelete(roomId)
-    res.status(200).json("成功刪除房型資訊")
+    sendResponse(res, 200, "成功刪除房型資訊");
   } catch (error) {
     next(errorMessage(500, "刪除房型失敗，找不到其 ID", error))
   }
@@ -43,7 +43,7 @@ export const deleteRoom = async (req, res, next) => {
 export const getAllRooms = async (req, res, next) => {
   try {
     const getRooms = await Room.find()
-    res.status(200).json(getRooms)
+    sendResponse(res, 200, getRooms);
   } catch (error) {
     next(errorMessage(500, "搜尋失敗，為資料庫變動問題", error))
   }
@@ -64,8 +64,7 @@ export const getHotelRooms = async (req, res, next) => {
 
     // 直接查找 rooms，條件改為匹配 `hotelId`
     const roomsList = await Room.find({ hotelId: gethotel });
-
-    res.status(200).json(roomsList);
+    sendResponse(res, 200, roomsList);
   } catch (error) {
     next(errorMessage(500, "找尋房型時發生錯誤，可能為 Room 資料庫問題", error));
   }

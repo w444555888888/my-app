@@ -8,8 +8,8 @@
  */
 import bcrypt from "bcryptjs" //密碼加密
 import { errorMessage } from "../errorMessage.js"
+import { sendResponse } from "../sendResponse.js"
 import User from "../models/User.js"
-
 import jwt from "jsonwebtoken" //身份驗證
 import nodemailer from 'nodemailer'  //發送電子郵件
 import crypto from 'crypto' //隨機令牌
@@ -23,9 +23,8 @@ export const register = async (req, res, next) => {
 
     if (registerWrong) return (next(errorMessage(400, "此帳號或信箱已被註冊")))
 
-    // bcrypt加密  
+    // 密碼bcrypt加密bcrypt加密  
     const salt = bcrypt.genSaltSync(10)
-    //所以我們會單獨利用到password加密
     const hash = bcrypt.hashSync(registerData.password, salt)
     const newUser = new User({
       username: registerData.username,
@@ -34,7 +33,8 @@ export const register = async (req, res, next) => {
     }
     )
     const saveUser = await newUser.save()
-    res.status(200).json(saveUser)
+
+    sendResponse(res, 200, saveUser);
   } catch (error) {
     next(errorMessage(500, "註冊失敗", error))
   }
@@ -79,14 +79,12 @@ export const login = async (req, res, next) => {
     const { password, isAdmin, ...userDetails } = userData._doc;
     console.log("回傳的使用者資訊:", userDetails);
 
-    res
-      .cookie("JWT_token", token, {
-        httpOnly: true,
-        secure: false,
-        path: "/",
-      })
-      .status(200)
-      .json({ userDetails });
+    res.cookie("JWT_token", token, {
+      httpOnly: true,
+      secure: false,
+      path: "/",
+    })
+    sendResponse(res, 200, { userDetails });
 
   } catch (error) {
     console.error("登入錯誤:", error);
@@ -139,7 +137,7 @@ export const forgotPassword = async (req, res, next) => {
     // 發送郵件
     try {
       await transporter.sendMail(mailOptions)
-      return res.status(200).json({ message: "重置密碼郵件已發送" })
+      return sendResponse(res, 200, { message: "重置密碼郵件已發送" });
     } catch (error) {
       return next(errorMessage(500, "郵件發送失敗", error))
     }
@@ -176,7 +174,7 @@ export const resetPassword = async (req, res, next) => {
     user.resetPasswordExpires = undefined // 清除過期時間
     await user.save()
 
-    res.status(200).json({ message: "密碼重置成功" })
+    sendResponse(res, 200, { message: "密碼重置成功" });
   } catch (error) {
     // 記錄錯誤信息
     console.error("Error during password reset:", error)

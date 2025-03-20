@@ -19,19 +19,20 @@ const Personal = () => {
   const dispatch = useDispatch()
   const userInfo = useSelector((state) => state.user.userInfo);
   const navigate = useNavigate()
-
+ // localStroge
+ const userName = localStorage.getItem('username')
+ const userDetails = JSON.parse(userName)
+ const username = userDetails.username
+ const email = userDetails.email
+ 
   // useState
   const [password, setPassword] = useState('')
-  const [realName, setRealName] = useState(userInfo.realName || '')
-  const [phoneNumber, setPhoneNumber] = useState(userInfo.phoneNumber || '')
-  const [address, setAddress] = useState(userInfo.address || '')
+  const [realName, setRealName] = useState(userDetails.realName || '')
+  const [phoneNumber, setPhoneNumber] = useState(userDetails.phoneNumber || '')
+  const [address, setAddress] = useState(userDetails.address || '')
   const [loading, setLoading] = useState('')
   const [message, setMessage] = useState('')
-  // localStroge
-  const userName = localStorage.getItem('username')
-  const userDetails = JSON.parse(userName)
-  const username = userDetails.username
-  const email = userDetails.email
+ 
 
   const handleClickToHome = () => {
     navigate('/')
@@ -44,16 +45,14 @@ const Personal = () => {
       const result = await request('PUT', `/users/${userDetails._id}`, { password: password, realName: realName, phoneNumber: phoneNumber, address: address }, setLoading, setMessage);
 
       if (result.success) {
+        const data = result.data;
+        localStorage.setItem('username', JSON.stringify(data)); // 儲存用戶資料
         toast.success('編輯帳戶成功！');
-        dispatch(updateUser({
-          realName,
-          phoneNumber,
-          address
-        }));
+       
 
-        setTimeout(() => {
-          navigate('/');
-        }, 3000);
+        // setTimeout(() => {
+        //   navigate('/');
+        // }, 3000);
       }
     } catch (error) {
       toast.error('編輯帳戶失敗');

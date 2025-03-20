@@ -25,7 +25,7 @@ export const request = async (method, endpoint, data = {}, setLoading = () => { 
         };
 
         const response = await axios(config);
-        return { success: true, data: response.data };
+        return { success: true, data: response.data.data };
     } catch (error) {
         console.error('Error:', error);
         if (setMessage) setMessage(error.response?.data?.Message || '請求失敗');

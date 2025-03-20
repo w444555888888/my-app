@@ -41,16 +41,16 @@ app.use(cookieParser())//cookie驗證
 
 //跨域
 const corsOptions = {
-    origin: 'http://localhost:3000', 
+    origin: 'http://localhost:3000',
     credentials: true, // 允許發送Cookie
-  };
+};
 app.use(cors(corsOptions))
 
 
 ///middlewares中間代理商
 app.use("/api/v1/hotels", hotelsApiRoute)
 app.use("/api/v1/rooms", roomsApiRoute)
-app.use("/api/v1/users", usersApiRoute) 
+app.use("/api/v1/users", usersApiRoute)
 app.use("/api/v1/auth", authApiRoute)
 app.use("/api/v1/order", orderApiRoute)
 
@@ -64,6 +64,7 @@ app.use((error, req, res, next) => {
     return res.status(errorStatus).json({
         status: errorStatus,
         Message: errorMessage,
-        success: errorStatus == 200 ? true : false 
+        success: errorStatus === 200 || errorStatus === 201,
+        data: errorStatus === 200 || errorStatus === 201 ? {} : null
     })
 })

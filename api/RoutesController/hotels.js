@@ -10,13 +10,14 @@ import Hotel from "../models/Hotel.js"
 import Room from "../models/Room.js"
 import { addDays, format, isSameDay, parseISO } from 'date-fns'
 import { errorMessage } from "../errorMessage.js"
+import { sendResponse } from "../sendResponse.js"
 
 // 獲取所有飯店資料（不帶任何過濾條件）
 export const getAllHotels = async (req, res, next) => {
     try {
         // 查詢所有飯店資料
         const hotels = await Hotel.find({})
-        res.status(200).json(hotels)
+        sendResponse(res, 200, hotels);
     } catch (err) {
         next(errorMessage(500, "查詢飯店資料失敗"))
     }
@@ -30,14 +31,14 @@ export const getSearchHotels = async (req, res, next) => {
     const maxPriceNumber = Number(maxPrice)
 
 
-     // 只有hotelId，沒有日期 && 不用顯示房型
-     if (hotelId && !name && !minPrice && !maxPrice && !startDate && !endDate) {
+    // 只有hotelId，沒有日期 && 不用顯示房型
+    if (hotelId && !name && !minPrice && !maxPrice && !startDate && !endDate) {
         try {
             const hotel = await Hotel.findById(hotelId)
             if (!hotel) {
                 return next(errorMessage(404, "單查詢hotel: no found  this hotel"))
             }
-            return res.status(200).json([hotel])
+            sendResponse(res, 200, [hotel]);
         } catch (err) {
             return next(errorMessage(500, "單查詢hotel: Error"))
         }
@@ -135,7 +136,7 @@ export const getSearchHotels = async (req, res, next) => {
                 )
                 : updatedHotels
 
-        res.status(200).json(filterPriceHotels)
+        sendResponse(res, 200, filterPriceHotels);
     } catch (err) {
         next(errorMessage(500, "查詢飯店失敗"))
     }
@@ -148,7 +149,8 @@ export const createHotel = async (req, res, next) => { //新增next
     const newHotel = new Hotel(req.body)
     try {
         const saveHotel = await newHotel.save()
-        res.status(200).json(saveHotel)
+
+        sendResponse(res, 200, saveHotel);
     } catch (error) {
         next(errorMessage(500, "資料上傳錯誤請確認格式"))
     }
@@ -157,7 +159,8 @@ export const getHotel = async (req, res, next) => {
     const id = req.params.id
     try {
         const getHotel = await Hotel.findById(id)
-        res.status(200).json(getHotel)
+
+        sendResponse(res, 200, getHotel);
     } catch (error) {
         next(errorMessage(500, "找不到資料，請檢查使否有此id", error))
     }
@@ -167,7 +170,7 @@ export const updatedHotel = async (req, res, next) => {
     const body = req.body
     try {
         const updatedHotel = await Hotel.findByIdAndUpdate(id, { $set: body }, { new: true })
-        res.status(200).json(updatedHotel)
+        sendResponse(res, 200, updatedHotel);
     } catch (error) {
         next(errorMessage(500, "修改失敗，請確認是否有其id與是否欄位輸入格式正確", error))
     }
@@ -176,7 +179,7 @@ export const deleteHotel = async (req, res, next) => {
     const id = req.params.id
     try {
         await Hotel.findByIdAndDelete(id)
-        res.status(200).json("刪除資料成功")
+        sendResponse(res, 200, "刪除資料成功");
     } catch (error) {
         next(errorMessage(500, "刪除失敗，請確認是否有其id", error))
     }
