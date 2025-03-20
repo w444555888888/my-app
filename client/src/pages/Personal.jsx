@@ -18,8 +18,6 @@ import { toast } from 'react-toastify';
 const Personal = () => {
   const dispatch = useDispatch()
   const userInfo = useSelector((state) => state.user.userInfo);
-  console.log(userInfo,'userInfouserInfo');
-  
   const navigate = useNavigate()
 
   // useState
