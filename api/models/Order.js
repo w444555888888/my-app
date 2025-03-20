@@ -15,6 +15,10 @@ const OrderSchema = new mongoose.Schema(
             ref: 'User',
             required: true,
         },
+        userInfo: {  // 儲存用戶資料
+            type: mongoose.Schema.Types.Mixed, 
+            required: true,
+          },
         hotelId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Hotel',

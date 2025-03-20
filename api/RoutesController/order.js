@@ -1,6 +1,7 @@
 import Hotel from "../models/Hotel.js";
 import Room from "../models/Room.js";
 import Order from "../models/Order.js"
+import User from "../models/User.js"
 import { errorMessage } from "../errorMessage.js"
 
 // 全部訂單
@@ -42,6 +43,12 @@ export const createOrder = async (req, res, next) => {
       return next(errorMessage(404, "新訂單 Room not found"))
     }
 
+    // 查找用戶資料
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(errorMessage(404, "用戶不存在"))
+    }
+
     // 計算手續費 10%
     const serviceFee = totalPrice * 0.10;
     const totalPriceWithFee = totalPrice + serviceFee;
@@ -49,7 +56,8 @@ export const createOrder = async (req, res, next) => {
     // 如果酒店和房間都存在，創建新的訂單
     const newOrder = new Order({
       ...req.body,
-      totalPrice: totalPriceWithFee // 設置總價加上手續費
+      userInfo: user,
+      totalPrice: totalPriceWithFee //加上手續費
     });
     const savedOrder = await newOrder.save();
 
