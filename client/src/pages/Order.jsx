@@ -106,6 +106,35 @@ const Order = () => {
               </div>
             </div>
 
+
+            {/* 客戶資訊 */}
+            <div className="customer-info">
+              <h3>訂房人資訊</h3>
+              {(() => {
+                const userInfo = JSON.parse(localStorage.getItem('username'));
+                return (
+                  <div className="customer-details">
+                    <div className="info-item">
+                      <span className="label">姓名：</span>
+                      <span>{userInfo.realName}</span>
+                    </div>
+                    <div className="info-item">
+                      <span className="label">帳號：</span>
+                      <span>{userInfo.username}</span>
+                    </div>
+                    <div className="info-item">
+                      <span className="label">電話：</span>
+                      <span>{userInfo.phoneNumber}</span>
+                    </div>
+                    <div className="info-item">
+                      <span className="label">地址：</span>
+                      <span>{userInfo.address}</span>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+
             {/* 訂房信息 */}
             <div className="booking-info">
               <h3>您的訂房資訊</h3>
