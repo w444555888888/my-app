@@ -25,17 +25,15 @@ export const register = async (req, res, next) => {
 
     // bcrypt加密  
     const salt = bcrypt.genSaltSync(10)
-    //所以我們會單獨利用到password分離並加密
+    //所以我們會單獨利用到password加密
     const hash = bcrypt.hashSync(registerData.password, salt)
-    //原本是與創建hotel的資料一樣
-    const newUser = new User({ //這邊在合併
+    const newUser = new User({
       username: registerData.username,
       email: registerData.email,
       password: hash,
     }
     )
     const saveUser = await newUser.save()
-    //但這邊要分離處理來保護我們的使用者資料 
     res.status(200).json(saveUser)
   } catch (error) {
     next(errorMessage(500, "註冊失敗", error))
@@ -48,8 +46,8 @@ export const login = async (req, res, next) => {
 
   try {
     // 嘗試用 `username` 或 `email` 查找用戶
-    const userData = 
-      await User.findOne({ username: loginData.account }) || 
+    const userData =
+      await User.findOne({ username: loginData.account }) ||
       await User.findOne({ email: loginData.account }); // 這裡 `email` 應該也要對應 `account`，不然會找不到
 
     console.log("查找的使用者:", userData);

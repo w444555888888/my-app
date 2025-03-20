@@ -12,21 +12,26 @@ import './personal.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleRight } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux'
-import { logOut } from '../redux/userSlice'
-import axios from 'axios'
-
+import { updateUser, logOut } from '../redux/userSlice'
+import { request } from '../utils/apiService';
+import { toast } from 'react-toastify';
 const Personal = () => {
   const dispatch = useDispatch()
+  const userInfo = useSelector((state) => state.user.userInfo);
+  console.log(userInfo,'userInfouserInfo');
+  
   const navigate = useNavigate()
 
   // useState
   const [password, setPassword] = useState('')
-  const [phoneNumber, setPhoneNumber] = useState('')
-  const [address, setAddress] = useState('')
+  const [realName, setRealName] = useState(userInfo.realName || '')
+  const [phoneNumber, setPhoneNumber] = useState(userInfo.phoneNumber || '')
+  const [address, setAddress] = useState(userInfo.address || '')
+  const [loading, setLoading] = useState('')
   const [message, setMessage] = useState('')
   // localStroge
-  const localStrogeToUsername = localStorage.getItem('username')
-  const userDetails = JSON.parse(localStrogeToUsername)
+  const userName = localStorage.getItem('username')
+  const userDetails = JSON.parse(userName)
   const username = userDetails.username
   const email = userDetails.email
 
@@ -35,13 +40,25 @@ const Personal = () => {
   }
 
   // 編輯帳戶
-  const handleEdit = async (event) => {
+  const handleEdit = async (e) => {
+    e.preventDefault();
     try {
-      await axios.put(`http://localhost:5000/api/v1/users/${userDetails._id}`, { password: password, address: address, phoneNumber: phoneNumber })
-      navigate('/')
+      const result = await request('PUT', `/users/${userDetails._id}`, { password: password, realName: realName, phoneNumber: phoneNumber, address: address }, setLoading, setMessage);
+
+      if (result.success) {
+        toast.success('編輯帳戶成功！');
+        dispatch(updateUser({
+          realName,
+          phoneNumber,
+          address
+        }));
+
+        setTimeout(() => {
+          navigate('/');
+        }, 3000);
+      }
     } catch (error) {
-      console.error('Error:', error)
-      setMessage(error.response.data.Message)
+      toast.error('編輯帳戶失敗');
     }
   }
 
@@ -93,6 +110,16 @@ const Personal = () => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <div className="formGroup">
+            <label htmlFor="realName">Real Name:</label>
+            <input
+              type="text"
+              id="realName"
+              value={realName}
+              onChange={(e) => setRealName(e.target.value)}
               required
             />
           </div>

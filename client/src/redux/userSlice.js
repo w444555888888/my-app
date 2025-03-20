@@ -22,6 +22,7 @@ const userSlice = createSlice({
     theme: 'light',
     loading: false,
     error: null,
+    userInfo: {},
   },
   reducers: {
     logIn: (state) => {
@@ -33,10 +34,13 @@ const userSlice = createSlice({
     },
     toggleTheme: (state) => {
       state.theme = state.theme === 'light' ? 'dark' : 'light'
+    },
+    updateUser: (state, action) => {
+      state.userInfo = action.payload;
     }
   }
 })
 
-export const { logIn, logOut, toggleTheme } = userSlice.actions
+export const { logIn, logOut, toggleTheme, updateUser } = userSlice.actions
 
 export default userSlice.reducer

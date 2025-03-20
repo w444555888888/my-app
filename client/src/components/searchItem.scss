@@ -9,6 +9,11 @@
     margin-bottom: 15px;
     padding: 0px 15px;
 
+    .active {
+        background-color: rgba(94, 57, 227, 0.2);
+        box-shadow: 0px 0px 15px var(--primary-color);
+    }
+
     img {
         height: 210px;
         width: 200px;
@@ -141,10 +146,6 @@
     }
 }
 
-.active {
-    background-color: rgba(94, 57, 227, 0.2);
-    box-shadow: 0px 0px 15px var(--primary-color);
-}
 
 
 @media screen and (max-width: 768px) {

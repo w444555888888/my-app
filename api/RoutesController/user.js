@@ -12,17 +12,17 @@ import User from "../models/User.js"
 //更新使用者:id
 export const updateUser = async (req, res, next) => {
   const id = req.params.id
-  const { password, address, phoneNumber } = req.body
+  const { password, address, phoneNumber, realName } = req.body
 
   // 檢查必填字段
-  if (!password || !address || !phoneNumber) {
+  if (!password || !address || !phoneNumber || !realName) {
     return next(errorMessage(400, "所有欄位都是必填的"))
   }
 
   try {
-    // 更新用戶資料，只更新這3個參數，其餘照舊
+    // 更新用戶資料，只更新這4個參數，其餘照舊
     const updatedUser = await User.findByIdAndUpdate(id, {
-      $set: { password, address, phoneNumber } 
+      $set: { password, address, phoneNumber, realName } 
     }, { new: true })
 
     res.status(200).json(updatedUser)

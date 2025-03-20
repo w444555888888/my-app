@@ -26,6 +26,10 @@ const UserSchma = new mongoose.Schema({
         type: String,
         required: false,
     },
+    realName: {
+        type: String,
+        required: false,
+    },
     resetPasswordToken: {  //忘記密碼重置令牌
         type: String,
     },

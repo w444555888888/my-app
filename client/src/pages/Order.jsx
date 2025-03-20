@@ -15,7 +15,7 @@ const Order = () => {
   // 付款方式
   const [selectedPaymentType, setSelectedPaymentType] = useState(null);
 
-  const handleOrder = async() => {
+  const handleOrder = async () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('username'));
       const result = await request('POST', '/order', {
@@ -29,10 +29,9 @@ const Order = () => {
           method: selectedPaymentType
         }
       });
-      
-      if(result.success) {
+
+      if (result.success) {
         toast.success('訂單新增成功！');
-       
       }
     } catch (error) {
       toast.error('訂單建立失敗');
@@ -82,6 +81,18 @@ const Order = () => {
       <div className="order-container">
         <div className="order-wrapper">
           <div className="progress-step">
+            <div className="step-item active">
+              <div className="step-number">1</div>
+              <div className="step-text">選擇房型</div>
+            </div>
+            <div className="step-item active">
+              <div className="step-number">2</div>
+              <div className="step-text">填寫資料</div>
+            </div>
+            <div className="step-item">
+              <div className="step-number">3</div>
+              <div className="step-text">完成預訂</div>
+            </div>
           </div>
 
           {/* 訂單內容區域 */}
