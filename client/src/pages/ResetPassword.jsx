@@ -20,7 +20,7 @@ const ResetPassword = () => {
   // 重置密碼
   const handlePasswordReset = async (e) => {
     e.preventDefault()
-    const result = await request('POST', `/auth/reset-password/${token}`, { password: newPassword }, setLoading, setMessage);
+    const result = await request('POST', `/auth/reset-password/${token}`, { password: newPassword }, setLoading);
     if (result.success) {
       setMessage('密碼重置成功');
     }

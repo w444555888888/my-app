@@ -84,7 +84,7 @@ const HotelsList = () => {
                 .map(([key, value]) => `${key}=${value}`)
                 .join('&')
 
-            const result = await request('GET', `/hotels/search?${queryString}`, {}, setLoading, setMessage);
+            const result = await request('GET', `/hotels/search?${queryString}`, {}, setLoading);
             if (result.success) {
                 setHotels(result.data);
             }

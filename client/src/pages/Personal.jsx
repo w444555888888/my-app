@@ -13,18 +13,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleRight } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { updateUser, logOut } from '../redux/userSlice'
-import { request } from '../utils/apiService';
-import { toast } from 'react-toastify';
+import { request } from '../utils/apiService'
+import { toast } from 'react-toastify'
 const Personal = () => {
   const dispatch = useDispatch()
-  const userInfo = useSelector((state) => state.user.userInfo);
+  const userInfo = useSelector((state) => state.user.userInfo)
   const navigate = useNavigate()
- // localStroge
- const userName = localStorage.getItem('username')
- const userDetails = JSON.parse(userName)
- const username = userDetails.username
- const email = userDetails.email
- 
+  // localStroge
+  const userName = localStorage.getItem('username')
+  const userDetails = JSON.parse(userName)
+  const username = userDetails.username
+  const email = userDetails.email
+
   // useState
   const [password, setPassword] = useState('')
   const [realName, setRealName] = useState(userDetails.realName || '')
@@ -32,7 +32,7 @@ const Personal = () => {
   const [address, setAddress] = useState(userDetails.address || '')
   const [loading, setLoading] = useState('')
   const [message, setMessage] = useState('')
- 
+
 
   const handleClickToHome = () => {
     navigate('/')
@@ -40,22 +40,22 @@ const Personal = () => {
 
   // 編輯帳戶
   const handleEdit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      const result = await request('PUT', `/users/${userDetails._id}`, { password: password, realName: realName, phoneNumber: phoneNumber, address: address }, setLoading, setMessage);
+      const result = await request('PUT', `/users/${userDetails._id}`, { password: password, realName: realName, phoneNumber: phoneNumber, address: address }, setLoading)
 
       if (result.success) {
-        const data = result.data;
-        localStorage.setItem('username', JSON.stringify(data)); // 儲存用戶資料
-        toast.success('編輯帳戶成功！');
-       
+        const data = result.data
+        localStorage.setItem('username', JSON.stringify(data))
+        // 儲存用戶資料
+        toast.success('編輯帳戶成功！')
 
-        // setTimeout(() => {
-        //   navigate('/');
-        // }, 3000);
+        setTimeout(() => {
+          navigate('/')
+        }, 3000)
       }
     } catch (error) {
-      toast.error('編輯帳戶失敗');
+      toast.error('編輯帳戶失敗')
     }
   }
 

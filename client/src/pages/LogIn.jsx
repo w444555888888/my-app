@@ -45,7 +45,7 @@ const LogIn = () => {
 
     const handleLogIn = async (e) => {
         e.preventDefault()
-        const result = await request('POST', '/auth/login', { account: email, password }, setLoading, setMessage);
+        const result = await request('POST', '/auth/login', { account: email, password }, setLoading);
 
         if (result.success) {
             const { userDetails } = result.data;

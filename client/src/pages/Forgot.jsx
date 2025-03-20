@@ -26,7 +26,7 @@ const Forgot = () => {
     // 忘記密碼方送信箱
     const handleForgotPassword = async (e) => {
         e.preventDefault()
-        const result = await request('POST', '/auth/forgot-password', { email }, setLoading, setMessage);
+        const result = await request('POST', '/auth/forgot-password', { email }, setLoading);
 
         if (result.success) {
             setMessage('重置密碼鏈接已發送到您的郵箱');

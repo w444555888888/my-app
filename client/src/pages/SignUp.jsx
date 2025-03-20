@@ -1,28 +1,36 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import "./signUp.scss";
+/*
+ * @Author: w444555888 w444555888@yahoo.com.tw
+ * @Date: 2025-02-17 20:27:20
+ * @LastEditors: w444555888 w444555888@yahoo.com.tw
+ * @LastEditTime: 2025-03-20 21:03:12
+ * @FilePath: \my-app\client\src\pages\SignUp.jsx
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import "./signUp.scss"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleRight } from '@fortawesome/free-solid-svg-icons'
-import { request } from '../utils/apiService';
+import { request } from '../utils/apiService'
 const SignUp = () => {
-    const [email, setEmail] = useState('');
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [message, setMessage] = useState('');
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+    const [email, setEmail] = useState('')
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
+    const [message, setMessage] = useState('')
+    const [loading, setLoading] = useState(false)
+    const navigate = useNavigate()
     const handleClickToHome = () => {
-        navigate('/');
-    };
+        navigate('/')
+    }
 
     // 註冊
     const handleSignUp = async (e) => {
         e.preventDefault()
-        const result = await request('POST', '/auth/register', { email, username, password }, setLoading, setMessage);
+        const result = await request('POST', '/auth/register', { email, username, password }, setLoading)
         if (result.success) {
-            navigate('/login');
+            navigate('/login')
         }
-    };
+    }
 
     return (
         <div className='signUpWrapper'>
@@ -71,12 +79,12 @@ const SignUp = () => {
 
                     <button type="submit" disabled={loading}>
                         {loading ? 'Loading...' : 'Sign Up'}
-                        </button>
+                    </button>
                 </form>
                 {message && <p>{message}</p>}
             </div>
         </div>
-    );
+    )
 }
 
-export default SignUp;
+export default SignUp

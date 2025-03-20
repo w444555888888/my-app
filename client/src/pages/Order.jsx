@@ -2,23 +2,23 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import Navbar from '../components/Navbar'
-import { format } from "date-fns";
+import { format } from "date-fns"
 import "./order.scss"
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from 'react-loading-skeleton'
 import { MdFreeBreakfast } from "react-icons/md"
-import { toast } from 'react-toastify';
-import { request } from '../utils/apiService';
+import { toast } from 'react-toastify'
+import { request } from '../utils/apiService'
 const Order = () => {
-  const { startDate, endDate, hotelId, roomId } = useParams();
-  const { currentHotel, availableRooms } = useSelector(state => state.hotel);
-  const [selectedRoom, setSelectedRoom] = useState(null);
+  const { startDate, endDate, hotelId, roomId } = useParams()
+  const { currentHotel, availableRooms } = useSelector(state => state.hotel)
+  const [selectedRoom, setSelectedRoom] = useState(null)
   // 付款方式
-  const [selectedPaymentType, setSelectedPaymentType] = useState(null);
-  const [orderSuccess, setOrderSuccess] = useState(false);
+  const [selectedPaymentType, setSelectedPaymentType] = useState(null)
+  const [orderSuccess, setOrderSuccess] = useState(false)
 
   const handleOrder = async () => {
     try {
-      const userInfo = JSON.parse(localStorage.getItem('username'));
+      const userInfo = JSON.parse(localStorage.getItem('username'))
       const result = await request('POST', '/order', {
         hotelId: hotelId,
         roomId: roomId,
@@ -29,23 +29,25 @@ const Order = () => {
         payment: {
           method: selectedPaymentType
         }
-      });
+      })
 
       if (result.success) {
-        setOrderSuccess(true);
-        toast.success('訂單新增成功！');
-      }
+        setOrderSuccess(true)
+        toast.success('訂單新增成功！')
+      } else toast.error(`${result.Message}`)
+
+
     } catch (error) {
-      toast.error('訂單建立失敗');
+      toast.error('訂單建立失敗')
     }
   }
 
   useEffect(() => {
     if (availableRooms && roomId) {
-      const room = availableRooms.find(room => room._id === roomId);
-      setSelectedRoom(room);
+      const room = availableRooms.find(room => room._id === roomId)
+      setSelectedRoom(room)
     }
-  }, [availableRooms, roomId]);
+  }, [availableRooms, roomId])
 
   const OrderSkeleton = () => (
     <div className='order'>
@@ -73,9 +75,9 @@ const Order = () => {
         </div>
       </div>
     </div>
-  );
+  )
 
-  if (!currentHotel || !selectedRoom) return <OrderSkeleton />;
+  if (!currentHotel || !selectedRoom) return <OrderSkeleton />
 
   return (
     <div className='order'>
@@ -140,7 +142,7 @@ const Order = () => {
               <div className="customer-info">
                 <h3>訂房人資訊</h3>
                 {(() => {
-                  const userInfo = JSON.parse(localStorage.getItem('username'));
+                  const userInfo = JSON.parse(localStorage.getItem('username'))
                   return (
                     <div className="customer-details">
                       <div className="info-item">
@@ -160,7 +162,7 @@ const Order = () => {
                         <span>{userInfo.address}</span>
                       </div>
                     </div>
-                  );
+                  )
                 })()}
               </div>
 
