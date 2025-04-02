@@ -2,227 +2,267 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
   max-width: 1024px;
   margin: 0 auto;
-  color: gray;
-  padding: 20px;
-  box-sizing: border-box;
-  font-weight: bold;
+  padding: 40px 20px;
+  background-color: #f5f7fa;
+  color: #2c3e50;
 
   .personalContainer {
     width: 100%;
-    max-width: 450px;
+    max-width: 500px;
     margin: 20px 0;
-    padding: 20px;
-    border-radius: 20px;
-    background-color: #f9f9f9;
+    padding: 30px;
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
 
     .personalTitle {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 20px;
-    }
+      align-items: center;
+      margin-bottom: 30px;
+      
+      .logo {
+        font-size: 26px;
+        font-weight: 700;
+        color: #34495e;
+        letter-spacing: 1px;
+      }
 
-    .logo {
-      font-size: 24px;
-    }
+      .navButton {
+        padding: 10px 15px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        transition: all 0.3s ease;
+        cursor: pointer;
 
-    .navButton {
-      font-size: 14px;
-      margin-left: 10px;
-      border: none;
-      border-radius: 16px;
-      padding: 4px 5px;
-      cursor: pointer;
-      color: white;
-      background-color: gray;
-    }
-
-    .item {
-      margin: 0 10px;
-      cursor: pointer;
+        &:hover {
+          transform: translateX(2px);
+          opacity: 0.9;
+        }
+      }
     }
 
     h2 {
+      font-size: 24px;
+      color: #2c3e50;
+      margin-bottom: 30px;
       text-align: center;
-      margin-bottom: 20px;
     }
 
     .formGroup {
-      margin-bottom: 15px;
+      margin-bottom: 20px;
 
       label {
         display: block;
-        margin-bottom: 5px;
+        margin-bottom: 8px;
+        color: #34495e;
+        font-size: 14px;
+        font-weight: 600;
       }
 
       input {
         width: 100%;
-        padding: 8px;
-        border: 1px solid gray;
-        border-radius: 4px;
-        box-sizing: border-box;
+        padding: 12px;
+        border: 1px solid #e1e8ed;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+
+        &:focus {
+          border-color: #667eea;
+          box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+          outline: none;
+        }
+
+        &:disabled {
+          background-color: #f8f9fa;
+          cursor: not-allowed;
+        }
       }
     }
 
-    button[type='submit'] {
-      width: 50%;
-      margin-top: 10px;
-      margin-right: 10px;
-      padding: 10px;
-      border: none;
-      border-radius: 4px;
-      background-color: gray;
-      color: white;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
-    }
-
     button {
-      width: 40%;
-      margin-top: 10px;
-      padding: 10px;
+      padding: 12px 24px;
       border: none;
-      border-radius: 4px;
-      background-color: gray;
-      color: white;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
       cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
+      
+      &[type='submit'] {
+        width: 50%;
+        margin-right: 10px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+      }
+
+      &:last-child {
+        width: 40%;
+        background-color: #e74c3c;
+        color: white;
+        
+        &:hover {
+          background-color: #c0392b;
+        }
+      }
     }
 
-    p {
-      text-align: center;
-      margin-top: 20px;
-      color: red;
+    .orderList {
+      margin-top: 30px;
+
+      .orderItem {
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        background-color: #fff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .orderHeader {
+          display: flex;
+          justify-content: space-between;
+          padding-bottom: 15px;
+          margin-bottom: 15px;
+          border-bottom: 1px solid #edf2f7;
+          
+          span {
+            font-size: 14px;
+            color: #2d3748;
+            font-weight: 600;
+          }
+        }
+
+        .orderDetails {
+          p {
+            margin: 8px 0;
+            color: #4a5568;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            text-align: left;
+          }
+        }
+      }
     }
   }
 }
 
-
 @media (max-width: 1024px) {
   .personalWrapper {
-    padding: 10px;
-  }
+    padding: 30px 15px;
 
-  .personalContainer {
-    width: 100%;
-    max-width: 400px;
-    padding: 15px;
-  }
+    .personalContainer {
+      max-width: 450px;
+      padding: 25px;
 
-  .logo {
-    font-size: 20px;
-  }
+      .logo {
+        font-size: 22px;
+      }
 
-  .navButton {
-    font-size: 12px;
-  }
-
-  .formGroup input {
-    padding: 10px;
-  }
-
-  button[type='submit'],
-  button {
-    font-size: 14px;
-  }
-
-  button[type='submit'] {
-    width: 48%;
-  }
-
-  .buttonGroup {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .buttonGroup button {
-    width: 100%;
-    margin-top: 10px;
+      button[type='submit'],
+      button:last-child {
+        font-size: 14px;
+      }
+    }
   }
 }
 
 @media (max-width: 768px) {
   .personalWrapper {
-    padding: 10px;
-  }
+    padding: 20px 10px;
 
-  .personalContainer {
-    max-width: 350px;
-  }
+    .personalContainer {
+      max-width: 400px;
+      padding: 20px;
 
-  .logo {
-    font-size: 18px;
-  }
+      .logo {
+        font-size: 20px;
+      }
 
-  .navButton {
-    font-size: 12px;
-  }
+      .formGroup {
+        input {
+          padding: 10px;
+        }
+      }
 
-  button[type='submit'] {
-    font-size: 14px;
-    padding: 12px;
-  }
-
-  button {
-    font-size: 14px;
-    padding: 12px;
-  }
-
-  .buttonGroup {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .buttonGroup button {
-    width: 100%;
-    margin-top: 10px;
+      button[type='submit'],
+      button:last-child {
+        width: 100%;
+        margin: 10px 0;
+      }
+    }
   }
 }
 
 @media (max-width: 480px) {
   .personalWrapper {
-    padding: 10px;
-  }
+    padding: 15px 10px;
 
-  .personalContainer {
-    max-width: 90%;
-    padding: 10px;
-  }
+    .personalContainer {
+      max-width: 100%;
+      padding: 15px;
+      margin: 10px 0;
 
-  .logo {
-    font-size: 16px;
-  }
+      .personalTitle {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
 
-  .navButton {
-    font-size: 12px;
-  }
+        .logo {
+          font-size: 18px;
+        }
+      }
 
-  .formGroup input {
-    padding: 12px;
-  }
+      .formGroup {
+        label {
+          font-size: 13px;
+        }
 
-  button[type='submit'] {
-    font-size: 14px;
-    padding: 15px;
-  }
+        input {
+          padding: 10px;
+          font-size: 13px;
+        }
+      }
 
-  button {
-    font-size: 14px;
-    padding: 15px;
-  }
+      .orderList {
+        .orderItem {
+          padding: 15px;
 
-  .buttonGroup {
-    flex-direction: column;
-    align-items: center;
-  }
+          .orderHeader {
+            flex-direction: column;
+            gap: 10px;
+            text-align: center;
+          }
 
-  .buttonGroup button {
-    width: 100%;
-    margin-top: 10px;
+          .orderDetails {
+            p {
+              flex-direction: column;
+              text-align: center;
+              gap: 5px;
+            }
+          }
+        }
+      }
+    }
   }
 }

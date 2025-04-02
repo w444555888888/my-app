@@ -19,20 +19,21 @@ const Personal = () => {
   const dispatch = useDispatch()
   const userInfo = useSelector((state) => state.user.userInfo);
   const navigate = useNavigate()
- // localStroge
- const userName = localStorage.getItem('username')
- const userDetails = JSON.parse(userName)
- const username = userDetails.username
- const email = userDetails.email
- 
+  // localStroge
+  const userName = localStorage.getItem('username')
+  const userDetails = JSON.parse(userName)
+  const username = userDetails.username
+  const email = userDetails.email
+
   // useState
+  const [orders, setOrders] = useState([])
   const [password, setPassword] = useState('')
   const [realName, setRealName] = useState(userDetails.realName || '')
   const [phoneNumber, setPhoneNumber] = useState(userDetails.phoneNumber || '')
   const [address, setAddress] = useState(userDetails.address || '')
   const [loading, setLoading] = useState('')
   const [message, setMessage] = useState('')
- 
+
 
   const handleClickToHome = () => {
     navigate('/')
@@ -46,13 +47,8 @@ const Personal = () => {
 
       if (result.success) {
         const data = result.data;
-        localStorage.setItem('username', JSON.stringify(data)); // 儲存用戶資料
+        localStorage.setItem('username', JSON.stringify(data));
         toast.success('編輯帳戶成功！');
-       
-
-        // setTimeout(() => {
-        //   navigate('/');
-        // }, 3000);
       }
     } catch (error) {
       toast.error('編輯帳戶失敗');
@@ -70,9 +66,19 @@ const Personal = () => {
   }
 
 
-  // useEffect
   useEffect(() => {
-
+    const fetchUserData = async () => {
+      try {
+        const result = await request('GET', `/users/${userDetails._id}`);
+        if (result.success) {
+          const data = result.data;
+          setOrders(data.allOrder || []);
+        }
+      } catch (error) {
+        toast.error('獲取用戶資料失敗');
+      }
+    };
+    fetchUserData();
   }, [dispatch])
 
   return (
@@ -143,6 +149,46 @@ const Personal = () => {
         </form>
 
         {message && <p>{message}</p>}
+      </div>
+      <div className="personalContainer">
+        <h2>My Orders</h2>
+        <div className="orderList">
+          {orders.map((order) => (
+            <div key={order._id} className="orderItem">
+              <div className="orderHeader">
+                <span>訂單編號: {order._id}</span>
+                <span>狀態: {
+                  order.status === 'pending' ? '支付中' :
+                    order.status === 'confirmed' ? '已確認' :
+                      order.status === 'cancelled' ? '已取消' :
+                        order.status === 'completed' ? '已完成' :
+                          ''
+                }</span>
+              </div>
+              <div className="orderDetails">
+                <p>入住日期: {new Date(order.checkInDate).toLocaleDateString()}</p>
+                <p>退房日期: {new Date(order.checkOutDate).toLocaleDateString()}</p>
+                <p>總價: ${order.totalPrice}</p>
+                <p>支付方式: {
+                  order.payment.method === 'credit_card' ? '信用卡' :
+                    order.payment.method === 'paypal' ? 'PayPal' :
+                      order.payment.method === 'bank_transfer' ? '銀行轉帳' :
+                        order.payment.method === 'on_site_payment' ? '現場支付' :
+                          ''
+                }</p>
+
+                <p>支付狀態: {
+                  order.payment.status === 'pending' ? '支付中' :
+                    order.payment.status === 'paid' ? '已支付' :
+                      order.payment.status === 'failed' ? '支付失敗' :
+                        order.payment.status === 'refunded' ? '已退款' :
+                          ''
+                }</p>
+
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )
