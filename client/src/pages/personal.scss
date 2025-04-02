@@ -3,7 +3,6 @@
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  max-width: 1024px;
   margin: 0 auto;
   padding: 40px 20px;
   background-color: #f5f7fa;
@@ -29,7 +28,7 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 30px;
-      
+
       .logo {
         font-size: 26px;
         font-weight: 700;
@@ -98,13 +97,13 @@
       font-weight: 600;
       transition: all 0.3s ease;
       cursor: pointer;
-      
-      &[type='submit'] {
+
+      &[type="submit"] {
         width: 50%;
         margin-right: 10px;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
-        
+
         &:hover {
           transform: translateY(-1px);
           box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
@@ -115,7 +114,7 @@
         width: 40%;
         background-color: #e74c3c;
         color: white;
-        
+
         &:hover {
           background-color: #c0392b;
         }
@@ -144,7 +143,7 @@
           padding-bottom: 15px;
           margin-bottom: 15px;
           border-bottom: 1px solid #edf2f7;
-          
+
           span {
             font-size: 14px;
             color: #2d3748;
@@ -179,7 +178,7 @@
         font-size: 22px;
       }
 
-      button[type='submit'],
+      button[type="submit"],
       button:last-child {
         font-size: 14px;
       }
@@ -205,7 +204,7 @@
         }
       }
 
-      button[type='submit'],
+      button[type="submit"],
       button:last-child {
         width: 100%;
         margin: 10px 0;
