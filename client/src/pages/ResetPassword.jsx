@@ -10,11 +10,10 @@ import React, { useState } from 'react'
 import { request } from '../utils/apiService';
 import "./resetPassword.scss"
 import { useParams } from 'react-router-dom'
-
+import { toast } from 'react-toastify'
 const ResetPassword = () => {
   const { token } = useParams() // 從 URL 中獲取 token
   const [newPassword, setNewPassword] = useState('')
-  const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false);
 
   // 重置密碼
@@ -22,7 +21,7 @@ const ResetPassword = () => {
     e.preventDefault()
     const result = await request('POST', `/auth/reset-password/${token}`, { password: newPassword }, setLoading);
     if (result.success) {
-      setMessage('密碼重置成功');
+      toast.success('密碼重置成功');
     }
   }
 
@@ -46,7 +45,6 @@ const ResetPassword = () => {
             {loading ? 'Loading...' : '提交新密碼'}
           </button>
         </form>
-        {message && <p>{message}</p>}
       </div>
 
     </div>

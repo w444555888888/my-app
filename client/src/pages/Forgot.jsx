@@ -11,12 +11,12 @@ import { useNavigate } from 'react-router-dom'
 import "./forgot.scss"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleRight } from '@fortawesome/free-solid-svg-icons'
+import { toast } from 'react-toastify'
 import { request } from '../utils/apiService';
+
 const Forgot = () => {
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState('');
-
     const navigate = useNavigate()
     const handleClickToLogin = () => {
         navigate('/login')
@@ -27,9 +27,8 @@ const Forgot = () => {
     const handleForgotPassword = async (e) => {
         e.preventDefault()
         const result = await request('POST', '/auth/forgot-password', { email }, setLoading);
-
         if (result.success) {
-            setMessage('重置密碼鏈接已發送到您的郵箱');
+            toast.success('重置密碼鏈接已發送到您的郵箱');
         }
     };
 
@@ -62,7 +61,6 @@ const Forgot = () => {
                         {loading ? 'Loading...' : 'Send Reset Password Link to Email'}
                     </button>
                 </form>
-                {message && <p>{message}</p>}
             </div>
         </div>
     )

@@ -179,7 +179,7 @@ export const deleteHotel = async (req, res, next) => {
     const id = req.params.id
     try {
         await Hotel.findByIdAndDelete(id)
-        sendResponse(res, 200, "刪除資料成功");
+        sendResponse(res, 200, { message: "刪除資料成功" });
     } catch (error) {
         next(errorMessage(500, "刪除失敗，請確認是否有其id", error))
     }

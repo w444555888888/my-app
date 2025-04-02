@@ -26,7 +26,6 @@ import { faCircleRight, faQuestion } from '@fortawesome/free-solid-svg-icons'
 const LogIn = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [message, setMessage] = useState('')
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -96,7 +95,6 @@ const LogIn = () => {
                 <div className='buttonGroup'>
                     <button className="forgotBtn" onClick={handleClickToForgot}>forgot account <FontAwesomeIcon icon={faQuestion} /></button>
                     <button className="signUpBtn" onClick={handleClickToSignUp}>Sign Up</button>
-                    {message && <p>{message}</p>}
                 </div>
 
             </div>

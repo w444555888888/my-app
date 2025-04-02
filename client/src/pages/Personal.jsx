@@ -32,7 +32,6 @@ const Personal = () => {
   const [phoneNumber, setPhoneNumber] = useState(userDetails.phoneNumber || '')
   const [address, setAddress] = useState(userDetails.address || '')
   const [loading, setLoading] = useState('')
-  const [message, setMessage] = useState('')
 
 
   const handleClickToHome = () => {
@@ -147,7 +146,6 @@ const Personal = () => {
           <button onClick={handleClicklogOut} >Log Out</button>
         </form>
 
-        {message && <p>{message}</p>}
       </div>
       <div className="personalContainer">
         <h2>My Orders</h2>

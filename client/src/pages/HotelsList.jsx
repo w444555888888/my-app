@@ -34,10 +34,7 @@ const HotelsList = () => {
     const [maxPrice, setMaxPrice] = useState('')
     const [startDate, setStartDate] = useState(locationStartDate || format(today, "yyyy-MM-dd"))
     const [endDate, setEndDate] = useState(locationEndDate || format(nextWeek, "yyyy-MM-dd"))
-
-    // post
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState('');
 
     // 日期
     const [dates, setDates] = useState(locationDates || [

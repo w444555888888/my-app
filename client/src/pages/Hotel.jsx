@@ -24,7 +24,6 @@ const Hotel = () => {
   const dispatch = useDispatch();
   const [hotelData, setHotelData] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [message, setMessage] = useState(true)
   const [openSlider, setOpenSlider] = useState(false)
   const [sliderIndex, setSiderIndex] = useState(0)
   const [rooms, setRooms] = useState([])

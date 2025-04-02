@@ -12,11 +12,11 @@ import "./signUp.scss"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleRight } from '@fortawesome/free-solid-svg-icons'
 import { request } from '../utils/apiService'
+import { toast } from 'react-toastify'
 const SignUp = () => {
     const [email, setEmail] = useState('')
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
-    const [message, setMessage] = useState('')
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
     const handleClickToHome = () => {
@@ -81,7 +81,6 @@ const SignUp = () => {
                         {loading ? 'Loading...' : 'Sign Up'}
                     </button>
                 </form>
-                {message && <p>{message}</p>}
             </div>
         </div>
     )
