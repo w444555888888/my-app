@@ -45,7 +45,7 @@ export const deletedUser = async (req, res, next) => {
   const id = req.params.id
   try {
     await User.findByIdAndDelete(id)
-    sendResponse(res, 200, { message: "用戶成功刪除" });
+    sendResponse(res, 200, null, { message: "用戶成功刪除" });
   } catch (error) {
     next(errorMessage(500, "刪除用戶失敗", error))
   }
@@ -58,7 +58,7 @@ export const getUser = async (req, res, next) => {
   try {
     const user = await User.findById(id);
     if (!user) {
-      return sendResponse(res, 404, { message: "用戶未找到" });
+      return sendResponse(res, 404, null, { message: "用戶未找到" });
     }
     const orders = await Order.find({ userId: id });
     sendResponse(res, 200, { ...user.toObject(), allOrder: orders });

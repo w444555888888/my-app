@@ -137,7 +137,7 @@ export const forgotPassword = async (req, res, next) => {
     // 發送郵件
     try {
       await transporter.sendMail(mailOptions)
-      return sendResponse(res, 200, { message: "重置密碼郵件已發送" });
+      return sendResponse(res, 200, null, { message: "重置密碼郵件已發送" });
     } catch (error) {
       return next(errorMessage(500, "郵件發送失敗", error))
     }
@@ -174,7 +174,7 @@ export const resetPassword = async (req, res, next) => {
     user.resetPasswordExpires = undefined // 清除過期時間
     await user.save()
 
-    sendResponse(res, 200, { message: "密碼重置成功" });
+    sendResponse(res, 200, null, { message: "密碼重置成功" });
   } catch (error) {
     // 記錄錯誤信息
     console.error("Error during password reset:", error)

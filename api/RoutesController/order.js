@@ -111,7 +111,7 @@ export const deleteOrder = async (req, res, next) => {
     if (!deletedOrder) {
       return next(errorMessage(404, "訂單不存在"))
     }
-    sendResponse(res, 200, { message: "訂單刪除成功" });
+    sendResponse(res, 200, null,{ message: "訂單刪除成功" });
   } catch (error) {
     return next(errorMessage(500, "訂單id刪除訂單: Error", error))
   }

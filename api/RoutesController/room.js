@@ -32,7 +32,7 @@ export const deleteRoom = async (req, res, next) => {
 
   try {
     await Room.findByIdAndDelete(roomId)
-    sendResponse(res, 200, { message: "成功刪除房型資訊" });
+    sendResponse(res, 200, null, { message: "成功刪除房型資訊" });
   } catch (error) {
     next(errorMessage(500, "刪除房型失敗，找不到其 ID", error))
   }
@@ -59,7 +59,7 @@ export const getHotelRooms = async (req, res, next) => {
     // 確保 `Hotel` 存在
     const hoteldata = await Hotel.findById(gethotel);
     if (!hoteldata) {
-      return sendResponse(res, 404, { message: "找不到該飯店" });
+      return next(errorMessage(404, "找不到該飯店"))
     }
 
     // 直接查找 rooms，條件改為匹配 `hotelId`
