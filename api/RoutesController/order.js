@@ -62,7 +62,7 @@ export const createOrder = async (req, res, next) => {
     const savedOrder = await newOrder.save();
 
     // 返回創建成功的訂單
-    res.status(201).json(savedOrder);
+    sendResponse(res, 201, savedOrder);
   } catch (error) {
     return next(errorMessage(500, "新訂單: Error", error))
   }

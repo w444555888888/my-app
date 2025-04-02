@@ -9,7 +9,10 @@
 import { errorMessage } from "../errorMessage.js"
 import { sendResponse } from "../sendResponse.js"
 import User from "../models/User.js"
+import Order from "../models/Order.js";
 import bcrypt from "bcryptjs" //密碼加密
+
+
 //更新使用者:id
 export const updateUser = async (req, res, next) => {
   const id = req.params.id
@@ -36,31 +39,40 @@ export const updateUser = async (req, res, next) => {
   }
 }
 
+
 //刪除使用者
 export const deletedUser = async (req, res, next) => {
   const id = req.params.id
   try {
     await User.findByIdAndDelete(id)
-    res.status(200).json("用戶成功刪除")
+    sendResponse(res, 200, "用戶成功刪除");
   } catch (error) {
     next(errorMessage(500, "刪除用戶失敗", error))
   }
 }
+
+
 //讀取使用者資料
 export const getUser = async (req, res, next) => {
   const id = req.params.id
   try {
-    const getUser = await User.findById(id)
-    res.status(200).json(getUser)
+    const user = await User.findById(id);
+    if (!user) {
+      return sendResponse(res, 404, "用戶未找到");
+    }
+     const orders = await Order.find({ userId: id });
+     sendResponse(res, 200, { ...user.toObject(), allOrder: orders });
   } catch (error) {
     next(errorMessage(500, "讀取用戶失敗", error))
   }
 }
+
+
 //讀取全部使用者資料
 export const getAllUsers = async (req, res, next) => {
   try {
     const getUsers = await User.find()
-    res.status(200).json(getUsers)
+    sendResponse(res, 200, getUsers);
   } catch (error) {
     next(errorMessage(500, "讀取全部用戶失敗", error))
   }

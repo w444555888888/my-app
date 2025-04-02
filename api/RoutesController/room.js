@@ -59,7 +59,7 @@ export const getHotelRooms = async (req, res, next) => {
     // 確保 `Hotel` 存在
     const hoteldata = await Hotel.findById(gethotel);
     if (!hoteldata) {
-      return res.status(404).json({ message: "找不到該飯店" });
+      return sendResponse(res, 404, "找不到該飯店");
     }
 
     // 直接查找 rooms，條件改為匹配 `hotelId`
