@@ -8,7 +8,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { request } from '../utils/apiService';
 import EmptyState from '../subcomponents/EmptyState'
 import Skeleton from 'react-loading-skeleton';
-import { toast } from 'react-toastify' 
+import { toast } from 'react-toastify'
 const HotelsList = () => {
     // 路由
     const navigate = useNavigate()
@@ -25,8 +25,6 @@ const HotelsList = () => {
 
     const [openConditions, setOpenConditions] = useState(false)
     const [openCalendar, setOpenCalendar] = useState(false)
-
-    // 搜尋欄
     const [destinationState, setDestinationState] = useState(locationDestination || '')
 
     // 飯店列表數據
@@ -46,7 +44,6 @@ const HotelsList = () => {
         }
     ])
 
-
     // 人數/房間數
     const [conditions, setConditions] = useState(locationConditions || {
         adult: 1,
@@ -57,10 +54,11 @@ const HotelsList = () => {
         setDates([item.selection])
         setStartDate(format(item.selection.startDate, "yyyy-MM-dd"))
         setEndDate(format(item.selection.endDate, "yyyy-MM-dd"))
+        if (item.selection.startDate && item.selection.endDate &&
+            format(item.selection.startDate, "yyyy-MM-dd") !== format(item.selection.endDate, "yyyy-MM-dd")) {
+            setOpenCalendar(false);
+        }
     }
-
-
-
 
 
     // 搜尋飯店條件

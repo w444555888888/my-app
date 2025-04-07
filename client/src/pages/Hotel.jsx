@@ -16,10 +16,9 @@ import 'react-date-range/dist/theme/default.css' // theme css file
 import { useDispatch } from 'react-redux';
 import { setCurrentHotel, setAvailableRooms } from '../../src/redux/hotelSlice';
 import EmptyState from '../subcomponents/EmptyState'
-import { toast } from 'react-toastify' 
+import { toast } from 'react-toastify'
 
 const Hotel = () => {
-  const location = useLocation()
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const dispatch = useDispatch();
@@ -31,17 +30,23 @@ const Hotel = () => {
   const [night, setNight] = useState('')
   const comments = useRef(null)
 
+  // 預設日期為今天和一周後
+  const today = new Date()
+  const nextWeek = new Date()
+  nextWeek.setDate(today.getDate() + 7)
 
   // 查詢路由參數
+  const location = useLocation();
   const hotelIdRouter = searchParams.get('hotelId');
   const startDateRouter = searchParams.get('startDate');
   const endDateRouter = searchParams.get('endDate');
-  const today = format(new Date(), "yyyy-MM-dd");
 
-  // 日期 ? 路由沒有日期(首頁)，填上今天日期 
+
+  // 路由傳遞數據
   const [openCalendar, setOpenCalendar] = useState(false)
-  const [startDate, setStartDate] = useState(startDateRouter ? format(new Date(startDateRouter), "yyyy-MM-dd") : today);
-  const [endDate, setEndDate] = useState(endDateRouter ? format(new Date(endDateRouter), "yyyy-MM-dd") : today);
+  const [startDate, setStartDate] = useState(startDateRouter || format(today, "yyyy-MM-dd"));
+  const [endDate, setEndDate] = useState(endDateRouter || format(nextWeek, "yyyy-MM-dd"));
+  const [hotelId, setHotelId] = useState(hotelIdRouter);
   const [dates, setDates] = useState([
     {
       startDate: startDate ? new Date(startDate) : new Date(),
@@ -79,7 +84,18 @@ const Hotel = () => {
     setDates([item.selection])
     setStartDate(format(item.selection.startDate, "yyyy-MM-dd"))
     setEndDate(format(item.selection.endDate, "yyyy-MM-dd"))
-    setOpenCalendar(false)
+    if (item.selection.startDate && item.selection.endDate &&
+      format(item.selection.startDate, "yyyy-MM-dd") !== format(item.selection.endDate, "yyyy-MM-dd")) {
+      setOpenCalendar(false);
+    }
+  }
+
+  const handleSearchHotels = () => {
+    const params = new URLSearchParams();
+    if (hotelId) params.set('hotelId', hotelId);
+    if (startDate) params.set('startDate', startDate);
+    if (endDate) params.set('endDate', endDate);
+    navigate(`/hotels?${params.toString()}`);
   }
 
 
@@ -122,7 +138,7 @@ const Hotel = () => {
   }
 
   const handleNavigateToOrder = async (roomId) => {
-    navigate(`/order/${startDateRouter}/${endDateRouter}/${hotelIdRouter}/${roomId}`);
+    navigate(`/order/${startDate}/${endDate}/${hotelId}/${roomId}`);
   };
 
 
@@ -207,7 +223,9 @@ const Hotel = () => {
                   ranges={dates}
                   minDate={new Date()}
                 />}</div>
-
+              <div className="listItem">
+                <button className='searchbtn' onClick={handleSearchHotels}>搜尋</button>
+              </div>
             </div>
             <div>
             </div>
