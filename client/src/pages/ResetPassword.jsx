@@ -22,7 +22,7 @@ const ResetPassword = () => {
     const result = await request('POST', `/auth/reset-password/${token}`, { password: newPassword }, setLoading);
     if (result.success) {
       toast.success('密碼重置成功');
-    }
+    } else toast.error(`${result.Message}`)
   }
 
   return (

@@ -22,6 +22,7 @@ import { request } from '../utils/apiService';
 import "./logIn.scss"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleRight, faQuestion } from '@fortawesome/free-solid-svg-icons'
+import { toast } from 'react-toastify'
 
 const LogIn = () => {
     const [email, setEmail] = useState('')
@@ -48,10 +49,11 @@ const LogIn = () => {
 
         if (result.success) {
             const { userDetails } = result.data;
+            toast.success('登入成功！')
             localStorage.setItem('username', JSON.stringify(userDetails)); // 儲存用戶資料
             dispatch(logIn());  // 登入動作
             navigate('/'); // 跳轉到首頁
-        }
+        } else toast.error(`${result.Message}`) 
     }
 
     return (
@@ -96,7 +98,6 @@ const LogIn = () => {
                     <button className="forgotBtn" onClick={handleClickToForgot}>forgot account <FontAwesomeIcon icon={faQuestion} /></button>
                     <button className="signUpBtn" onClick={handleClickToSignUp}>Sign Up</button>
                 </div>
-
             </div>
         </div>
     )

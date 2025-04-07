@@ -8,6 +8,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { request } from '../utils/apiService';
 import EmptyState from '../subcomponents/EmptyState'
 import Skeleton from 'react-loading-skeleton';
+import { toast } from 'react-toastify' 
 const HotelsList = () => {
     // 路由
     const navigate = useNavigate()
@@ -84,7 +85,7 @@ const HotelsList = () => {
             const result = await request('GET', `/hotels/search?${queryString}`, {}, setLoading);
             if (result.success) {
                 setHotels(result.data);
-            }
+            } else toast.error(`${result.Message}`)
         }
 
         axiosHotels()

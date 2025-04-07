@@ -29,7 +29,7 @@ const Forgot = () => {
         const result = await request('POST', '/auth/forgot-password', { email }, setLoading);
         if (result.success) {
             toast.success('重置密碼鏈接已發送到您的郵箱');
-        }
+        }else toast.error(`${result.Message}`)
     };
 
     return (

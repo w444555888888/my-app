@@ -16,6 +16,7 @@ import 'react-date-range/dist/theme/default.css' // theme css file
 import { useDispatch } from 'react-redux';
 import { setCurrentHotel, setAvailableRooms } from '../../src/redux/hotelSlice';
 import EmptyState from '../subcomponents/EmptyState'
+import { toast } from 'react-toastify' 
 
 const Hotel = () => {
   const location = useLocation()
@@ -62,7 +63,7 @@ const Hotel = () => {
         setRooms(result?.data?.[0]?.availableRooms);
         dispatch(setCurrentHotel(result?.data?.[0]));
         dispatch(setAvailableRooms(result?.data?.[0]?.availableRooms));
-      }
+      } else toast.error(`${result.Message}`)
     };
 
     fetchHotelData();

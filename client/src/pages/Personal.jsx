@@ -41,16 +41,12 @@ const Personal = () => {
   // 編輯帳戶
   const handleEdit = async (e) => {
     e.preventDefault()
-    try {
-      const result = await request('PUT', `/users/${userDetails._id}`, { password: password, realName: realName, phoneNumber: phoneNumber, address: address }, setLoading)
-      if (result.success) {
-        const data = result.data;
-        localStorage.setItem('username', JSON.stringify(data));
-        toast.success('編輯帳戶成功！');
-      }
-    } catch (error) {
-      toast.error('編輯帳戶失敗')
-    }
+    const result = await request('PUT', `/users/${userDetails._id}`, { password: password, realName: realName, phoneNumber: phoneNumber, address: address }, setLoading)
+    if (result.success) {
+      const data = result.data;
+      localStorage.setItem('username', JSON.stringify(data));
+      toast.success('編輯帳戶成功！');
+    } else toast.error(`${result.Message}`)
   }
 
 
@@ -66,15 +62,11 @@ const Personal = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      try {
-        const result = await request('GET', `/users/${userDetails._id}`);
-        if (result.success) {
-          const data = result.data;
-          setOrders(data.allOrder || []);
-        }
-      } catch (error) {
-        toast.error('獲取用戶資料失敗');
-      }
+      const result = await request('GET', `/users/${userDetails._id}`);
+      if (result.success) {
+        const data = result.data;
+        setOrders(data.allOrder || []);
+      } else toast.error(`${result.Message}`)
     };
     fetchUserData();
   }, [dispatch])

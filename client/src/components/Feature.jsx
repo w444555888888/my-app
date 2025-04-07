@@ -10,6 +10,7 @@ import React, { useState, useEffect } from 'react'
 import Categories from '../subcomponents/Categories'
 import PopularHotels from '../subcomponents/PopularHotels'
 import { request } from '../utils/apiService'
+import { toast } from 'react-toastify' 
 import "./feature.scss"
 const Feature = () => {
     const [hotels, setHotels] = useState([])
@@ -19,7 +20,7 @@ const Feature = () => {
             const result = await request('GET', '/hotels', {});
             if (result.success) {
                 setHotels(result.data);
-            }
+            }else toast.error(`${result.Message}`)
         };
 
         allHotels();

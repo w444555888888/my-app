@@ -17,29 +17,23 @@ const Order = () => {
   const [orderSuccess, setOrderSuccess] = useState(false)
 
   const handleOrder = async () => {
-    try {
-      const userInfo = JSON.parse(localStorage.getItem('username'))
-      const result = await request('POST', '/order', {
-        hotelId: hotelId,
-        roomId: roomId,
-        checkInDate: startDate,
-        checkOutDate: endDate,
-        userId: userInfo._id,
-        totalPrice: selectedRoom.roomTotalPrice,
-        payment: {
-          method: selectedPaymentType
-        }
-      })
+    const userInfo = JSON.parse(localStorage.getItem('username'))
+    const result = await request('POST', '/order', {
+      hotelId: hotelId,
+      roomId: roomId,
+      checkInDate: startDate,
+      checkOutDate: endDate,
+      userId: userInfo._id,
+      totalPrice: selectedRoom.roomTotalPrice,
+      payment: {
+        method: selectedPaymentType
+      }
+    })
 
-      if (result.success) {
-        setOrderSuccess(true)
-        toast.success('訂單新增成功！')
-      } else toast.error(`${result.Message}`)
-
-
-    } catch (error) {
-      toast.error('訂單建立失敗')
-    }
+    if (result.success) {
+      setOrderSuccess(true)
+      toast.success('訂單新增成功！')
+    } else toast.error(`${result.Message}`)
   }
 
   useEffect(() => {
