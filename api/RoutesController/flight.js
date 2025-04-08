@@ -1,5 +1,6 @@
 import { errorMessage } from "../errorMessage.js"
 import { sendResponse } from "../sendResponse.js"
+import { v4 as uuidv4 } from 'uuid';
 import Flight from "../models/Flight.js"
 import FlightOrder from "../models/FightOrder.js"
 
@@ -150,7 +151,7 @@ export const createFlightOrder = async (req, res) => {
         const totalPrice = (basePrice + tax) * passengerInfo.length;
 
         // 生成訂單號
-        const orderNumber = `FO${Date.now()}${Math.floor(Math.random() * 1000)}`;
+        const orderNumber = `FO${uuidv4().split('-')[0]}`;
 
         // 創建訂單
         const newOrder = new FlightOrder({
