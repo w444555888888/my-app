@@ -274,8 +274,8 @@ const Hotel = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {rooms.map((e) => (
-                    <tr key={e._id} className={e._id}>
+                  {rooms.map((e) => (                  
+                    <tr key={e._id}  className={e._id}>
                       <td>
                         <span className="roomTitle">{e.title}</span>
                         <IoBed /> <br />

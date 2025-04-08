@@ -248,30 +248,121 @@
                 padding: 10px 15px;
                 font-weight: bolder;
                 background-color: rgb(120, 120, 120);
-                border-top: 3px solid rgba(169, 169, 169, 0.5);
-                border-right: 3px solid rgba(169, 169, 169, 0.5);
+                color: white;
+                border: 3px solid rgba(169, 169, 169, 0.5);
                 border-bottom: none;
-                border-left: 3px solid rgba(169, 169, 169, 0.5);
               }
             }
           }
 
           tbody {
             tr {
+              &:hover {
+                background-color: rgba(0, 0, 0, 0.02);
+              }
+
               td {
-                padding: 10px 30px;
-                border-top: 3px solid rgba(169, 169, 169, 0.5);
-                border-right: 3px solid rgba(169, 169, 169, 0.5);
-                border-bottom: 3px solid rgba(169, 169, 169, 0.5);
-                border-left: none;
+                padding: 15px 20px;
+                border: 3px solid rgba(169, 169, 169, 0.5);
+                vertical-align: top;
+
+                svg {
+                  color: #666;
+                  margin-right: 5px;
+                  font-size: 16px;
+                }
+
+                .roomTitle {
+                  font-size: 16px;
+                  font-weight: 600;
+                  margin-bottom: 10px;
+                  display: inline-block;
+                }
+
+                .roomType {
+                  color: #666;
+                  font-size: 14px;
+                  margin: 5px 0;
+                  display: block;
+                }
+
+                .desc {
+                  display: block;
+                  font-size: 13px;
+                  margin: 5px 0;
+                  color: #444;
+                  line-height: 1.6;
+
+                  .iconCheck {
+                    color: #4CAF50;
+                    margin-right: 5px;
+                  }
+                }
+
+                &.twd {
+                  font-size: 18px;
+                  font-weight: 600;
+                  color: var(--primary-color);
+                  text-align: center;
+                  white-space: nowrap;
+
+                  span {
+                    font-size: 12px;
+                    color: #666;
+                    display: block;
+                    font-weight: normal;
+                    margin-top: 5px;
+                  }
+                }
+
+                .breakFast {
+                  margin-top: 10px;
+
+                  li {
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                    color: #4CAF50;
+                    margin-bottom: 5px;
+
+                    .breakfast-icon {
+                      font-size: 18px;
+                    }
+                  }
+                }
+
+                ul {
+                  list-style: none;
+                  padding: 0;
+                  margin: 10px 0;
+
+                  li {
+                    margin-bottom: 8px;
+                    font-size: 13px;
+                    line-height: 1.5;
+
+                    strong {
+                      color: #333;
+                      font-weight: 600;
+                    }
+                  }
+                }
 
                 button {
+                  width: 100%;
+                  max-width: 200px;
+                  padding: 10px 15px;
                   border: none;
                   cursor: pointer;
                   background: var(--primary-color);
                   color: white;
                   border-radius: 2px;
-                  padding: 8px;
+                  font-size: 14px;
+                  transition: all 0.3s ease;
+
+                  &:hover {
+                    opacity: 0.9;
+                  }
                 }
               }
             }
@@ -279,7 +370,6 @@
         }
       }
     }
-
     .popupcomment {
       position: absolute;
       top: 0px;
@@ -393,7 +483,80 @@
   .hotelImgWrapper {
     display: block;
   }
+
+  .roomDes {
+    margin: 0 -10px;  // 負邊距補償父容器的 padding
+    
+    .roomDesText {
+      table {
+        margin: 20px 0;
+        width: 120%;
+        thead {
+          display: none;  
+        }
+
+        tbody {
+          tr {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+            background: #fff;
+            margin: 0 10%; 
+
+            td {
+              width: 100%;
+              padding: 15px;
+              border: none;
+              border-bottom: 1px solid rgba(169, 169, 169, 0.5);
+
+              &:before {
+                content: attr(data-label);
+                font-weight: 600;
+                display: block;
+                margin-bottom: 10px;
+                color: #333;
+              }
+
+              .roomTitle {
+                font-size: 16px;
+              }
+
+              .roomType {
+                margin: 8px 0;
+              }
+
+              .desc {
+                margin: 8px 0;
+              }
+
+              &.twd {
+                text-align: center;
+                padding: 20px;
+                background-color: rgba(246, 246, 246, 0.5);
+              }
+
+              .breakFast {
+                margin: 15px 0;
+              }
+
+              button {
+                width: 100%;
+                max-width: none;
+                padding: 12px;
+                margin-top: 10px;
+              }
+            }
+
+            &:last-child td {
+              border-bottom: none;
+            }
+          }
+        }
+      }
+    }
+  }
 }
+
 
 @media screen and (max-width: 480px) {
   .hotelTitle {
@@ -420,5 +583,58 @@
 
   .hotelImgWrapper .hotelImg {
     grid-template-columns: 1fr;
+  }
+
+  .roomDes {
+    .roomDesText {
+      table {
+        width: 120%;
+        tbody {
+          tr {
+            margin: 0 10%;
+            td {
+              padding: 12px;
+
+              &:before {
+                font-size: 13px;
+              }
+
+              .roomTitle {
+                font-size: 14px;
+              }
+
+              .roomType {
+                font-size: 13px;
+              }
+
+              .desc {
+                font-size: 12px;
+                line-height: 1.4;
+              }
+
+              &.twd {
+                font-size: 16px;
+                padding: 15px;
+              }
+
+              .breakFast {
+                li {
+                  font-size: 12px;
+                  
+                  .breakfast-icon {
+                    font-size: 16px;
+                  }
+                }
+              }
+
+              button {
+                padding: 10px;
+                font-size: 13px;
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
