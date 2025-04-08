@@ -22,6 +22,7 @@ export const request = async (method, endpoint, data = {}, setLoading = () => {}
             method,
             url: `${API_BASE_URL}${endpoint}`,
             data,
+            withCredentials: true
         }
         const response = await axios(config)
         return { success: true, data: response.data.data }

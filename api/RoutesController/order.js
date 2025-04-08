@@ -1,7 +1,6 @@
 import Hotel from "../models/Hotel.js";
 import Room from "../models/Room.js";
 import Order from "../models/Order.js"
-import User from "../models/User.js"
 import { errorMessage } from "../errorMessage.js"
 import { sendResponse } from "../sendResponse.js"
 // 全部訂單
@@ -16,7 +15,15 @@ export const getAllOrders = async (req, res, next) => {
 
 // 新訂單
 export const createOrder = async (req, res, next) => {
-  const { hotelId, roomId, userId, totalPrice } = req.body;  // 解構傳入的訂單資料
+
+  // 檢查用戶身份
+  if (!req.user || !req.user.id) {
+    throw errorMessage(401, "未登入或登入已過期");
+  }
+  // 從cookie 中間件獲取用戶 ID
+  const userId = req.user.id; 
+  
+  const { hotelId, roomId, totalPrice } = req.body;  // 解構傳入的訂單資料
 
   try {
     // 檢查是否已存在相同的訂單
@@ -43,12 +50,6 @@ export const createOrder = async (req, res, next) => {
       return next(errorMessage(404, "新訂單 Room not found"))
     }
 
-    // 查找用戶資料
-    const user = await User.findById(userId);
-    if (!user) {
-      return next(errorMessage(404, "用戶不存在"))
-    }
-
     // 計算手續費 10%
     const serviceFee = totalPrice * 0.10;
     const totalPriceWithFee = totalPrice + serviceFee;
@@ -56,7 +57,7 @@ export const createOrder = async (req, res, next) => {
     // 如果酒店和房間都存在，創建新的訂單
     const newOrder = new Order({
       ...req.body,
-      userInfo: user,
+      userId,
       totalPrice: totalPriceWithFee //加上手續費
     });
     const savedOrder = await newOrder.save();
@@ -111,7 +112,7 @@ export const deleteOrder = async (req, res, next) => {
     if (!deletedOrder) {
       return next(errorMessage(404, "訂單不存在"))
     }
-    sendResponse(res, 200, null,{ message: "訂單刪除成功" });
+    sendResponse(res, 200, null, { message: "訂單刪除成功" });
   } catch (error) {
     return next(errorMessage(500, "訂單id刪除訂單: Error", error))
   }

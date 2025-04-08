@@ -181,3 +181,26 @@ export const resetPassword = async (req, res, next) => {
     next(errorMessage(500, "重置密碼處理失敗", error))
   }
 }
+
+
+// 驗證用戶身份
+export const verifyToken = async (req, res, next) => {
+  try {
+      // 從 cookie 中獲取 token
+      const token = req.cookies.JWT_token;
+      
+      if (!token) {
+          throw errorMessage(401, "請先登入");
+      }
+
+      // 驗證 token
+      const decoded = jwt.verify(token, process.env.JWT);
+      
+      // 將解碼後的用戶信息添加到請求對象中
+      req.user = decoded;
+      
+      next();
+  } catch (err) {
+      throw errorMessage(403, "登入已過期，請重新登入");
+  }
+};

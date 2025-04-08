@@ -17,13 +17,11 @@ const Order = () => {
   const [orderSuccess, setOrderSuccess] = useState(false)
 
   const handleOrder = async () => {
-    const userInfo = JSON.parse(localStorage.getItem('username'))
     const result = await request('POST', '/order', {
       hotelId: hotelId,
       roomId: roomId,
       checkInDate: startDate,
       checkOutDate: endDate,
-      userId: userInfo._id,
       totalPrice: selectedRoom.roomTotalPrice,
       payment: {
         method: selectedPaymentType

@@ -15,6 +15,11 @@ import bcrypt from "bcryptjs" //密碼加密
 
 //更新使用者:id
 export const updateUser = async (req, res, next) => {
+  // 檢查是否為本人操作
+  if (req.user.id !== req.params.id) {
+    return next(errorMessage(403, "您只能修改自己的資料"));
+  }
+
   const id = req.params.id
   const { password, address, phoneNumber, realName } = req.body
 
@@ -42,6 +47,11 @@ export const updateUser = async (req, res, next) => {
 
 //刪除使用者
 export const deletedUser = async (req, res, next) => {
+  // 檢查是否為本人操作
+  if (req.user.id !== req.params.id) {
+    return next(errorMessage(403, "您只能修改自己的資料"));
+  }
+
   const id = req.params.id
   try {
     await User.findByIdAndDelete(id)
@@ -54,6 +64,10 @@ export const deletedUser = async (req, res, next) => {
 
 //讀取使用者資料
 export const getUser = async (req, res, next) => {
+  // 檢查是否為本人操作
+  if (req.user.id !== req.params.id) {
+    return next(errorMessage(403, "您只能修改自己的資料"));
+  }
   const id = req.params.id
   try {
     const user = await User.findById(id);
@@ -70,6 +84,11 @@ export const getUser = async (req, res, next) => {
 
 //讀取全部使用者資料
 export const getAllUsers = async (req, res, next) => {
+  // 只有管理員可以查看所有用戶
+  if (!req.user.isAdmin) {
+    return next(errorMessage(403, "只有管理員可以查看所有用戶資料"));
+  }
+
   try {
     const getUsers = await User.find()
     sendResponse(res, 200, getUsers);

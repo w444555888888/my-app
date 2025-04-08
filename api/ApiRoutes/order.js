@@ -8,6 +8,7 @@
  */
 import express from "express"
 import { getAllOrders, createOrder, getOrderById, updateOrder, deleteOrder } from "../RoutesController/order.js";
+import { verifyToken } from "../RoutesController/auth.js";
 
 const router = express.Router();
 
@@ -15,7 +16,7 @@ const router = express.Router();
 router.get("/", getAllOrders);
 
 // 新訂單
-router.post("/", createOrder);
+router.post("/", verifyToken, createOrder);
 
 // 根據id查找
 router.get("/find/:id", getOrderById);
