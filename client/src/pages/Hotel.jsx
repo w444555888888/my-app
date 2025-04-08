@@ -1,4 +1,4 @@
-import { faLocationDot, faPeopleGroup, faSmokingBan, faWifi, faXmark, faAngleLeft, faAngleRight, faUserLarge, faCalendar, faCheck } from '@fortawesome/free-solid-svg-icons'
+import { faLocationDot, faPeopleGroup, faWifi, faGlassMartiniAlt, faDumbbell, faParking, faSwimmer, faUtensils, faSpa, faXmark, faAngleLeft, faAngleRight, faUserLarge, faCalendar, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { IoBed } from "react-icons/io5"
 import { MdFreeBreakfast } from "react-icons/md"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -141,6 +141,16 @@ const Hotel = () => {
     navigate(`/order/${startDate}/${endDate}/${hotelId}/${roomId}`);
   };
 
+  const facilitiesList = [
+    { key: 'bar', icon: faGlassMartiniAlt, label: '酒吧' },
+    { key: 'gym', icon: faDumbbell, label: '健身房' },
+    { key: 'parking', icon: faParking, label: '停車場' },
+    { key: 'pool', icon: faSwimmer, label: '游泳池' },
+    { key: 'restaurant', icon: faUtensils, label: '餐廳' },
+    { key: 'spa', icon: faSpa, label: '水療' },
+    { key: 'wifi', icon: faWifi, label: '免費無線網路' },
+  ];
+
 
   if (!hotelData) return <EmptyState
     title="找不到酒店資訊"
@@ -207,8 +217,19 @@ const Hotel = () => {
               <br />
               {hotelData.desc}
               <h2>熱門設施</h2>
-              <p className='textIcon'><FontAwesomeIcon icon={faWifi} className="wifi" />
-                免費無線網路 <FontAwesomeIcon icon={faSmokingBan} />禁菸客房</p>
+              <p className="textIcon">
+                {facilitiesList.map(
+                  (facility) =>
+                    hotelData.facilities[facility.key] &&
+                    (
+                      <>
+                        <FontAwesomeIcon icon={facility.icon} className="textIconItem" />
+                        {facility.label}
+                      </>
+                    )
+                )}
+
+              </p>
               <h2>空房情況</h2>
               <div className='SearchBarItem'>
                 <FontAwesomeIcon icon={faCalendar} onClick={() => setOpenCalendar(!openCalendar)} />
