@@ -3,7 +3,7 @@ import "./app.scss"
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { routeConfig } from './routes/routes'
-import { PrivateRoute } from './routes/PrivateRoute'
+import { ProtectedRoute } from './routes/ProtectedRoute'
 import axios from 'axios'
 
 function App() {
@@ -20,9 +20,9 @@ function App() {
               path={path}
               element={
                 requireAuth ? (
-                  <PrivateRoute login={login}>
+                  <ProtectedRoute login={login}>
                     <Element />
-                  </PrivateRoute>
+                  </ProtectedRoute>
                 ) : (
                   <Element />
                 )
