@@ -87,7 +87,6 @@
     flex-direction: column;
     gap: 10px;
 
-
     .HotelHeaderBtn {
       display: flex;
       gap: 3px;
@@ -222,12 +221,13 @@
 
         p {
           font-size: 13px;
-          font-weight: 600
+          font-weight: 600;
         }
       }
     }
 
     .roomDes {
+      overflow-x: hidden;
       .roomDesText {
         width: 100%;
         font-size: 14px;
@@ -235,7 +235,6 @@
         table {
           width: 100%;
           margin: 30px 0;
-          text-align: left;
           border-collapse: collapse;
 
           thead {
@@ -262,7 +261,6 @@
               }
 
               td {
-                padding: 15px 20px;
                 border: 3px solid rgba(169, 169, 169, 0.5);
                 vertical-align: top;
 
@@ -279,11 +277,9 @@
                   display: inline-block;
                 }
 
-                .roomType {
-                  color: #666;
-                  font-size: 14px;
-                  margin: 5px 0;
-                  display: block;
+                svg {
+                  margin-left: 2px;
+                  vertical-align:text-top;
                 }
 
                 .desc {
@@ -294,7 +290,7 @@
                   line-height: 1.6;
 
                   .iconCheck {
-                    color: #4CAF50;
+                    color: #4caf50;
                     margin-right: 5px;
                   }
                 }
@@ -322,7 +318,7 @@
                     display: flex;
                     align-items: center;
                     gap: 5px;
-                    color: #4CAF50;
+                    color: #4caf50;
                     margin-bottom: 5px;
 
                     .breakfast-icon {
@@ -464,7 +460,6 @@
   }
 }
 
-
 @media screen and (max-width: 768px) {
   .HotelWrapper {
     padding: 10px;
@@ -485,14 +480,13 @@
   }
 
   .roomDes {
-    margin: 0 -10px;  // 負邊距補償父容器的 padding
-    
+    margin: 0 -10px; // 負邊距補償父容器的 padding
+
     .roomDesText {
       table {
         margin: 20px 0;
-        width: 120%;
         thead {
-          display: none;  
+          display: none;
         }
 
         tbody {
@@ -501,10 +495,9 @@
             flex-direction: column;
             margin-bottom: 20px;
             background: #fff;
-            margin: 0 10%; 
+            margin: 0 10%;
 
             td {
-              width: 100%;
               padding: 15px;
               border: none;
               border-bottom: 1px solid rgba(169, 169, 169, 0.5);
@@ -519,10 +512,6 @@
 
               .roomTitle {
                 font-size: 16px;
-              }
-
-              .roomType {
-                margin: 8px 0;
               }
 
               .desc {
@@ -557,7 +546,6 @@
   }
 }
 
-
 @media screen and (max-width: 480px) {
   .hotelTitle {
     .hotelName {
@@ -588,7 +576,6 @@
   .roomDes {
     .roomDesText {
       table {
-        width: 120%;
         tbody {
           tr {
             margin: 0 10%;
@@ -601,10 +588,6 @@
 
               .roomTitle {
                 font-size: 14px;
-              }
-
-              .roomType {
-                font-size: 13px;
               }
 
               .desc {
@@ -620,7 +603,7 @@
               .breakFast {
                 li {
                   font-size: 12px;
-                  
+
                   .breakfast-icon {
                     font-size: 16px;
                   }

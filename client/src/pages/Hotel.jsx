@@ -5,23 +5,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useRef, useState, useEffect } from 'react'
 import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
-import { request } from '../utils/apiService';
+import { request } from '../utils/apiService'
 import { gsap } from "gsap"
 import "./hotel.scss"
 import { useLocation, useParams, useSearchParams, useNavigate } from 'react-router-dom'
 import { DateRange } from 'react-date-range'
-import { differenceInDays, format } from "date-fns";
+import { differenceInDays, format } from "date-fns"
 import 'react-date-range/dist/styles.css' // main css file
 import 'react-date-range/dist/theme/default.css' // theme css file
-import { useDispatch } from 'react-redux';
-import { setCurrentHotel, setAvailableRooms } from '../../src/redux/hotelSlice';
+import { useDispatch } from 'react-redux'
+import { setCurrentHotel, setAvailableRooms } from '../../src/redux/hotelSlice'
 import EmptyState from '../subcomponents/EmptyState'
 import { toast } from 'react-toastify'
 
 const Hotel = () => {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const dispatch = useDispatch();
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const dispatch = useDispatch()
   const [hotelData, setHotelData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [openSlider, setOpenSlider] = useState(false)
@@ -36,17 +36,17 @@ const Hotel = () => {
   nextWeek.setDate(today.getDate() + 7)
 
   // 查詢路由參數
-  const location = useLocation();
-  const hotelIdRouter = searchParams.get('hotelId');
-  const startDateRouter = searchParams.get('startDate');
-  const endDateRouter = searchParams.get('endDate');
+  const location = useLocation()
+  const hotelIdRouter = searchParams.get('hotelId')
+  const startDateRouter = searchParams.get('startDate')
+  const endDateRouter = searchParams.get('endDate')
 
 
   // 路由傳遞數據
   const [openCalendar, setOpenCalendar] = useState(false)
-  const [startDate, setStartDate] = useState(startDateRouter || format(today, "yyyy-MM-dd"));
-  const [endDate, setEndDate] = useState(endDateRouter || format(nextWeek, "yyyy-MM-dd"));
-  const [hotelId, setHotelId] = useState(hotelIdRouter);
+  const [startDate, setStartDate] = useState(startDateRouter || format(today, "yyyy-MM-dd"))
+  const [endDate, setEndDate] = useState(endDateRouter || format(nextWeek, "yyyy-MM-dd"))
+  const [hotelId, setHotelId] = useState(hotelIdRouter)
   const [dates, setDates] = useState([
     {
       startDate: startDate ? new Date(startDate) : new Date(),
@@ -60,24 +60,24 @@ const Hotel = () => {
     const fetchHotelData = async () => {
       const queryString = Array.from(searchParams.entries())
         .map(([key, value]) => `${key}=${value}`)
-        .join('&');
+        .join('&')
 
-      const result = await request('GET', `/hotels/search?${queryString}`, {}, setLoading);
+      const result = await request('GET', `/hotels/search?${queryString}`, {}, setLoading)
       if (result.success) {
-        setHotelData(result?.data?.[0]);
-        setRooms(result?.data?.[0]?.availableRooms);
-        dispatch(setCurrentHotel(result?.data?.[0]));
-        dispatch(setAvailableRooms(result?.data?.[0]?.availableRooms));
+        setHotelData(result?.data?.[0])
+        setRooms(result?.data?.[0]?.availableRooms)
+        dispatch(setCurrentHotel(result?.data?.[0]))
+        dispatch(setAvailableRooms(result?.data?.[0]?.availableRooms))
       } else toast.error(`${result.Message}`)
-    };
+    }
 
-    fetchHotelData();
-  }, [location.search, dispatch]);
+    fetchHotelData()
+  }, [location.search, dispatch])
 
   // 晚數
   useEffect(() => {
-    setNight(differenceInDays(dates[0].endDate, dates[0].startDate));
-  }, [dates]);
+    setNight(differenceInDays(dates[0].endDate, dates[0].startDate))
+  }, [dates])
 
 
   const handleDateChange = (item) => {
@@ -86,16 +86,16 @@ const Hotel = () => {
     setEndDate(format(item.selection.endDate, "yyyy-MM-dd"))
     if (item.selection.startDate && item.selection.endDate &&
       format(item.selection.startDate, "yyyy-MM-dd") !== format(item.selection.endDate, "yyyy-MM-dd")) {
-      setOpenCalendar(false);
+      setOpenCalendar(false)
     }
   }
 
   const handleSearchHotels = () => {
-    const params = new URLSearchParams();
-    if (hotelId) params.set('hotelId', hotelId);
-    if (startDate) params.set('startDate', startDate);
-    if (endDate) params.set('endDate', endDate);
-    navigate(`/hotels?${params.toString()}`);
+    const params = new URLSearchParams()
+    if (hotelId) params.set('hotelId', hotelId)
+    if (startDate) params.set('startDate', startDate)
+    if (endDate) params.set('endDate', endDate)
+    navigate(`/hotels?${params.toString()}`)
   }
 
 
@@ -138,8 +138,8 @@ const Hotel = () => {
   }
 
   const handleNavigateToOrder = async (roomId) => {
-    navigate(`/order/${startDate}/${endDate}/${hotelId}/${roomId}`);
-  };
+    navigate(`/order/${startDate}/${endDate}/${hotelId}/${roomId}`)
+  }
 
   const facilitiesList = [
     { key: 'bar', icon: faGlassMartiniAlt, label: '酒吧' },
@@ -149,7 +149,7 @@ const Hotel = () => {
     { key: 'restaurant', icon: faUtensils, label: '餐廳' },
     { key: 'spa', icon: faSpa, label: '水療' },
     { key: 'wifi', icon: faWifi, label: '免費無線網路' },
-  ];
+  ]
 
 
   if (!hotelData) return <EmptyState
@@ -274,12 +274,12 @@ const Hotel = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {rooms.map((e) => (                  
-                    <tr key={e._id}  className={e._id}>
+                  {rooms.map((e) => (
+                    <tr key={e._id} className={e._id}>
                       <td>
-                        <span className="roomTitle">{e.title}</span>
-                        <IoBed /> <br />
-                        <span className="roomType">{e.roomType}</span><br />
+                        <span className="roomTitle">{e.title}{e.roomType}</span>
+                        <IoBed />
+                        <br />
                         {e.desc.map((item, index) => (
                           <span className='desc' key={index}>
                             <FontAwesomeIcon icon={faCheck} className="iconCheck" />

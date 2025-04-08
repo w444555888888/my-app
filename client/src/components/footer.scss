@@ -5,7 +5,7 @@
     align-items: center;
     background-color: rgb(97, 97, 97);
     font-weight: bold;
-    
+
     .title {
         font-weight: 100;
         margin-top: 20px;
@@ -25,7 +25,6 @@
     .emailcontainer {
         padding: 20px;
         max-width: 1024px;
-        width: 100%;
         .wrapper {
             display: flex;
             padding: 0px 50px;
@@ -74,7 +73,6 @@
         }
     }
 }
-
 
 @media screen and (max-width: 768px) {
     .footer {
