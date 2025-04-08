@@ -47,3 +47,6 @@ const FlightOrderSchema = new mongoose.Schema({
         paidAt: { type: Date }
     }
 }, { timestamps: true });
+
+
+export default mongoose.model("FlightOrder", FlightOrderSchema)
