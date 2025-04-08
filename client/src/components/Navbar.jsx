@@ -9,7 +9,7 @@
 import React, { useState, useEffect } from 'react'
 import "./navbar.scss"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSun, faMoon, faBed, faCar, faPlane, faTaxi, faToriiGate } from '@fortawesome/free-solid-svg-icons'
+import { faSun, faMoon, faBed, faPlane, faShuttleVan, faUtensils, faMapMarkerAlt, faHeadset } from '@fortawesome/free-solid-svg-icons'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
@@ -32,19 +32,11 @@ const Navbar = () => {
         navigate('/')
     }
 
-    const handleClickToSignUp = () => {
-        navigate('/signUp')
-    }
-
-    const handleClickToLogIn = () => {
-        navigate('/logIn')
-    }
-
     const handleClickToPersonal = () => {
         navigate('/personal')
     }
 
-    // 切換主題白天/夜晚狀態
+    // 切換主題白天/夜晚主題
     const toggleThemeHandler = () => {
         dispatch(toggleTheme())
     }
@@ -84,20 +76,25 @@ const Navbar = () => {
                         <FontAwesomeIcon icon={faPlane} />
                         <span >航班</span>
                     </div>
-                    <div className={`item ${activeItem === '租車' ? 'active' : ''}`}
-                        onClick={() => handleClickActive('租車')}>
-                        <FontAwesomeIcon icon={faCar} />
-                        <span >租車</span>
+                    <div className={`item ${activeItem === '機場接送' ? 'active' : ''}`}
+                        onClick={() => handleClickActive('機場接送')}>
+                        <FontAwesomeIcon icon={faShuttleVan} />
+                        <span >機場接送</span>
                     </div>
-                    <div className={`item ${activeItem === '景點/活動' ? 'active' : ''}`}
-                        onClick={() => handleClickActive('景點/活動')}>
-                        <FontAwesomeIcon icon={faToriiGate} />
-                        <span >景點/活動</span>
+                    <div className={`item ${activeItem === '美食預約' ? 'active' : ''}`}
+                        onClick={() => handleClickActive('美食預約')}>
+                        <FontAwesomeIcon icon={faUtensils} />
+                        <span >美食預約</span>
                     </div>
-                    <div className={`item ${activeItem === '機場計程車' ? 'active' : ''}`}
-                        onClick={() => handleClickActive('機場計程車')}>
-                        <FontAwesomeIcon icon={faTaxi} />
-                        <span >機場計程車</span>
+                    <div className={`item ${activeItem === '行程活動 / 當地體驗' ? 'active' : ''}`}
+                        onClick={() => handleClickActive('行程活動 / 當地體驗')}>
+                        <FontAwesomeIcon icon={faMapMarkerAlt} />
+                        <span >行程活動 / 當地體驗</span>
+                    </div>
+                    <div className={`item ${activeItem === '客服 / 幫助中心' ? 'active' : ''}`}
+                        onClick={() => handleClickActive('客服 / 幫助中心')}>
+                        <FontAwesomeIcon icon={faHeadset} />
+                        <span >客服 / 幫助中心</span>
                     </div>
                 </div>
 

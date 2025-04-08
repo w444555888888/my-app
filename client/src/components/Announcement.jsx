@@ -26,26 +26,26 @@ const Announcement = ({ type }) => {
                     <>
                         <div className="infoDes">
                             <FontAwesomeIcon icon={faInfoCircle} />
-                            所需建議，在出發之前，查看最新外交部發布之旅遊警示，提供國人出國旅行之參考資訊
+                            出發前請務必查看最新的外交部旅遊警示，掌握目的地的即時安全資訊，安心出遊！
                         </div>
                         <div className="discountInfo">
                             <div className="left">
-                                <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/160108451.jpg?k=276db1cee9672c663e0c40ab4ca7460dd21569524bf5542918acab6b6fe3ac1e&o=&hp=1" alt="" />
+                                <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/563834829.jpg?k=9abbe9b215903d92d58a8be200b95052f28ac8e30c12f7194f001179c8330d9c&amp;o=" alt="" />
                             </div>
                             <div className="right">
-                                <span>暑假優惠</span>
-                                <span>2024 年 9 月 30 日前預訂並住房就優惠最高20%</span>
-                                <button>逛逛優惠</button>
+                                <span>春季精選住宿</span>
+                                <span>立即預訂東京、大阪、首爾熱賣飯店，享最多 30% 折扣</span>
+                                <button>查看熱門地點</button>
                             </div>
                         </div>
                     </>
                     :
                     // false
                     <div className="GlobalBanner">
-                        <img src="https://cdn.visa.com/v2/assets/images/logos/visa/blue/logo.png" alt="" />
+                        <img src="https://cf.bstatic.com/static/img/contact/cs/cs-globe/981cf108eeecda859688c0e51d4ea87595d70912.png" alt="" />
                         <div className="BannerInfoDes">
-                            <h2>Visa各項優惠</h2>
-                            <span>刷Visa卡訂房最高享13%優惠</span>
+                            <h2>加入會員，解鎖專屬優惠</h2>
+                            <span>成為會員即可享有專屬折扣、累積點數、快速查詢訂單等貼心服務</span>
                             <div className='Bannerbtn'>
                                 <button className={`${activeItem === '登入' ? 'buttonActive' : ''}`} onClick={() => { handleClickActive('登入') }}>登入</button>
                                 <button className={`${activeItem === '註冊' ? 'buttonActive' : ''}`} onClick={() => { handleClickActive('註冊') }}>註冊</button>

@@ -114,7 +114,6 @@
     background-repeat: no-repeat;
     background-position: right;
     background-image: url("https://cf.bstatic.com/static/img/genius-banner-world-bg/2b5cdbad7b92073bc396b8b59d0bb421b3a01cba.png");
-
     img {
         display: flex;
         width: 180px;
@@ -152,7 +151,7 @@
 
 @media screen and (max-width: 768px) {
     .GlobalBanner {
-        height: 160px;
+        height: 270px;
         flex-direction: column;
         background-position: center;
     }
@@ -175,5 +174,34 @@
     .GlobalBanner .Bannerbtn button {
         width: 100%;
         padding: 12px 0;
+    }
+}
+
+
+@media screen and (max-width: 480px) {
+    .GlobalBanner {
+        height: 270px;
+        flex-direction: column;
+        background-position: center;
+    }
+
+    .GlobalBanner img {
+        width: 120px;
+        margin-bottom: 8px;
+    }
+
+    .GlobalBanner .BannerInfoDes {
+        align-items: center;
+        gap: 8px;
+    }
+
+    .GlobalBanner .Bannerbtn {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .GlobalBanner .Bannerbtn button {
+        width: 100%;
+        padding: 10px 0;
     }
 }
