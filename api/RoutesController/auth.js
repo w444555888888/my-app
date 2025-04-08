@@ -193,12 +193,13 @@ export const verifyToken = async (req, res, next) => {
           throw errorMessage(401, "請先登入");
       }
 
-      // 驗證 token
+      // 解析 token
       const decoded = jwt.verify(token, process.env.JWT);
       
-      // 將解碼後的用戶信息添加到請求對象中
+      // 將解碼後的用戶信息添加到請求req對象中 
       req.user = decoded;
       
+      // 下一步
       next();
   } catch (err) {
       throw errorMessage(403, "登入已過期，請重新登入");
