@@ -4,32 +4,36 @@
     flex-wrap: wrap;
 
     .item {
-        width: 250px;
+        width: 200px;
         cursor: pointer;
 
         img {
             display: flex;
             width: 100%;
-            height: 230px;
+            height: 150px;
             object-fit: cover;
+            border-radius: 2px;
         }
 
         .itemInfo {
-            .subTitle {
-                color: gray;
-                font-size: 12px;
+
+            .title {
+                font-weight: bold;
             }
 
-            .price {
-                color: black;
-                font-weight: 500;
-                padding: 2px 0px;
+
+            .subTitle {
+                color: gray;
+                font-size: 13px;
+                font-weight: bold;
             }
+
 
             .rate {
                 align-items: center;
                 display: flex;
                 gap: 5px;
+                margin-top: 5px;
 
                 span {
                     color: black;
@@ -58,7 +62,7 @@
     }
 }
 
-/* Responsive Design */
+
 @media screen and (max-width: 768px) {
     .popularHotels {
         justify-content: center;
@@ -66,7 +70,7 @@
 
     .item {
         width: 45%;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
     }
 }
 

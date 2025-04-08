@@ -10,25 +10,23 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import "./popularHotels.scss"
 const PopularHotels = ({ dataArray }) => {
+
     const navigate = useNavigate()
-    
-      const handleHotelClick = (item) => {
+
+    const handleHotelClick = (item) => {
         navigate(`/hotels?hotelId=${item._id}`)
-      }
+    }
     return (
         <div className='popularHotels'>
             {dataArray.map((item, index) =>
-                <div className="item" key={index} onClick={() => handleHotelClick(item)}>
+                <div className="item" key={item._id} onClick={() => handleHotelClick(item)}>
                     <img src={item.photos[0]} />
                     <div className="itemInfo">
                         <div className="title">
                             {item.title}
                         </div>
                         <div className="subTitle">
-                            {item.name}
-                        </div>
-                        <div className="price">
-                            TWD {item.cheapestPrice} 起
+                            {item.city}
                         </div>
                         <div className="rate">
                             <button>{item.rating}</button>

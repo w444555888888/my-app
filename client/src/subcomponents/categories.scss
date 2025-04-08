@@ -18,17 +18,19 @@
             padding: 5px 0px;
 
             .title {
-                font-weight: 800;
+                font-weight:bold;
             }
 
-            .desc {
+            .subTitle {
                 color: gray;
+                font-size: 13px;
+                font-weight: bold;
             }
         }
     }
 }
 
-/* Responsive Design */
+
 @media screen and (max-width: 768px) {
     .categories {
         justify-content: center;

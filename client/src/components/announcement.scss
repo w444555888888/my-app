@@ -124,9 +124,6 @@
         flex-direction: column;
         gap: 20px;
 
-        .Bannerbtn {
-            display: flex;
-            gap: 10px;
 
             button {
                 border: none;
@@ -144,14 +141,13 @@
             .buttonActive {
                 border: 2px var(--primary-color) solid;
             }
-        }
+    
     }
 }
 
 
 @media screen and (max-width: 768px) {
     .GlobalBanner {
-        height: 270px;
         flex-direction: column;
         background-position: center;
     }
@@ -166,21 +162,13 @@
         gap: 10px;
     }
 
-    .GlobalBanner .Bannerbtn {
-        flex-direction: column;
-        gap: 5px;
-    }
 
-    .GlobalBanner .Bannerbtn button {
-        width: 100%;
-        padding: 12px 0;
-    }
+  
 }
 
 
 @media screen and (max-width: 480px) {
     .GlobalBanner {
-        height: 270px;
         flex-direction: column;
         background-position: center;
     }
@@ -195,13 +183,4 @@
         gap: 8px;
     }
 
-    .GlobalBanner .Bannerbtn {
-        flex-direction: column;
-        gap: 4px;
-    }
-
-    .GlobalBanner .Bannerbtn button {
-        width: 100%;
-        padding: 10px 0;
-    }
 }

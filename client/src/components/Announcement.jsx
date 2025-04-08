@@ -12,11 +12,7 @@ import React, { useState } from 'react'
 import "./announcement.scss"
 const Announcement = ({ type }) => {
 
-    const [activeItem, setActiveItem] = useState('登入')
-    const handleClickActive = (item) => {
-        setActiveItem(item)
-    }
-    
+
     return (
         <div className='announcement'>
             <div className="container">
@@ -46,10 +42,6 @@ const Announcement = ({ type }) => {
                         <div className="BannerInfoDes">
                             <h2>加入會員，解鎖專屬優惠</h2>
                             <span>成為會員即可享有專屬折扣、累積點數、快速查詢訂單等貼心服務</span>
-                            <div className='Bannerbtn'>
-                                <button className={`${activeItem === '登入' ? 'buttonActive' : ''}`} onClick={() => { handleClickActive('登入') }}>登入</button>
-                                <button className={`${activeItem === '註冊' ? 'buttonActive' : ''}`} onClick={() => { handleClickActive('註冊') }}>註冊</button>
-                            </div>
                         </div>
                     </div>
 
