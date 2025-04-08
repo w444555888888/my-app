@@ -229,16 +229,14 @@ const Hotel = () => {
             </div>
             <div>
             </div>
-            <div className="hotelDesPrice">
+            <div className="hotelDesBlock">
               <h2>住宿特色</h2>
-              <h3>
+              <p className='hotelDesBlockText'>
                 {format(dates[0].startDate, "MM/dd/yyyy")} - {format(dates[0].endDate, "MM/dd/yyyy")}
-              </h3>
+              </p>
               <p>入住 {night} 晚的最佳選擇！
                 此住宿位於{hotelData.city}的地區，地理位置評分高達 {hotelData.rating} 分
                 深受獨行旅客歡迎</p>
-              <h2>TWD {hotelData.cheapestPrice}</h2>
-              <button>現在就預訂</button>
             </div>
           </div>
           <hr />

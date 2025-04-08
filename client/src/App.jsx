@@ -19,13 +19,10 @@ function App() {
               key={path}
               path={path}
               element={
-                requireAuth ? (
-                  <ProtectedRoute login={login}>
-                    <Element />
-                  </ProtectedRoute>
-                ) : (
-                  <Element />
-                )
+                requireAuth ?
+                  (<ProtectedRoute login={login} element={<Element />} />)
+                  :
+                  (<Element />)
               }
             />
           ))}
