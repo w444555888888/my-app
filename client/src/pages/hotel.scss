@@ -228,6 +228,7 @@
 
     .roomDes {
       overflow-x: hidden;
+
       .roomDesText {
         width: 100%;
         font-size: 14px;
@@ -262,7 +263,7 @@
 
               td {
                 border: 3px solid rgba(169, 169, 169, 0.5);
-                vertical-align: top;
+                vertical-align: middle;
 
                 svg {
                   color: #666;
@@ -279,11 +280,11 @@
 
                 svg {
                   margin-left: 2px;
-                  vertical-align:text-top;
+                  vertical-align: text-top;
                 }
 
                 .desc {
-                  display: block;
+                  display: inline-block;
                   font-size: 13px;
                   margin: 5px 0;
                   color: #444;
@@ -314,17 +315,10 @@
                 .breakFast {
                   margin-top: 10px;
 
-                  li {
-                    display: flex;
-                    align-items: center;
-                    gap: 5px;
-                    color: #4caf50;
-                    margin-bottom: 5px;
-
-                    .breakfast-icon {
-                      font-size: 18px;
-                    }
+                  .breakfast-icon {
+                    font-size: 18px;
                   }
+
                 }
 
                 ul {
@@ -366,6 +360,7 @@
         }
       }
     }
+
     .popupcomment {
       position: absolute;
       top: 0px;
@@ -485,6 +480,7 @@
     .roomDesText {
       table {
         margin: 20px 0;
+
         thead {
           display: none;
         }
@@ -501,6 +497,7 @@
               padding: 15px;
               border: none;
               border-bottom: 1px solid rgba(169, 169, 169, 0.5);
+              text-align: center;
 
               &:before {
                 content: attr(data-label);
@@ -579,6 +576,7 @@
         tbody {
           tr {
             margin: 0 10%;
+
             td {
               padding: 12px;
 
@@ -601,12 +599,9 @@
               }
 
               .breakFast {
-                li {
-                  font-size: 12px;
 
-                  .breakfast-icon {
-                    font-size: 16px;
-                  }
+                .breakfast-icon {
+                  font-size: 16px;
                 }
               }
 

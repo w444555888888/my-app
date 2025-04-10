@@ -222,10 +222,10 @@ const Hotel = () => {
                   (facility) =>
                     hotelData.facilities[facility.key] &&
                     (
-                      <>
+                      <React.Fragment key={facility.key}>
                         <FontAwesomeIcon icon={facility.icon} className="textIconItem" />
                         {facility.label}
-                      </>
+                      </React.Fragment>
                     )
                 )}
 
@@ -298,18 +298,15 @@ const Hotel = () => {
                           {e.paymentOptions.map((policy, index) => (
                             <li key={index}>
                               <strong>{policy.type}</strong>:
-                              {index === 0 && (
-                                <strong>{policy.refundable === true ? '可退款' : '不可退款'}</strong>
-                              )}<br />
-
                               <span>{policy.description}</span>
+                              <strong>({policy.refundable === true ? '可退款' : '不可退款'})</strong>
                             </li>
                           ))}
                           <div className="breakFast">
                             {e.breakFast === true ? (
-                              <li>
+                              <div>
                                 <MdFreeBreakfast className="breakfast-icon" />含早餐
-                              </li>
+                              </div>
                             ) : null}
                           </div>
                         </ul>
