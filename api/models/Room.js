@@ -25,9 +25,10 @@ const RoomSchema = new mongoose.Schema({
         type: Number,
         required: true, // 最大入住人數
     },
-    breakFast: {
-        type: Boolean,
-        required: true, // 是否提供早餐
+    service: {
+        parking: { type: Boolean, default: false },
+        dinner: { type: Boolean, default: false },
+        breakfast: { type: Boolean, default: true }
     },
     hotelId: {
         type: String,

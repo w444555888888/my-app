@@ -1,6 +1,6 @@
 import { faLocationDot, faPeopleGroup, faWifi, faGlassMartiniAlt, faDumbbell, faParking, faSwimmer, faUtensils, faSpa, faXmark, faAngleLeft, faAngleRight, faUserLarge, faCalendar, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { IoBed } from "react-icons/io5"
-import { MdFreeBreakfast } from "react-icons/md"
+import { MdFreeBreakfast, MdRestaurantMenu , MdLocalParking  } from "react-icons/md"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useRef, useState, useEffect } from 'react'
 import Footer from '../components/Footer'
@@ -302,12 +302,30 @@ const Hotel = () => {
                               <strong>({policy.refundable === true ? '可退款' : '不可退款'})</strong>
                             </li>
                           ))}
-                          <div className="breakFast">
-                            {e.breakFast === true ? (
-                              <div>
-                                <MdFreeBreakfast className="breakfast-icon" />含早餐
-                              </div>
-                            ) : null}
+                          <div className="service">
+                            {
+                              e.service.breakfast && (
+                                <div>
+                                  <MdFreeBreakfast className="service-item" /> 含早餐
+                                </div>
+                              )
+                            }
+
+                            {
+                              e.service.dinner && (
+                                <div>
+                                  <MdRestaurantMenu  className="service-item" /> 含晚餐
+                                </div>
+                              )
+                            }
+
+                            {
+                              e.service.parking && (
+                                <div>
+                                  <MdLocalParking  className="service-item" /> 停車位
+                                </div>
+                              )
+                            }
                           </div>
                         </ul>
 
