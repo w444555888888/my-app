@@ -20,7 +20,7 @@ const Feature = () => {
             const result = await request('GET', '/hotels', {});
             if (result.success) {
                 setHotels(result.data);
-            }else toast.error(`${result.Message}`)
+            }else toast.error(`${result.message}`)
         };
 
         allHotels();

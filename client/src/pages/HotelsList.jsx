@@ -83,7 +83,7 @@ const HotelsList = () => {
             const result = await request('GET', `/hotels/search?${queryString}`, {}, setLoading);
             if (result.success) {
                 setHotels(result.data);
-            } else toast.error(`${result.Message}`)
+            } else toast.error(`${result.message}`)
         }
 
         axiosHotels()

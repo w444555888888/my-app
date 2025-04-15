@@ -46,7 +46,7 @@ const Personal = () => {
       const data = result.data;
       localStorage.setItem('username', JSON.stringify(data));
       toast.success('編輯帳戶成功！');
-    } else toast.error(`${result.Message}`)
+    } else toast.error(`${result.message}`)
   }
 
 
@@ -66,7 +66,7 @@ const Personal = () => {
       if (result.success) {
         const data = result.data;
         setOrders(data.allOrder || []);
-      } else toast.error(`${result.Message}`)
+      } else toast.error(`${result.message}`)
     };
     fetchUserData();
   }, [dispatch])

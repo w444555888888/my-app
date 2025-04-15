@@ -31,7 +31,7 @@ const Order = () => {
     if (result.success) {
       setOrderSuccess(true)
       toast.success('訂單新增成功！')
-    } else toast.error(`${result.Message}`)
+    } else toast.error(`${result.message}`)
   }
 
   useEffect(() => {

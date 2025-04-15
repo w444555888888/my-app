@@ -53,7 +53,7 @@ const LogIn = () => {
             localStorage.setItem('username', JSON.stringify(userDetails)); // 儲存用戶資料
             dispatch(logIn());  // 登入動作
             navigate('/'); // 跳轉到首頁
-        } else toast.error(`${result.Message}`) 
+        } else toast.error(`${result.message}`) 
     }
 
     return (

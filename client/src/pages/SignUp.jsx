@@ -29,7 +29,7 @@ const SignUp = () => {
         const result = await request('POST', '/auth/register', { email, username, password }, setLoading)
         if (result.success) {
             navigate('/login')
-        }else toast.error(`${result.Message}`)
+        }else toast.error(`${result.message}`)
     }
 
     return (

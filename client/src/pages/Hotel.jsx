@@ -68,7 +68,7 @@ const Hotel = () => {
         setRooms(result?.data?.[0]?.availableRooms)
         dispatch(setCurrentHotel(result?.data?.[0]))
         dispatch(setAvailableRooms(result?.data?.[0]?.availableRooms))
-      } else toast.error(`${result.Message}`)
+      } else toast.error(`${result.message}`)
     }
 
     fetchHotelData()

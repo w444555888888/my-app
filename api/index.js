@@ -65,7 +65,7 @@ app.use((error, req, res, next) => {
     //return回去讓他可以被next(error) catch
     return res.status(errorStatus).json({
         status: errorStatus,
-        Message: errorMessage,
+        message: errorMessage,
         success: errorStatus === 200 || errorStatus === 201,
         data: errorStatus === 200 || errorStatus === 201 ? {} : null
     })
