@@ -6,6 +6,7 @@
  * @FilePath: \my-app\api\models\Room.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
+import { parseISO, addDays, format } from "date-fns" 
 import mongoose from 'mongoose'
 const RoomSchema = new mongoose.Schema({
     title: {
@@ -75,5 +76,37 @@ const RoomSchema = new mongoose.Schema({
         }
     ],
 }, { timestamps: true })
+
+RoomSchema.methods.calculateTotalPrice = function (startDate, endDate) {
+    let totalPrice = 0
+    let currentDate = parseISO(startDate)
+
+    while (currentDate < parseISO(endDate)) {
+        const dayOfWeek = currentDate.getDay()
+        const dateString = format(currentDate, "yyyy-MM-dd")
+
+        // 節日優先
+        const holiday = this.holidays?.find(h => h.date === dateString)
+        let dailyPrice = holiday ? holiday.price : null
+
+        // 平日 or 週末價格
+        if (dailyPrice === null) {
+            const priceOption = this.pricing?.find(p => p.days_of_week.includes(dayOfWeek))
+            if (priceOption) {
+                dailyPrice = priceOption.price
+            }
+        }
+
+        // 累加價格
+        if (dailyPrice !== null) {
+            totalPrice += dailyPrice
+        }
+
+        currentDate = addDays(currentDate, 1)
+    }
+
+    return totalPrice
+}
+
 export default mongoose.model("Room", RoomSchema)
 

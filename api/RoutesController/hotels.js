@@ -78,42 +78,19 @@ export const getSearchHotels = async (req, res, next) => {
             const hotelRooms = roomsByHotel[String(hotel._id)] || []
             // console.log(`Hotel ${hotel.name} has ${hotelRooms.length} room(s)`)
 
-            let cheapestPrice = null // 🔧 確保 `cheapestPrice` 初始值正確
+            let cheapestPrice = null
             let totalHotelPrice = 0
 
             const updatedRooms = hotelRooms.map(room => {
-                let roomTotalPrice = 0
+                const roomTotalPrice = room.calculateTotalPrice(startDate, endDate)
 
-                let currentDate = parseISO(startDate)
-                while (currentDate < parseISO(endDate)) {
-                    const dayOfWeek = currentDate.getDay()
-                    const dateString = format(currentDate, "yyyy-MM-dd")
-                    let dailyPrice = null
-
-                    const holiday = room.holidays?.find(h => h.date == dateString)
-                    if (holiday) {
-                        dailyPrice = holiday.price
-                    }
-
-                    if (!dailyPrice) {
-                        const priceOption = room.pricing?.find(p => p.days_of_week.includes(dayOfWeek))
-                        if (priceOption) {
-                            dailyPrice = priceOption.price
-                        }
-                    }
-
-                    if (dailyPrice !== null) {
-                        roomTotalPrice += dailyPrice
-                    }
-
-                    currentDate = addDays(currentDate, 1)
-                }
-
-                if (cheapestPrice === null || roomTotalPrice < cheapestPrice) { // 🔧 修正
+                if (cheapestPrice === null || roomTotalPrice < cheapestPrice) {
                     cheapestPrice = roomTotalPrice
                 }
 
                 totalHotelPrice += roomTotalPrice
+
+                console.log(cheapestPrice, 'cheapestPrice');
 
                 return { ...room.toObject(), roomTotalPrice }
             })
@@ -128,13 +105,22 @@ export const getSearchHotels = async (req, res, next) => {
 
         // 根據 minPrice 和 maxPrice 過濾飯店
         const filterPriceHotels =
-            !isNaN(minPriceNumber) && !isNaN(maxPriceNumber)
-                ? updatedHotels.filter(
-                    hotel =>
-                        hotel.cheapestPrice >= minPriceNumber &&
-                        hotel.cheapestPrice <= maxPriceNumber
-                )
+            (!isNaN(minPriceNumber) || !isNaN(maxPriceNumber))
+                ? updatedHotels.filter(hotel => {
+                    let isInRange = true;
+
+                    if (!isNaN(minPriceNumber)) {
+                        isInRange = isInRange && hotel.cheapestPrice >= minPriceNumber;
+                    }
+
+                    if (!isNaN(maxPriceNumber)) {
+                        isInRange = isInRange && hotel.cheapestPrice <= maxPriceNumber;
+                    }
+
+                    return isInRange;
+                })
                 : updatedHotels
+
 
         sendResponse(res, 200, filterPriceHotels);
     } catch (err) {
@@ -179,7 +165,7 @@ export const deleteHotel = async (req, res, next) => {
     const id = req.params.id
     try {
         await Hotel.findByIdAndDelete(id)
-        sendResponse(res, 200, null,{ message: "刪除資料成功" });
+        sendResponse(res, 200, null, { message: "刪除資料成功" });
     } catch (error) {
         next(errorMessage(500, "刪除失敗，請確認是否有其id", error))
     }
