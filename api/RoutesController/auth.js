@@ -21,7 +21,7 @@ export const register = async (req, res, next) => {
   try {
     const registerWrong = await User.findOne({ username: registerData.username }) || await User.findOne({ email: registerData.email })
 
-    if (registerWrong) return (next(errorMessage(400, "此帳號或信箱已被註冊")))
+    if (registerWrong) return (next(errorMessage(400, "此帳號或信箱已被註冊")));
 
     // 密碼bcrypt加密bcrypt加密  
     const salt = bcrypt.genSaltSync(10)
@@ -36,7 +36,7 @@ export const register = async (req, res, next) => {
 
     sendResponse(res, 200, saveUser);
   } catch (error) {
-    next(errorMessage(500, "註冊失敗", error))
+    next(errorMessage(500, "註冊失敗", error));
   }
 }
 
@@ -102,7 +102,7 @@ export const forgotPassword = async (req, res, next) => {
     // 查找用戶
     const user = await User.findOne({ email })
     if (!user) {
-      return next(errorMessage(404, "沒有此信箱的使用者"))
+      return next(errorMessage(404, "沒有此信箱的使用者"));
     }
     // 重置密碼令牌
     const token = crypto.randomBytes(32).toString("hex")
@@ -139,10 +139,10 @@ export const forgotPassword = async (req, res, next) => {
       await transporter.sendMail(mailOptions)
       return sendResponse(res, 200, null, { message: "重置密碼郵件已發送" });
     } catch (error) {
-      return next(errorMessage(500, "郵件發送失敗", error))
+      return next(errorMessage(500, "郵件發送失敗", error));
     }
   } catch (error) {
-    return next(errorMessage(500, "忘記密碼處理失敗", error))
+    return next(errorMessage(500, "忘記密碼處理失敗", error));
   }
 }
 
@@ -164,7 +164,7 @@ export const resetPassword = async (req, res, next) => {
     })
 
     if (!user) {
-      return next(errorMessage(404, "重置令牌無效或已過期"))
+      return next(errorMessage(404, "重置令牌無效或已過期"));
     }
 
     // 更新用戶密碼
@@ -178,7 +178,7 @@ export const resetPassword = async (req, res, next) => {
   } catch (error) {
     // 記錄錯誤信息
     console.error("Error during password reset:", error)
-    next(errorMessage(500, "重置密碼處理失敗", error))
+    next(errorMessage(500, "重置密碼處理失敗", error));
   }
 }
 
@@ -202,6 +202,6 @@ export const verifyToken = async (req, res, next) => {
       // 下一步
       next();
   } catch (err) {
-      throw errorMessage(403, "登入已過期，請重新登入");
+    next(errorMessage(403, "登入已過期，請重新登入"));
   }
 };
