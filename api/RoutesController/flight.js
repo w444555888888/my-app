@@ -152,9 +152,9 @@ export const createFlightOrder = async (req, res) => {
         }
 
         // 計算票價
-        const basePrice = flight.calculateFinalPrice(category, new Date(departureDate));
-        const tax = basePrice * 0.1; // 假設稅率10%
-        const totalPrice = (basePrice + tax) * passengerInfo.length;
+        const basePrice = Math.round(flight.calculateFinalPrice(category, new Date(departureDate)));
+        const tax = Math.round(basePrice * 0.1); // 假設稅率10%
+        const totalPrice = Math.round((basePrice + tax) * passengerInfo.length);
 
         // 生成訂單號
         const orderNumber = `FO${uuidv4().split('-')[0]}`;
