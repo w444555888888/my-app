@@ -141,7 +141,13 @@ export const createFlightOrder = async (req, res) => {
         const schedule = flight.schedules.find(s =>
             s.departureDate.toISOString().split('T')[0] === departureDate
         );
-        if (!schedule || schedule.availableSeats[category] < passengerInfo.length) {
+        
+        if (!schedule) {
+            throw errorMessage(404, "該日期的航班不存在");
+        }
+
+        // 檢查座位可用性
+        if (schedule.availableSeats[category] < passengerInfo.length) {
             throw errorMessage(400, "座位數量不足");
         }
 
