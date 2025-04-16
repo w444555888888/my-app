@@ -5,6 +5,7 @@ import SignUp from "../pages/SignUp"
 import LogIn from "../pages/LogIn"
 import Forgot from "../pages/Forgot"
 import Personal from "../pages/Personal"
+import Flight from "../pages/Flight"
 import ResetPassword from "../pages/ResetPassword"
 import Order from "../pages/Order"
 
@@ -17,7 +18,8 @@ export const ROUTES = {
   HOTELS_LIST: '/hotelsList',
   HOTELS: '/hotels',
   PERSONAL: '/personal',
-  ORDER: '/order/:startDate/:endDate/:hotelId/:roomId'
+  ORDER: '/order/:startDate/:endDate/:hotelId/:roomId',
+  Flight: '/flight'
 }
 
 export const routeConfig = [
@@ -64,6 +66,11 @@ export const routeConfig = [
   {
     path: ROUTES.ORDER,
     element: Order,
+    requireAuth: true
+  },
+  {
+    path: ROUTES.Flight,
+    element: Flight,
     requireAuth: true
   }
 ]

@@ -25,8 +25,19 @@ const Navbar = () => {
 
 
     const handleClickActive = (item) => {
-        setActiveItem(item)
-    }
+        setActiveItem(item);
+
+        const routes = {
+            '航班': '/flight',
+            '住宿': '/',
+        };
+
+        if (routes[item]) {
+            navigate(routes[item]);
+        }
+    };
+
+    
 
     const handleClickToHome = () => {
         navigate('/')
