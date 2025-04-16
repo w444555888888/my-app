@@ -66,7 +66,7 @@ app.use((error, req, res, next) => {
     return res.status(errorStatus).json({
         status: errorStatus,
         message: errorMessage,
-        success: errorStatus === 200 || errorStatus === 201,
-        data: errorStatus === 200 || errorStatus === 201 ? {} : null
+        success: false,
+        data: null
     })
 })
