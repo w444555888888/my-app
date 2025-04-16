@@ -89,9 +89,7 @@ export const getSearchHotels = async (req, res, next) => {
                 }
 
                 totalHotelPrice += roomTotalPrice
-
-                console.log(cheapestPrice, 'cheapestPrice');
-
+                
                 return { ...room.toObject(), roomTotalPrice }
             })
 
