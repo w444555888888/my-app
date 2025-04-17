@@ -1,6 +1,6 @@
 import { faLocationDot, faPeopleGroup, faWifi, faGlassMartiniAlt, faDumbbell, faParking, faSwimmer, faUtensils, faSpa, faXmark, faAngleLeft, faAngleRight, faUserLarge, faCalendar, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { IoBed } from "react-icons/io5"
-import { MdFreeBreakfast, MdRestaurantMenu , MdLocalParking  } from "react-icons/md"
+import { MdFreeBreakfast, MdRestaurantMenu, MdLocalParking } from "react-icons/md"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useRef, useState, useEffect } from 'react'
 import Footer from '../components/Footer'
@@ -20,7 +20,7 @@ import { toast } from 'react-toastify'
 
 const Hotel = () => {
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const dispatch = useDispatch()
   const [hotelData, setHotelData] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -35,18 +35,15 @@ const Hotel = () => {
   const nextWeek = new Date()
   nextWeek.setDate(today.getDate() + 7)
 
-  // 查詢路由參數
-  const location = useLocation()
-  const hotelIdRouter = searchParams.get('hotelId')
-  const startDateRouter = searchParams.get('startDate')
-  const endDateRouter = searchParams.get('endDate')
-
+  // 從 URL 獲取參數
+  const hotelId = searchParams.get('hotelId')
+  const startDateParam = searchParams.get('startDate')
+  const endDateParam = searchParams.get('endDate')
 
   // 路由傳遞數據
   const [openCalendar, setOpenCalendar] = useState(false)
-  const [startDate, setStartDate] = useState(startDateRouter || format(today, "yyyy-MM-dd"))
-  const [endDate, setEndDate] = useState(endDateRouter || format(nextWeek, "yyyy-MM-dd"))
-  const [hotelId, setHotelId] = useState(hotelIdRouter)
+  const [startDate, setStartDate] = useState(startDateParam || format(today, "yyyy-MM-dd"))
+  const [endDate, setEndDate] = useState(endDateParam || format(nextWeek, "yyyy-MM-dd"))
   const [dates, setDates] = useState([
     {
       startDate: startDate ? new Date(startDate) : new Date(),
@@ -58,21 +55,18 @@ const Hotel = () => {
   // 獲取酒店數據
   useEffect(() => {
     const fetchHotelData = async () => {
-      const queryString = Array.from(searchParams.entries())
-        .map(([key, value]) => `${key}=${value}`)
-        .join('&')
-
-      const result = await request('GET', `/hotels/search?${queryString}`, {}, setLoading)
+      const result = await request('GET', `/hotels/search?${searchParams.toString()}`, {}, setLoading)
       if (result.success) {
         setHotelData(result?.data?.[0])
         setRooms(result?.data?.[0]?.availableRooms)
+        // 設置 Redux 狀態(Order頁面)
         dispatch(setCurrentHotel(result?.data?.[0]))
         dispatch(setAvailableRooms(result?.data?.[0]?.availableRooms))
       } else toast.error(`${result.message}`)
     }
-
     fetchHotelData()
-  }, [location.search, dispatch])
+  }, [searchParams, dispatch])
+
 
   // 晚數
   useEffect(() => {
@@ -91,11 +85,11 @@ const Hotel = () => {
   }
 
   const handleSearchHotels = () => {
-    const params = new URLSearchParams()
-    if (hotelId) params.set('hotelId', hotelId)
-    if (startDate) params.set('startDate', startDate)
-    if (endDate) params.set('endDate', endDate)
-    navigate(`/hotels?${params.toString()}`)
+    const params = {};
+    if (hotelId) params.hotelId = hotelId;
+    if (startDate) params.startDate = startDate;
+    if (endDate) params.endDate = endDate;
+    setSearchParams(params);
   }
 
 
@@ -314,7 +308,7 @@ const Hotel = () => {
                             {
                               e.service.dinner && (
                                 <div>
-                                  <MdRestaurantMenu  className="service-item" /> 含晚餐
+                                  <MdRestaurantMenu className="service-item" /> 含晚餐
                                 </div>
                               )
                             }
@@ -322,7 +316,7 @@ const Hotel = () => {
                             {
                               e.service.parking && (
                                 <div>
-                                  <MdLocalParking  className="service-item" /> 停車位
+                                  <MdLocalParking className="service-item" /> 停車位
                                 </div>
                               )
                             }

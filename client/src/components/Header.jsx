@@ -5,19 +5,22 @@ import 'react-date-range/dist/styles.css' // main css file
 import 'react-date-range/dist/theme/default.css' // theme css file
 import { DateRange } from 'react-date-range'
 import format from 'date-fns/format'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import "./header.scss"
 const Header = () => {
-    // 路由導航
+    // 導航
     const navigate = useNavigate()
+
     // 預設日期為今天和一周後
     const today = new Date();
     const nextWeek = new Date();
     nextWeek.setDate(today.getDate() + 7);
 
+
+    const [searchParams, setSearchParams] = useSearchParams();
     const [openConditions, setOpenConditions] = useState(false)
     const [openCalendar, setOpenCalendar] = useState(false)
-    const [destination, setDestination] = useState('')
+    const [name, setName] = useState('')
     const [startDate, setStartDate] = useState(format(today, "yyyy-MM-dd"));
     const [endDate, setEndDate] = useState(format(nextWeek, "yyyy-MM-dd"));
 
@@ -43,29 +46,25 @@ const Header = () => {
     }
 
 
-
     const handleDateChange = (item) => {
         setDates([item.selection])
         setStartDate(format(item.selection.startDate, "yyyy-MM-dd"))
         setEndDate(format(item.selection.endDate, "yyyy-MM-dd"))
     }
 
-    const handleSearchClick = async (e) => {
-        const queryParams = new URLSearchParams();
-        if (destination) queryParams.set('name', destination);
-        if (startDate) queryParams.set('startDate', startDate);
-        if (endDate) queryParams.set('endDate', endDate);
-        navigate(`/hotelsList?${queryParams.toString()}`, {
-            state: {
-                destination,
-                dates,
-                conditions,
-                startDate,
-                endDate
-            },
-        });
-    }
     
+    const handleSearchClick = async () => {
+        const params = {
+            name,
+            startDate,
+            endDate,
+            adult: conditions.adult,
+            room: conditions.room
+        };
+        setSearchParams(params);
+        navigate(`/hotelsList?${searchParams.toString()}`);
+    }
+
 
 
 
@@ -82,8 +81,8 @@ const Header = () => {
                 <div className="headerSearchBar">
                     <div className="SearchBarItem">
                         <FontAwesomeIcon icon={faBed} />
-                        <input type="text" placeholder='你要去哪裡？' className='SearchInput' value={destination}
-                            onChange={e => setDestination(e.target.value)} />
+                        <input type="text" placeholder='你要去哪裡？' className='SearchInput' value={name}
+                            onChange={e => setName(e.target.value)} />
                     </div>
                     <div className="SearchBarItem">
                         <FontAwesomeIcon icon={faCalendar} onClick={() => setOpenCalendar(!openCalendar)} />

@@ -11,32 +11,17 @@ import Skeleton from 'react-loading-skeleton';
 import { toast } from 'react-toastify'
 const HotelsList = () => {
     // 路由
-    const navigate = useNavigate()
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     // 預設日期為今天和一周後
     const today = new Date()
     const nextWeek = new Date()
     nextWeek.setDate(today.getDate() + 7)
 
-    // 路由傳遞數據
-    const location = useLocation()
-    const { destination: locationDestination, dates: locationDates, conditions: locationConditions, startDate: locationStartDate, endDate: locationEndDate } = location.state || {}
-
-    const [openConditions, setOpenConditions] = useState(false)
-    const [openCalendar, setOpenCalendar] = useState(false)
-    const [destinationState, setDestinationState] = useState(locationDestination || '')
-
-    // 飯店列表數據
-    const [hotels, setHotels] = useState([])
-    const [minPrice, setMinPrice] = useState('')
-    const [maxPrice, setMaxPrice] = useState('')
-    const [startDate, setStartDate] = useState(locationStartDate || format(today, "yyyy-MM-dd"))
-    const [endDate, setEndDate] = useState(locationEndDate || format(nextWeek, "yyyy-MM-dd"))
-    const [loading, setLoading] = useState(false);
-
-    // 日期
-    const [dates, setDates] = useState(locationDates || [
+    const [name, setName] = useState(searchParams.get('name') || '')
+    const [startDate, setStartDate] = useState(searchParams.get('startDate') || format(today, "yyyy-MM-dd"))
+    const [endDate, setEndDate] = useState(searchParams.get('endDate') || format(nextWeek, "yyyy-MM-dd"))
+    const [dates, setDates] = useState([
         {
             startDate: startDate ? new Date(startDate) : new Date(),
             endDate: endDate ? new Date(endDate) : new Date(),
@@ -44,11 +29,21 @@ const HotelsList = () => {
         }
     ])
 
-    // 人數/房間數
-    const [conditions, setConditions] = useState(locationConditions || {
-        adult: 1,
-        room: 1,
+    const [conditions, setConditions] = useState({
+        adult: parseInt(searchParams.get('adult')) || 1,
+        room: parseInt(searchParams.get('room')) || 1,
     })
+
+    // 開關狀態
+    const [openConditions, setOpenConditions] = useState(false)
+    const [openCalendar, setOpenCalendar] = useState(false)
+  
+
+    // 飯店列表數據
+    const [hotels, setHotels] = useState([])
+    const [minPrice, setMinPrice] = useState('')
+    const [maxPrice, setMaxPrice] = useState('')
+    const [loading, setLoading] = useState(false);
 
     const handleDateChange = (item) => {
         setDates([item.selection])
@@ -63,31 +58,27 @@ const HotelsList = () => {
 
     // 搜尋飯店條件
     const handleSearchHotelsPrice = () => {
-        const params = new URLSearchParams();
-        if (destinationState) params.set('name', destinationState);
-        if (minPrice) params.set('minPrice', minPrice);
-        if (maxPrice) params.set('maxPrice', maxPrice);
-        if (startDate) params.set('startDate', startDate);
-        if (endDate) params.set('endDate', endDate);
-        navigate(`/hotelsList?${params.toString()}`);
+        const params = {};
+        if (name) params.name = name;
+        if (minPrice) params.minPrice = minPrice;
+        if (maxPrice) params.maxPrice = maxPrice;
+        if (startDate) params.startDate = startDate;
+        if (endDate) params.endDate = endDate;
+        setSearchParams(params);
     }
 
 
     // 副作用監聽的路由網址，發送請求
     useEffect(() => {
         const axiosHotels = async () => {
-            const queryString = Array.from(searchParams.entries())
-                .map(([key, value]) => `${key}=${value}`)
-                .join('&')
-
-            const result = await request('GET', `/hotels/search?${queryString}`, {}, setLoading);
+            const result = await request('GET', `/hotels/search?${searchParams.toString()}`, {}, setLoading);
             if (result.success) {
                 setHotels(result.data);
             } else toast.error(`${result.message}`)
         }
 
         axiosHotels()
-    }, [location.search])
+    }, [searchParams])
 
 
     return (
@@ -102,8 +93,8 @@ const HotelsList = () => {
                             </div>
                             <div className="listItem">
                                 <label>目的地／住宿名稱：</label>
-                                <input type="text" className="searchInput" placeholder='要去哪裡?' value={destinationState}
-                                    onChange={e => setDestinationState(e.target.value)} />
+                                <input type="text" className="searchInput" placeholder='要去哪裡?' value={name}
+                                    onChange={e => setName(e.target.value)} />
                             </div>
                             <div className="listItem">
                                 <label>入住/退房日期</label>
@@ -161,7 +152,7 @@ const HotelsList = () => {
 
                         <div className="listResult">
                             <div className="resultTitle">
-                                <h2>在{destinationState ? destinationState : '全區域搜尋'}找到{hotels.length}間房間</h2>
+                                <h2>在{name ? name : '全區域搜尋'}找到{hotels.length}間房間</h2>
                             </div>
 
                             {loading ? (
