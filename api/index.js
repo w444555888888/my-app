@@ -1,5 +1,4 @@
 import mongoose from "mongoose"
-//ES6後import 與export 取代了原本舊版的require(是node舊版CommonJS)
 import express from "express"
 import dotenv from "dotenv"
 import hotelsApiRoute from "./ApiRoutes/hotels.js"
@@ -14,12 +13,19 @@ import cors from "cors"
 const app = express()
 dotenv.config() //加載環境變數
 
+
 const connect = async () => {
     try {
-        await mongoose.connect(process.env.MONGODB)
-        console.log("Connected to mongoDB")
+        await mongoose.connect(process.env.MONGODB, {
+            serverSelectionTimeoutMS: 5000,
+            retryWrites: true,
+            maxPoolSize: 10
+        });
+        console.log("Connected to mongoDB");
     } catch (error) {
-        console.log("disconnected to mongoDB")
+        console.error("MongoDB connection error:", error);
+        // 重試連接
+        setTimeout(connect, 5000);
     }
 }
 
