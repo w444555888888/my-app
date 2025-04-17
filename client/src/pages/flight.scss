@@ -58,6 +58,7 @@
                         top: 50%;
                         transform: translateY(-50%);
                         color: #666;
+                        cursor: pointer;
                     }
 
                     .searchInput {
@@ -214,18 +215,7 @@
                     @media (max-width: 768px) {
                         text-align: center;
                         width: 100%;
-                    }
-
-                    .price {
-                        font-size: 14px;
-                        color: #666;
-                        margin-bottom: 10px;
-                        line-height: 1.6;
-
-                        @media (max-width: 768px) {
-                            font-size: 13px;
-                        }
-                    }
+                    }                
 
                     .bookButton {
                         padding: 8px 20px;

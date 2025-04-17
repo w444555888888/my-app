@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 const FlightSchema = new mongoose.Schema({
     flightNumber: {
         type: String,
-        required: true,
+        required: true, 
         unique: true
     },
 

@@ -8,6 +8,8 @@ import Personal from "../pages/Personal"
 import Flight from "../pages/Flight"
 import ResetPassword from "../pages/ResetPassword"
 import Order from "../pages/Order"
+import BookingFlight from "../pages/BookingFlight"
+
 
 export const ROUTES = {
   HOME: '/',
@@ -19,8 +21,10 @@ export const ROUTES = {
   HOTELS: '/hotels',
   PERSONAL: '/personal',
   ORDER: '/order/:startDate/:endDate/:hotelId/:roomId',
-  Flight: '/flight'
+  FLIGHT: '/flight',
+  BOOKINGFLIGHT: '/bookingFlight/:id'
 }
+
 
 export const routeConfig = [
   {
@@ -69,8 +73,13 @@ export const routeConfig = [
     requireAuth: true
   },
   {
-    path: ROUTES.Flight,
+    path: ROUTES.FLIGHT,
     element: Flight,
+    requireAuth: true
+  },
+  {
+    path: ROUTES.BOOKINGFLIGHT,
+    element: BookingFlight,
     requireAuth: true
   }
 ]

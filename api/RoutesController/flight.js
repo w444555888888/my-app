@@ -15,10 +15,30 @@ export const createFlight = async (req, res) => {
     }
 };
 
-// 獲取所有航班列表
+// 獲取所有航班列表 ||  日期 || 起飛城市 ||  目的城市
 export const getAllFlights = async (req, res) => {
     try {
-        const flights = await Flight.find();
+        const { departure, destination, startDate, endDate } = req.query;
+        
+        // 構建查詢條件
+        let query = {};
+        
+        if (departure) {
+            query['route.departureCity'] = departure;
+        }
+        
+        if (destination) {
+            query['route.arrivalCity'] = destination;
+        }
+        
+        if (startDate && endDate) {
+            query['schedules.departureDate'] = {
+                $gte: new Date(startDate),
+                $lte: new Date(endDate)
+            };
+        }
+
+        const flights = await Flight.find(query);
         return sendResponse(res, 200, flights, "獲取航班列表成功");
     } catch (err) {
         throw errorMessage(500, "獲取航班列表失敗", err);

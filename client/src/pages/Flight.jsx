@@ -6,27 +6,27 @@ import { DateRange } from 'react-date-range'
 import 'react-date-range/dist/styles.css'
 import 'react-date-range/dist/theme/default.css'
 import Navbar from '../components/Navbar'
-import { format } from 'date-fns'
+import { format, parse, addMinutes } from 'date-fns'
 import zhTW from 'date-fns/locale/zh-TW'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { request } from '../utils/apiService';
 import { toast } from 'react-toastify'
 
 const Flight = () => {
+    const navigate = useNavigate()
+
     const [destination, setDestination] = useState("")
     const [departure, setDeparture] = useState("")
     const [openDate, setOpenDate] = useState(false)
     const [flights, setFlights] = useState([])
     const [dates, setDates] = useState([
         {
-            startDate: new Date(),
-            endDate: new Date(),
+            startDate: null,
+            endDate: null,
             key: 'selection'
         }
     ])
 
-    const handleSearch = () => {
-        console.log("搜索條件：", { departure, destination, dates })
-    }
 
     useEffect(() => {
         const handleAllFlight = async () => {
@@ -41,18 +41,43 @@ const Flight = () => {
     }, [])
 
 
-    const calculateArrivalTime = (departureTime, duration) => {
-        const [hours, minutes] = departureTime.split(':');
-        const departureDate = new Date();
-        departureDate.setHours(parseInt(hours));
-        departureDate.setMinutes(parseInt(minutes));
-        const arrivalDate = new Date(departureDate.getTime() + duration * 60000);
-        return arrivalDate.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false
+    const handleSearch = async () => {
+        const params = new URLSearchParams({
+            departure,
+            destination,
+            // startDate: format(dates[0].startDate, 'yyyy-MM-dd'),
+            // endDate: format(dates[0].endDate, 'yyyy-MM-dd')
         });
-    }
+
+        const result = await request('GET', `/flight?${params.toString()}`);
+        if (result.success) {
+            setFlights(result.data);
+            toast.success('搜索完成');
+        } else {
+            toast.error(result.message);
+        }
+
+    };
+
+
+    const handleBookingFlight = async (flightId) => {
+        const result = await request('GET', `/flight/${flightId}`);
+        if (result.success) {
+            navigate(`/bookingFlight/${flightId}`, {
+                state: { flightData: result.data }
+            });
+        } else {
+            toast.error(result.message);
+        }
+
+    };
+
+
+    const calculateArrivalTime = (departureTime, duration) => {
+        const departureDate = parse(departureTime, 'HH:mm', new Date());
+        const arrivalDate = addMinutes(departureDate, duration);
+        return format(arrivalDate, 'HH:mm');
+    };
 
 
     return (
@@ -83,14 +108,15 @@ const Flight = () => {
                             />
                         </div>
                         <div className="searchItem">
-                            <FontAwesomeIcon icon={faCalendarDays} className="icon" />
+                            <FontAwesomeIcon icon={faCalendarDays} 
+                            className="icon" 
+                            onClick={() => setOpenDate(!openDate)} />
                             <span
                                 onClick={() => setOpenDate(!openDate)}
                                 className="searchText"
-                            >{`${format(dates[0].startDate, "MM/dd/yyyy")} to ${format(
-                                dates[0].endDate,
-                                "MM/dd/yyyy"
-                            )}`}</span>
+                            >{dates[0].startDate && dates[0].endDate
+                                ? `${format(dates[0].startDate, "MM/dd/yyyy")} to ${format(dates[0].endDate, "MM/dd/yyyy")}`
+                                : "請選擇日期"}</span>
                             {openDate && (
                                 <DateRange
                                     editableDateInputs={true}
@@ -128,12 +154,7 @@ const Flight = () => {
                                 </div>
                             </div>
                             <div className="priceSection">
-                                <div className="price">
-                                    經濟艙: ${flight.cabinClasses.find(c => c.category === "ECONOMY")?.basePrice}<br />
-                                    商務艙: ${flight.cabinClasses.find(c => c.category === "BUSINESS")?.basePrice}<br />
-                                    頭等艙: ${flight.cabinClasses.find(c => c.category === "FIRST")?.basePrice}
-                                </div>
-                                <button className="bookButton">訂票</button>
+                                <button className="bookButton" onClick={() => handleBookingFlight(flight._id)}>訂票</button>
                             </div>
                         </div>
                     ))}
