@@ -10,6 +10,7 @@ import { errorMessage } from "../errorMessage.js"
 import { sendResponse } from "../sendResponse.js"
 import User from "../models/User.js"
 import Order from "../models/Order.js";
+import FightOrder from "../models/FightOrder.js";
 import bcrypt from "bcryptjs" //密碼加密
 
 
@@ -66,7 +67,7 @@ export const deletedUser = async (req, res, next) => {
 export const getUser = async (req, res, next) => {
   // 檢查是否為本人操作
   if (req.user.id !== req.params.id) {
-    return next(errorMessage(403, "您只能修改自己的資料"));
+    return next(errorMessage(403, "您只能讀取自己的資料"));
   }
   const id = req.params.id
   try {
@@ -74,8 +75,9 @@ export const getUser = async (req, res, next) => {
     if (!user) {
       return sendResponse(res, 404, null, { message: "用戶未找到" });
     }
-    const orders = await Order.find({ userId: id });
-    sendResponse(res, 200, { ...user.toObject(), allOrder: orders });
+    const allOrder = await Order.find({ userId: id });
+    const allFightOrder = await FightOrder.find({ userId: id });
+    sendResponse(res, 200, { ...user.toObject(), allOrder, allFightOrder });
   } catch (error) {
     next(errorMessage(500, "讀取用戶失敗", error))
   }

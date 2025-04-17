@@ -37,9 +37,9 @@
       }
 
       .navButton {
-        padding: 10px 15px;
+        padding: 10px 12px;
         border-radius: 20px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background-color:var(--primary-color) ;
         color: white;
         transition: all 0.3s ease;
         cursor: pointer;
@@ -78,7 +78,7 @@
         transition: all 0.3s ease;
 
         &:focus {
-          border-color: #667eea;
+          border-color: var(--primary-color) ;
           box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
           outline: none;
         }
@@ -101,7 +101,7 @@
       &[type="submit"] {
         width: 50%;
         margin-right: 10px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background-color:var(--primary-color) ;
         color: white;
 
         &:hover {
@@ -112,11 +112,11 @@
 
       &:last-child {
         width: 40%;
-        background-color: #e74c3c;
+        background-color: rgb(235, 99, 99);
         color: white;
 
         &:hover {
-          background-color: #c0392b;
+          opacity: 0.9;
         }
       }
     }
@@ -159,6 +159,76 @@
             display: flex;
             justify-content: space-between;
             text-align: left;
+          }
+
+          .passengerInfo {
+            margin-top: 20px;
+
+            >p {
+              font-size: 1.1em;
+              color: #34495e;
+              margin-bottom: 15px;
+              display: flex;
+              align-items: center;
+              gap: 10px;
+
+              &::after {
+                content: '';
+                flex: 1;
+                height: 2px;
+                background: linear-gradient(to right, var(--primary-color), transparent);
+              }
+            }
+
+            .passenger {
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+              gap: 10px;
+              padding: 15px;
+              position: relative;
+
+              &::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 95%;
+                width: 3px;
+                background: linear-gradient(to bottom, var(--primary-color));
+                opacity: 0.7;
+              }
+
+              &:not(:last-child) {
+                margin-bottom: 15px; 
+              }
+
+              p {
+                position: relative;
+                padding: 8px 12px;
+                background-color: #f8f9fa;
+                border-radius: 4px;
+                transition: all 0.3s ease;
+
+                &:first-child {
+                  grid-column: 1 / -1;
+                  background-color: #ebf5fb;
+                  color: #2980b9;
+                  font-weight: 500;
+                }
+
+                &:not(:first-child) {
+                  display: flex;
+                  justify-content: space-between;
+
+                  &::before {
+                    content: attr(data-label);
+                    font-weight: 500;
+                    color: #7f8c8d;
+                    margin-right: 10px;
+                  }
+                }
+              }
+            }
           }
         }
       }

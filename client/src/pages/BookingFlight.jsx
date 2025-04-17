@@ -15,7 +15,7 @@ const BookingFlight = () => {
     const [selectedClass, setSelectedClass] = useState(null);
     const [selectedDate, setSelectedDate] = useState(null);
     const [flightData, setFlightData] = useState(null);
-    const [passengers, setPassengers] = useState([{ name: '', idNumber: '' }]);
+    const [passengers, setPassengers] = useState([{ name: '', idNumber: '', phone: '' }]);
 
     const calculateArrivalTime = (departureTime, duration) => {
         const departureDate = parse(departureTime, 'HH:mm', new Date())
@@ -32,7 +32,7 @@ const BookingFlight = () => {
 
 
     const handleAddPassenger = () => {
-        setPassengers([...passengers, { name: '', idNumber: '' }]);
+        setPassengers([...passengers, { name: '', idNumber: '', phone: '' }]);
     };
 
     const handleRemovePassenger = (index) => {
@@ -59,7 +59,7 @@ const BookingFlight = () => {
 
         try {
             setLoading(true);
-            const result = await request('POST', '/flight-orders', {
+            const result = await request('POST', '/flight/order', {
                 flightId: id,
                 category: selectedClass,
                 departureDate: format(new Date(selectedDate), 'yyyy-MM-dd'),
@@ -217,6 +217,12 @@ const BookingFlight = () => {
                                     placeholder="身份證號"
                                     value={passenger.idNumber}
                                     onChange={(e) => handlePassengerChange(index, 'idNumber', e.target.value)}
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="手機號碼"
+                                    value={passenger.phone}
+                                    onChange={(e) => handlePassengerChange(index, 'phone', e.target.value)}
                                 />
                                 {passengers.length > 1 && (
                                     <button onClick={() => handleRemovePassenger(index)}>移除</button>
