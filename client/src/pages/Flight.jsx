@@ -8,13 +8,13 @@ import 'react-date-range/dist/theme/default.css'
 import Navbar from '../components/Navbar'
 import { format, parse, addMinutes } from 'date-fns'
 import zhTW from 'date-fns/locale/zh-TW'
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { request } from '../utils/apiService';
 import { toast } from 'react-toastify'
 
 const Flight = () => {
     const navigate = useNavigate()
-
+    const [searchParams, setSearchParams] = useSearchParams();
     const [destination, setDestination] = useState("")
     const [departure, setDeparture] = useState("")
     const [openDate, setOpenDate] = useState(false)
@@ -42,13 +42,17 @@ const Flight = () => {
 
 
     const handleSearch = async () => {
-        const params = new URLSearchParams({
+        const params = {
             departure,
             destination,
-            // startDate: format(dates[0].startDate, 'yyyy-MM-dd'),
-            // endDate: format(dates[0].endDate, 'yyyy-MM-dd')
-        });
+        };
 
+        if (dates[0].startDate && dates[0].endDate) {
+            params.startDate = format(dates[0].startDate, 'yyyy-MM-dd');
+            params.endDate = format(dates[0].endDate, 'yyyy-MM-dd');
+        }
+
+        setSearchParams(params);
         const result = await request('GET', `/flight?${params.toString()}`);
         if (result.success) {
             setFlights(result.data);
@@ -56,20 +60,11 @@ const Flight = () => {
         } else {
             toast.error(result.message);
         }
-
     };
 
 
-    const handleBookingFlight = async (flightId) => {
-        const result = await request('GET', `/flight/${flightId}`);
-        if (result.success) {
-            navigate(`/bookingFlight/${flightId}`, {
-                state: { flightData: result.data }
-            });
-        } else {
-            toast.error(result.message);
-        }
-
+    const handleBookingFlightRouter = async (flightId) => {
+        navigate(`/bookingFlight/${flightId}`);
     };
 
 
@@ -108,9 +103,9 @@ const Flight = () => {
                             />
                         </div>
                         <div className="searchItem">
-                            <FontAwesomeIcon icon={faCalendarDays} 
-                            className="icon" 
-                            onClick={() => setOpenDate(!openDate)} />
+                            <FontAwesomeIcon icon={faCalendarDays}
+                                className="icon"
+                                onClick={() => setOpenDate(!openDate)} />
                             <span
                                 onClick={() => setOpenDate(!openDate)}
                                 className="searchText"
@@ -154,7 +149,7 @@ const Flight = () => {
                                 </div>
                             </div>
                             <div className="priceSection">
-                                <button className="bookButton" onClick={() => handleBookingFlight(flight._id)}>訂票</button>
+                                <button className="bookButton" onClick={() => handleBookingFlightRouter(flight._id)}>訂票</button>
                             </div>
                         </div>
                     ))}
