@@ -30,7 +30,8 @@
                 background: #f8f9fa;
                 border-radius: 8px;
 
-                .departure, .arrival {
+                .departure,
+                .arrival {
                     text-align: center;
 
                     .city {
@@ -138,6 +139,41 @@
                 &:disabled {
                     background: #ccc;
                     cursor: not-allowed;
+                }
+            }
+        }
+    }
+}
+
+
+.bookingFlight {
+    .bookingContainer {
+        .flightDetails {
+            .routeInfo {
+
+                .departure,
+                .arrival {
+                    span.react-loading-skeleton {
+                        margin-bottom: 10px;
+                    }
+                }
+            }
+
+            .cabinOptions {
+                display: flex;
+                gap: 20px;
+
+                .cabinOption {
+                    span.react-loading-skeleton {
+                        border-radius: 8px;
+                    }
+                }
+            }
+
+            .scheduleOptions {
+                span.react-loading-skeleton {
+                    margin-bottom: 10px;
+                    border-radius: 6px;
                 }
             }
         }

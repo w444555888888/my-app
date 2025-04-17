@@ -7,10 +7,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlane } from '@fortawesome/free-solid-svg-icons'
 import { request } from '../utils/apiService';
 import { toast } from 'react-toastify'
-
+import Skeleton from 'react-loading-skeleton';
 
 const BookingFlight = () => {
     const { id } = useParams();
+    const [loading, setLoading] = useState(false);
     const [selectedClass, setSelectedClass] = useState(null);
     const [flightData, setFlightData] = useState(null);
 
@@ -22,7 +23,7 @@ const BookingFlight = () => {
 
     useEffect(() => {
         const handleBookingFlight = async () => {
-            const result = await request('GET', `/flight/${id}`);
+            const result = await request('GET', `/flight/${id}`, {}, setLoading);
             if (result.success) {
                 setFlightData(result.data);
             } else {
@@ -34,7 +35,42 @@ const BookingFlight = () => {
     }, [])
 
     if (!flightData) {
-        return <div>載入中...</div>
+        return (
+            <div className="bookingFlight">
+                <Navbar />
+                <div className="bookingContainer">
+                    <h1><Skeleton width={200} /></h1>
+                    <div className="flightDetails">
+                        <div className="flightHeader">
+                            <h2><Skeleton width={150} /></h2>
+                        </div>
+                        <div className="routeInfo">
+                            <div className="departure">
+                                <Skeleton width={100} height={30} />
+                                <Skeleton width={80} />
+                            </div>
+                            <div className="arrow">
+                                <Skeleton width={50} />
+                            </div>
+                            <div className="arrival">
+                                <Skeleton width={100} height={30} />
+                                <Skeleton width={80} />
+                            </div>
+                        </div>
+                        <div className="cabinSelection">
+                            <h3><Skeleton width={120} /></h3>
+                            <div className="cabinOptions">
+                                {[1, 2, 3].map((i) => (
+                                    <div key={i} className="cabinOption">
+                                        <Skeleton width={150} height={100} />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     return (

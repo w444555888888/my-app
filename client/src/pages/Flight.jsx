@@ -11,6 +11,7 @@ import zhTW from 'date-fns/locale/zh-TW'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { request } from '../utils/apiService';
 import { toast } from 'react-toastify'
+import EmptyState from '../subcomponents/EmptyState'
 
 const Flight = () => {
     const navigate = useNavigate()
@@ -130,29 +131,36 @@ const Flight = () => {
                     </div>
                 </div>
                 <div className="flightList">
-                    {flights.map((flight) => (
-                        <div className="flightItem" key={flight._id}>
-                            <div className="flightInfo">
-                                <div className="airline">航班號：{flight.flightNumber}</div>
-                            </div>
-                            <div className="routeInfo">
-                                <div className="departure">
-                                    <div className="city">{flight.route.departureCity}</div>
-                                    <div className="time">{flight.route.standardDepartureTime}</div>
+                    {flights.length > 0 ?
+                        flights.map((flight) => (
+                            <div className="flightItem" key={flight._id}>
+                                <div className="flightInfo">
+                                    <div className="airline">航班號：{flight.flightNumber}</div>
                                 </div>
-                                <div className="arrow">→</div>
-                                <div className="arrival">
-                                    <div className="city">{flight.route.arrivalCity}</div>
-                                    <div className="time">
-                                        {calculateArrivalTime(flight.route.standardDepartureTime, flight.route.flightDuration)}
+                                <div className="routeInfo">
+                                    <div className="departure">
+                                        <div className="city">{flight.route.departureCity}</div>
+                                        <div className="time">{flight.route.standardDepartureTime}</div>
+                                    </div>
+                                    <div className="arrow">→</div>
+                                    <div className="arrival">
+                                        <div className="city">{flight.route.arrivalCity}</div>
+                                        <div className="time">
+                                            {calculateArrivalTime(flight.route.standardDepartureTime, flight.route.flightDuration)}
+                                        </div>
                                     </div>
                                 </div>
+                                <div className="priceSection">
+                                    <button className="bookButton" onClick={() => handleBookingFlightRouter(flight._id)}>訂票</button>
+                                </div>
                             </div>
-                            <div className="priceSection">
-                                <button className="bookButton" onClick={() => handleBookingFlightRouter(flight._id)}>訂票</button>
-                            </div>
-                        </div>
-                    ))}
+                        ))
+                        : (
+                            <EmptyState
+                                title="目前沒有符合條件的航班"
+                                description="很抱歉，我們無法找到相關的航班資訊"
+                            />
+                        )}
                 </div>
             </div>
         </div>
