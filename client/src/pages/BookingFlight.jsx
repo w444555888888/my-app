@@ -13,13 +13,72 @@ const BookingFlight = () => {
     const { id } = useParams();
     const [loading, setLoading] = useState(false);
     const [selectedClass, setSelectedClass] = useState(null);
+    const [selectedDate, setSelectedDate] = useState(null);
     const [flightData, setFlightData] = useState(null);
+    const [passengers, setPassengers] = useState([{ name: '', idNumber: '' }]);
 
     const calculateArrivalTime = (departureTime, duration) => {
         const departureDate = parse(departureTime, 'HH:mm', new Date())
         const arrivalDate = addMinutes(departureDate, duration)
         return format(arrivalDate, 'HH:mm');
     }
+
+    const cabinTypeMap = {
+        'FIRST': '頭等艙',
+        'BUSINESS': '商務艙',
+        'ECONOMY': '經濟艙'
+    };
+
+
+
+    const handleAddPassenger = () => {
+        setPassengers([...passengers, { name: '', idNumber: '' }]);
+    };
+
+    const handleRemovePassenger = (index) => {
+        const newPassengers = passengers.filter((_, i) => i !== index);
+        setPassengers(newPassengers);
+    };
+
+    const handlePassengerChange = (index, field, value) => {
+        const newPassengers = [...passengers];
+        newPassengers[index][field] = value;
+        setPassengers(newPassengers);
+    };
+
+    const handleSubmit = async () => {
+        if (!selectedClass || !selectedDate) {
+            toast.error('請選擇艙等和航班日期');
+            return;
+        }
+
+        if (passengers.some(p => !p.name || !p.idNumber)) {
+            toast.error('請填寫完整的乘客信息');
+            return;
+        }
+
+        try {
+            setLoading(true);
+            const result = await request('POST', '/flight-orders', {
+                flightId: id,
+                category: selectedClass,
+                departureDate: format(new Date(selectedDate), 'yyyy-MM-dd'),
+                passengerInfo: passengers
+            });
+
+            if (result.success) {
+                toast.success('訂票成功！');
+                // 可以導航到訂單詳情頁
+            } else {
+                toast.error(result.message);
+            }
+        } catch (error) {
+            toast.error('訂票失敗，請稍後重試');
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     useEffect(() => {
         const handleBookingFlight = async () => {
@@ -112,7 +171,7 @@ const BookingFlight = () => {
                                     className={`cabinOption ${selectedClass === cabin.category ? 'selected' : ''}`}
                                     onClick={() => setSelectedClass(cabin.category)}
                                 >
-                                    <div className="cabinType">{cabin.category}</div>
+                                    <div className="cabinType">{cabinTypeMap[cabin.category]}</div>
                                     <div className="price">${cabin.basePrice}</div>
                                     <div className="seats">
                                         剩餘座位: {cabin.totalSeats - cabin.bookedSeats}
@@ -126,7 +185,11 @@ const BookingFlight = () => {
                         <h3>可用航班時間</h3>
                         <div className="scheduleOptions">
                             {flightData.schedules.map((schedule) => (
-                                <div key={schedule._id} className="scheduleOption">
+                                <div
+                                    key={schedule._id}
+                                    className={`scheduleOption ${selectedDate === schedule.departureDate ? 'selected' : ''}`}
+                                    onClick={() => setSelectedDate(schedule.departureDate)}
+                                >
                                     <div className="date">
                                         {format(new Date(schedule.departureDate), 'yyyy-MM-dd')}
                                     </div>
@@ -139,11 +202,36 @@ const BookingFlight = () => {
                         </div>
                     </div>
 
+                    <div className="passengerInfo">
+                        <h3>乘客信息</h3>
+                        {passengers.map((passenger, index) => (
+                            <div key={index} className="passengerForm">
+                                <input
+                                    type="text"
+                                    placeholder="乘客姓名"
+                                    value={passenger.name}
+                                    onChange={(e) => handlePassengerChange(index, 'name', e.target.value)}
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="身份證號"
+                                    value={passenger.idNumber}
+                                    onChange={(e) => handlePassengerChange(index, 'idNumber', e.target.value)}
+                                />
+                                {passengers.length > 1 && (
+                                    <button onClick={() => handleRemovePassenger(index)}>移除</button>
+                                )}
+                            </div>
+                        ))}
+                        <button onClick={handleAddPassenger}>添加乘客</button>
+                    </div>
+
                     <button
                         className="bookButton"
-                        disabled={!selectedClass}
+                        disabled={!selectedClass || !selectedDate || loading}
+                        onClick={handleSubmit}
                     >
-                        確認訂票
+                        {loading ? '訂票中...' : '確認訂票'}
                     </button>
                 </div>
             </div>
