@@ -94,18 +94,16 @@
   box-shadow: 0px 0px 15px lightgray;
   border-radius: 5px;
   padding: 10px 40px;
-  cursor: default; //靜止他一靠近就變point
+  cursor: default; 
 
   .condition {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    //這邊將文字（小孩）與conditionCounter 分開 一左一右
     width: 400px;
     height: 60px;
 
     p {
-      //小孩下面 的<p>表顯示歲數
       font-size: 14px;
       color: gray;
     }
@@ -114,10 +112,8 @@
       display: flex;
       width: 100px;
       justify-content: space-between;
-      //這邊左右分開的是 減號btn 數字 加號btn
       align-items: center;
 
-      //下上對齊
       .conditionCounterButton {
         width: 30px;
         height: 30px;
@@ -129,7 +125,6 @@
 
         &:hover {
           background-color: rgba(53, 164, 127, 0.1);
-          //我讓他滑鼠過去時會有淡淡的淺綠色
         }
 
         &:disabled {

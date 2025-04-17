@@ -29,6 +29,15 @@ const HotelsList = () => {
         }
     ])
 
+    const handleCounter = (name, sign) => {
+        setConditions(prev => {
+            return {
+                ...prev,
+                [name]: sign === "increase" ? conditions[name] + 1 : conditions[name] - 1
+            }
+        })
+    }
+
     const [conditions, setConditions] = useState({
         adult: parseInt(searchParams.get('adult')) || 1,
         room: parseInt(searchParams.get('room')) || 1,
@@ -37,7 +46,7 @@ const HotelsList = () => {
     // 開關狀態
     const [openConditions, setOpenConditions] = useState(false)
     const [openCalendar, setOpenCalendar] = useState(false)
-  
+
 
     // 飯店列表數據
     const [hotels, setHotels] = useState([])
@@ -64,6 +73,8 @@ const HotelsList = () => {
         if (maxPrice) params.maxPrice = maxPrice;
         if (startDate) params.startDate = startDate;
         if (endDate) params.endDate = endDate;
+        if (conditions.adult) params.adult = conditions.adult;
+        if (conditions.room) params.room = conditions.room;
         setSearchParams(params);
     }
 
@@ -140,9 +151,41 @@ const HotelsList = () => {
                                     人數/房間數
                                 </span>
                                 <div className="listItmConditions">
-                                    <span className="SearchText" onClick={() => setOpenConditions(!openConditions)}  >
-                                        {conditions.adult}位成人 · {conditions.room} 間房
+                                    <span className="SearchText" onClick={() => setOpenConditions(!openConditions)}>
+                                    {`${conditions.adult} 位成人 · ${conditions.room} 間房`}
                                     </span>
+                                    {openConditions &&
+                                            <div className="ConditionsContainer">
+                                                <div className="condition">
+                                                    成人
+                                                    <div className="conditionCounter">
+                                                        <button className="conditionCounterButton" disabled={conditions.adult <= 1}
+                                                            onClick={() => handleCounter("adult", "decrease")} >
+                                                            -
+                                                        </button>
+                                                        <span className="number">{conditions.adult}</span>
+                                                        <button className="conditionCounterButton" onClick={() => handleCounter("adult", "increase")}>
+                                                            +
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+
+                                                <div className="condition">
+                                                    房間
+                                                    <div className="conditionCounter">
+                                                        <button className="conditionCounterButton" disabled={conditions.room <= 1}
+                                                            onClick={() => handleCounter("room", "decrease")}>
+                                                            -
+                                                        </button>
+                                                        <span className="number"> {conditions.room}</span>
+                                                        <button className="conditionCounterButton" onClick={() => handleCounter("room", "increase")}>
+                                                            +
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
                                 </div>
                             </div>
                             <div className="listItem">
