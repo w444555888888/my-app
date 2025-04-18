@@ -2,7 +2,7 @@
  * @Author: w444555888 w444555888@yahoo.com.tw
  * @Date: 2024-07-25 13:15:20
  * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-10-10 13:31:35
+ * @LastEditTime: 2025-04-18 21:06:57
  * @FilePath: \my-app\api\RoutesController\auth.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -21,7 +21,7 @@ export const register = async (req, res, next) => {
   try {
     const registerWrong = await User.findOne({ username: registerData.username }) || await User.findOne({ email: registerData.email })
 
-    if (registerWrong) return (next(errorMessage(400, "此帳號或信箱已被註冊")));
+    if (registerWrong) return (next(errorMessage(400, "此帳號或信箱已被註冊")))
 
     // 密碼bcrypt加密bcrypt加密  
     const salt = bcrypt.genSaltSync(10)
@@ -34,63 +34,57 @@ export const register = async (req, res, next) => {
     )
     const saveUser = await newUser.save()
 
-    sendResponse(res, 200, saveUser);
+    sendResponse(res, 200, saveUser)
   } catch (error) {
-    next(errorMessage(500, "註冊失敗", error));
+    next(errorMessage(500, "註冊失敗", error))
   }
 }
 
 export const login = async (req, res, next) => {
-  const loginData = req.body;
-  console.log("收到的登入資料:", loginData);
+  const loginData = req.body
 
   try {
     // 嘗試用 `username` 或 `email` 查找用戶
     const userData =
       await User.findOne({ username: loginData.account }) ||
-      await User.findOne({ email: loginData.account }); // 這裡 `email` 應該也要對應 `account`，不然會找不到
+      await User.findOne({ email: loginData.account }) // 這裡 `email` 應該也要對應 `account`，不然會找不到
 
-    console.log("查找的使用者:", userData);
+
 
     if (!userData) {
-      console.log("找不到該使用者");
-      return next(errorMessage(404, "沒有此使用者"));
+      return next(errorMessage(404, "沒有此使用者"))
     }
 
     // 驗證密碼
-    const isPasswordCorrect = await bcrypt.compare(loginData.password, userData.password);
-    console.log("密碼比對結果:", isPasswordCorrect);
+    const isPasswordCorrect = await bcrypt.compare(loginData.password, userData.password)
 
     if (!isPasswordCorrect) {
-      console.log("密碼錯誤");
-      return next(errorMessage(404, "輸入密碼錯誤"));
+      return next(errorMessage(404, "輸入密碼錯誤"))
     }
 
     // 生成 JWT Token
     if (!process.env.JWT) {
-      console.error("環境變數 JWT 未設定");
-      return next(errorMessage(500, "伺服器錯誤，JWT 未定義"));
+      return next(errorMessage(500, "伺服器錯誤，JWT 未定義"))
     }
 
-    const token = jwt.sign({ id: userData._id, isAdmin: userData.isAdmin }, process.env.JWT);
-    console.log("生成的 JWT:", token);
+    const token = jwt.sign({ id: userData._id, isAdmin: userData.isAdmin }, process.env.JWT)
+    // console.log("生成的 JWT:", token)
 
     // 排除密碼和 isAdmin，回傳其餘用戶資訊
-    const { password, isAdmin, ...userDetails } = userData._doc;
-    console.log("回傳的使用者資訊:", userDetails);
+    const { password, isAdmin, ...userDetails } = userData._doc
+    // console.log("回傳的使用者資訊:", userDetails)
 
     res.cookie("JWT_token", token, {
       httpOnly: true,
       secure: false,
       path: "/",
     })
-    sendResponse(res, 200, { userDetails });
+    sendResponse(res, 200, { userDetails })
 
   } catch (error) {
-    console.error("登入錯誤:", error);
-    next(errorMessage(500, "登入失敗", error));
+    next(errorMessage(500, "登入失敗", error))
   }
-};
+}
 
 
 
@@ -102,7 +96,7 @@ export const forgotPassword = async (req, res, next) => {
     // 查找用戶
     const user = await User.findOne({ email })
     if (!user) {
-      return next(errorMessage(404, "沒有此信箱的使用者"));
+      return next(errorMessage(404, "沒有此信箱的使用者"))
     }
     // 重置密碼令牌
     const token = crypto.randomBytes(32).toString("hex")
@@ -137,12 +131,12 @@ export const forgotPassword = async (req, res, next) => {
     // 發送郵件
     try {
       await transporter.sendMail(mailOptions)
-      return sendResponse(res, 200, null, { message: "重置密碼郵件已發送" });
+      return sendResponse(res, 200, null, { message: "重置密碼郵件已發送" })
     } catch (error) {
-      return next(errorMessage(500, "郵件發送失敗", error));
+      return next(errorMessage(500, "郵件發送失敗", error))
     }
   } catch (error) {
-    return next(errorMessage(500, "忘記密碼處理失敗", error));
+    return next(errorMessage(500, "忘記密碼處理失敗", error))
   }
 }
 
@@ -164,7 +158,7 @@ export const resetPassword = async (req, res, next) => {
     })
 
     if (!user) {
-      return next(errorMessage(404, "重置令牌無效或已過期"));
+      return next(errorMessage(404, "重置令牌無效或已過期"))
     }
 
     // 更新用戶密碼
@@ -174,11 +168,11 @@ export const resetPassword = async (req, res, next) => {
     user.resetPasswordExpires = undefined // 清除過期時間
     await user.save()
 
-    sendResponse(res, 200, null, { message: "密碼重置成功" });
+    sendResponse(res, 200, null, { message: "密碼重置成功" })
   } catch (error) {
     // 記錄錯誤信息
     console.error("Error during password reset:", error)
-    next(errorMessage(500, "重置密碼處理失敗", error));
+    next(errorMessage(500, "重置密碼處理失敗", error))
   }
 }
 
@@ -186,22 +180,22 @@ export const resetPassword = async (req, res, next) => {
 // 驗證用戶身份
 export const verifyToken = async (req, res, next) => {
   try {
-      // 從 cookie 中獲取 token
-      const token = req.cookies.JWT_token;
-      
-      if (!token) {
-          throw errorMessage(401, "請先登入");
-      }
+    // 從 cookie 中獲取 token
+    const token = req.cookies.JWT_token
 
-      // 解析 token
-      const decoded = jwt.verify(token, process.env.JWT);
-      
-      // 將解碼後的用戶信息添加到請求req對象中 
-      req.user = decoded;
-      
-      // 下一步
-      next();
+    if (!token) {
+      throw errorMessage(401, "請先登入")
+    }
+
+    // 解析 token
+    const decoded = jwt.verify(token, process.env.JWT)
+
+    // 將解碼後的用戶信息添加到請求req對象中 
+    req.user = decoded
+
+    // 下一步
+    next()
   } catch (err) {
-    next(errorMessage(403, "登入已過期，請重新登入"));
+    next(errorMessage(403, "登入已過期，請重新登入"))
   }
-};
+}

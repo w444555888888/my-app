@@ -45,7 +45,7 @@ const FlightSchema = new mongoose.Schema({
     // 航班排程（系統自動生成）
     schedules: [{
         departureDate: { type: Date, required: true },// 實際起飛日期時間
-        arrivalDate: { type: Date, required: true }, // 預計抵達日期時間
+        arrivalDate: { type: Date }, // 預計抵達日期時間
         // 系統根據 departureDate 實際起飛日期時間 + flightDuration 飛行時間（分鐘） 自動計算 =  arrivalDate 抵達時間
         availableSeats: {
             ECONOMY: { type: Number }, // 經濟艙剩餘座位
@@ -96,8 +96,6 @@ FlightSchema.methods.calculateFinalPrice = function (category, departureDate) {
 
 
 FlightSchema.pre('save', function (next) {
-    console.log('Departure:', schedule.departureDate);
-console.log('Arrival:', schedule.arrivalDate);
 
     const flight = this;
     if (flight.schedules && flight.schedules.length > 0) {
