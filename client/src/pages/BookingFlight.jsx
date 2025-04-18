@@ -3,7 +3,7 @@ import { useParams, useSearchParams } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import './bookingFlight.scss'
 import { parse, addMinutes, format } from 'date-fns';
-import { toZonedTime } from 'date-fns-tz';
+import { toZonedTime, formatInTimeZone } from 'date-fns-tz';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlane } from '@fortawesome/free-solid-svg-icons'
 import { request } from '../utils/apiService';
@@ -69,11 +69,11 @@ const BookingFlight = () => {
         'Ho Chi Minh': '+7'
     };
 
+
     const calculateArrivalTime = (departureTime, duration, departureCity, arrivalCity) => {
-        const today = new Date();
-        const dateStr = format(today, 'yyyy-MM-dd') + ' ' + departureTime;
-        // 將 departure time 轉為出發城市的當地時間
-        const departureLocal = parse(dateStr, 'yyyy-MM-dd HH:mm', today);
+        const dateStr = selectedDate + 'T' + departureTime;
+        // 將departureTime轉為出發城市的當地時間
+        const departureLocal = parse(dateStr, 'yyyy-MM-dd\'T\'HH:mm', new Date())
         const departureZoned = toZonedTime(departureLocal, cityTimeZoneMap[departureCity]);
         // 加上飛行時間（仍在出發地時區）
         const arrivalUTC = addMinutes(departureZoned, duration);
@@ -85,6 +85,7 @@ const BookingFlight = () => {
             isNextDay
         };
     };
+
 
     const getCabinClasses = (availableSeats, prices) => {
         if (!availableSeats || !prices) return [];
@@ -201,13 +202,13 @@ const BookingFlight = () => {
                 <div className="flightDetails">
                     <div className="flightHeader">
                         <h2>航班號：{flightData.flightNumber}</h2>
-                        {/* {selectedDate && (
-                            formatInTimeZone(
-                                new Date(selectedDate + 'T00:00:00'), 
-                                `GMT${cityTimeZoneMap[flightData.route.departureCity].replace('GMT', '')}`,
-                                'yyyy年MM月dd日 EEEE'
-                            )
-                        )} */}
+                        <div className="flightDate">
+                            {selectedDate && (
+                                <div>
+                                    {format(new Date(selectedDate), 'yyyy年MM月dd日 EEEE')}
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     <div className="routeInfo">

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { calculateArrivalDate, cityTimeZoneMap } from '../utils/flightTimeUtil.js';
 
 const FlightSchema = new mongoose.Schema({
     flightNumber: {
@@ -92,5 +93,33 @@ FlightSchema.methods.calculateFinalPrice = function (category, departureDate) {
 
     return basePrice * multiplier;
 };
+
+
+FlightSchema.pre('save', function (next) {
+    console.log('Departure:', schedule.departureDate);
+console.log('Arrival:', schedule.arrivalDate);
+
+    const flight = this;
+    if (flight.schedules && flight.schedules.length > 0) {
+        flight.schedules.forEach(schedule => {
+            const depCity = flight.route.departureCity;
+            const arrCity = flight.route.arrivalCity;
+            const depTZ = cityTimeZoneMap[depCity];
+            const arrTZ = cityTimeZoneMap[arrCity];
+
+            if (!depTZ || !arrTZ) {
+                throw new Error(`找不到時區設定：${depCity} 或 ${arrCity}`);
+            }
+
+            schedule.arrivalDate = calculateArrivalDate(
+                schedule.departureDate,
+                flight.route.flightDuration,
+                depTZ,
+                arrTZ
+            );
+        });
+    }
+    next();
+});
 
 export default mongoose.model("Flight", FlightSchema)
