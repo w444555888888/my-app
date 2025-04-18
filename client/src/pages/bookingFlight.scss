@@ -29,11 +29,26 @@
             }
 
             .flightHeader {
-                border-bottom: 1px solid #eee;
-                padding-bottom: 15px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
                 margin-bottom: 20px;
+                padding: 15px;
+                background: #f8f9fa;
+                border-radius: 8px;
+
+                .flightDate {
+                    font-size: 1.2em;
+                    color: #333;
+
+                    .weekday {
+                        margin-left: 10px;
+                        color: #666;
+                    }
+                }
 
                 h2 {
+                    font-weight: bold;
                     font-size: 1.5rem;
 
                     @media (max-width: 768px) {
@@ -72,6 +87,13 @@
                     .time {
                         font-size: 18px;
                         color: #666;
+                        position: relative;
+
+                        .timezone {
+                            font-size: 0.8em;
+                            color: #666;
+                            margin-top: 4px;
+                        }
 
                         @media (max-width: 768px) {
                             font-size: 16px;
@@ -81,17 +103,14 @@
 
                 .arrow {
                     color: var(--primary-color);
-
-                    @media (max-width: 768px) {
-                        transform: rotate(90deg);
-                    }
                 }
             }
 
             .cabinSelection {
                 margin: 30px 0;
 
-                h3 {
+                div {
+                    font-weight: bold;
                     font-size: 1.3rem;
                     margin-bottom: 15px;
 
@@ -145,62 +164,11 @@
                 }
             }
 
-            .scheduleSelection {
-                margin: 30px 0;
-
-                h3 {
-                    font-size: 1.3rem;
-                    margin-bottom: 15px;
-
-                    @media (max-width: 768px) {
-                        font-size: 1.1rem;
-                    }
-                }
-
-                .scheduleOptions {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                    gap: 15px;
-                    margin-top: 15px;
-
-                    @media (max-width: 768px) {
-                        grid-template-columns: 1fr;
-                    }
-
-                    .scheduleOption {
-                        cursor: pointer;
-                        padding: 15px;
-                        border: 1px solid #ddd;
-                        border-radius: 8px;
-                        text-align: center;
-                        cursor: pointer;
-                        transition: all 0.3s ease;
-
-                        &:hover {
-                            opacity: 0.9;
-                        }
-
-                        &.selected {
-                            background: #add1f3;
-                            border-color: var(--primary-color);
-                        }
-
-                        .date {
-                            font-weight: bold;
-                            margin-bottom: 5px;
-                        }
-
-                        .time {
-                            color: #666;
-                        }
-                    }
-                }
-            }
-
             .passengerInfo {
                 margin: 30px 0;
 
-                h3 {
+                div {
+                    font-weight: bold;
                     font-size: 1.3rem;
                     margin-bottom: 15px;
 
@@ -223,12 +191,17 @@
                         padding: 12px;
                         border: 1px solid #ddd;
                         border-radius: 4px;
-                        font-size: 16px;
+                        font-size: 13px;
 
                         &:focus {
                             outline: none;
                             border-color: var(--primary-color);
                         }
+                    }
+
+                    input[placeholder]::placeholder {
+                        font-size: 10px;
+                        color: #888;
                     }
 
                     button {

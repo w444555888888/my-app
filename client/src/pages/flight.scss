@@ -1,6 +1,7 @@
 .flight {
     .flightContainer {
         max-width: 1200px;
+        min-height: 100vh;
         margin: 0 auto;
 
         .title {
@@ -155,6 +156,17 @@
                             text-align: center;
                         }
                     }
+
+                    .date {
+                        font-size: 14px;
+                        color: #666;
+                        margin-top: 5px;
+
+                        @media (max-width: 768px) {
+                            font-size: 12px;
+                            text-align: center;
+                        }
+                    }
                 }
 
                 .routeInfo {
@@ -203,13 +215,13 @@
                     }
                 }
 
-                .priceSection {
+                .bookSection {
                     text-align: right;
 
                     @media (max-width: 768px) {
                         text-align: center;
                         width: 100%;
-                    }                
+                    }
 
                     .bookButton {
                         padding: 8px 20px;

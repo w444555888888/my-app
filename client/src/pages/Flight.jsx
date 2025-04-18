@@ -14,8 +14,8 @@ import EmptyState from '../subcomponents/EmptyState'
 const Flight = () => {
     const navigate = useNavigate()
     const [searchParams, setSearchParams] = useSearchParams();
-    const [destination, setDestination] = useState("")
-    const [departure, setDeparture] = useState("")
+    const [arrivalCity, setArrivalCity] = useState("")
+    const [departureCity, setDepartureCity] = useState("")
     const [openDate, setOpenDate] = useState(false)
     const [flights, setFlights] = useState([])
     const [dates, setDates] = useState([
@@ -25,7 +25,7 @@ const Flight = () => {
             key: 'selection'
         }
     ])
-
+    
 
     useEffect(() => {
         const handleAllFlight = async () => {
@@ -41,10 +41,15 @@ const Flight = () => {
 
 
     const handleSearch = async () => {
-        const params = {
-            departure,
-            destination,
-        };
+        const params = {};
+
+        if(departureCity){
+            params.departureCity = departureCity
+        }
+
+        if(arrivalCity){
+            params.arrivalCity = arrivalCity
+        }
 
         if (dates[0].startDate && dates[0].endDate) {
             params.startDate = format(dates[0].startDate, 'yyyy-MM-dd');
@@ -52,18 +57,16 @@ const Flight = () => {
         }
 
         setSearchParams(params);
-        const result = await request('GET', `/flight?${params.toString()}`);
+        const result = await request('GET', `/flight?${searchParams.toString()}`);
         if (result.success) {
             setFlights(result.data);
             toast.success('搜索完成');
-        } else {
-            toast.error(result.message);
-        }
+        } else toast.error(result.message);
     };
 
 
     const handleBookingFlightRouter = async (flightId) => {
-        navigate(`/bookingFlight/${flightId}`);
+        navigate(`/bookingFlight/${flightId}?${searchParams}`);
     };
 
 
@@ -86,8 +89,8 @@ const Flight = () => {
                             <input
                                 type="text"
                                 placeholder="出發地"
-                                value={departure}
-                                onChange={(e) => setDeparture(e.target.value)}
+                                value={departureCity}
+                                onChange={(e) => setDepartureCity(e.target.value)}
                                 className="searchInput"
                             />
                         </div>
@@ -96,8 +99,8 @@ const Flight = () => {
                             <input
                                 type="text"
                                 placeholder="目的地"
-                                value={destination}
-                                onChange={(e) => setDestination(e.target.value)}
+                                value={arrivalCity}
+                                onChange={(e) => setArrivalCity(e.target.value)}
                                 className="searchInput"
                             />
                         </div>
@@ -130,29 +133,37 @@ const Flight = () => {
                 </div>
                 <div className="flightList">
                     {flights.length > 0 ?
-                        flights.map((flight) => (
-                            <div className="flightItem" key={flight._id}>
-                                <div className="flightInfo">
-                                    <div className="airline">航班號：{flight.flightNumber}</div>
-                                </div>
-                                <div className="routeInfo">
-                                    <div className="departure">
-                                        <div className="city">{flight.route.departureCity}</div>
-                                        <div className="time">{flight.route.standardDepartureTime}</div>
+                        flights.map((flight) =>
+                            flight.schedules.map((schedule, index) => (
+                                <div className="flightItem" key={`${flight._id}-${index}`}>
+                                    <div className="flightInfo">
+                                        <div className="airline">航班號：{flight.flightNumber}</div>
+                                        <div className="date">出發日期：{new Date(schedule.departureDate).toLocaleDateString()}</div>
                                     </div>
-                                    <div className="arrow">→</div>
-                                    <div className="arrival">
-                                        <div className="city">{flight.route.arrivalCity}</div>
-                                        <div className="time">
-                                            {calculateArrivalTime(flight.route.standardDepartureTime, flight.route.flightDuration)}
+                                    <div className="routeInfo">
+                                        <div className="departure">
+                                            <div className="city">{flight.route.departureCity}</div>
+                                            <div className="time">{flight.route.standardDepartureTime}</div>
+                                        </div>
+                                        <div className="arrow">→</div>
+                                        <div className="arrival">
+                                            <div className="city">{flight.route.arrivalCity}</div>
+                                            <div className="time">
+                                                {calculateArrivalTime(flight.route.standardDepartureTime, flight.route.flightDuration)}
+                                            </div>
                                         </div>
                                     </div>
+                                    <div className="bookSection">
+                                        <button
+                                            className="bookButton"
+                                            onClick={() => handleBookingFlightRouter(flight._id, schedule.departureDate)}
+                                        >
+                                            訂票
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className="priceSection">
-                                    <button className="bookButton" onClick={() => handleBookingFlightRouter(flight._id)}>訂票</button>
-                                </div>
-                            </div>
-                        ))
+                            ))
+                        )
                         : (
                             <EmptyState
                                 title="目前沒有符合條件的航班"

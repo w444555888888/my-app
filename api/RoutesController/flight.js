@@ -7,6 +7,10 @@ import FlightOrder from "../models/FightOrder.js"
 // 創建新航班
 export const createFlight = async (req, res) => {
     try {
+        const existing = await Flight.findOne({ flightNumber: req.body.flightNumber });
+        if (existing) {
+            next(errorMessage(400, "flightNumber已存在"))
+        }
         const newFlight = new Flight(req.body);
         const savedFlight = await newFlight.save();
         return sendResponse(res, 201, savedFlight, "航班創建成功");
@@ -15,48 +19,105 @@ export const createFlight = async (req, res) => {
     }
 };
 
-// 獲取所有航班列表 ||  日期 || 起飛城市 ||  目的城市
-export const getAllFlights = async (req, res) => {
+// 獲取所有航班列表 || 日期 || 起飛城市 || 目的城市
+export const getAllFlights = async (req, res, next) => {
     try {
-        const { departure, destination, startDate, endDate } = req.query;
-        
-        // 構建查詢條件
+        const { departureCity, arrivalCity, startDate, endDate } = req.query;
+
         let query = {};
-        
-        if (departure) {
-            query['route.departureCity'] = departure;
+
+        if (departureCity) {
+            query['route.departureCity'] = departureCity;
         }
-        
-        if (destination) {
-            query['route.arrivalCity'] = destination;
-        }
-        
-        if (startDate && endDate) {
-            query['schedules.departureDate'] = {
-                $gte: new Date(startDate),
-                $lte: new Date(endDate)
-            };
+
+        if (arrivalCity) {
+            query['route.arrivalCity'] = arrivalCity;
         }
 
         const flights = await Flight.find(query);
-        return sendResponse(res, 200, flights, "獲取航班列表成功");
+
+        let filteredFlights = flights.map(flight => {
+            let filteredSchedules = flight.schedules;
+
+            if (startDate && endDate) {
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+
+                filteredSchedules = flight.schedules.filter(schedule => {
+                    const date = new Date(schedule.departureDate);
+                    return date >= start && date <= end;
+                });
+            }
+
+            return {
+                _id: flight._id,
+                flightNumber: flight.flightNumber,
+                route: flight.route,
+                schedules: filteredSchedules
+            };
+        }).filter(flight => flight.schedules.length > 0); // 移除沒有符合時間的航班
+
+        return sendResponse(res, 200, filteredFlights, "獲取航班列表成功");
     } catch (err) {
-        throw errorMessage(500, "獲取航班列表失敗", err);
+        next(errorMessage(500, "獲取航班列表失敗", err));
     }
 };
 
+
 // 獲取單個航班詳情
-export const getFlight = async (req, res) => {
+export const getFlight = async (req, res, next) => {
     try {
+        const { startDate, endDate } = req.query;
+
         const flight = await Flight.findById(req.params.id);
         if (!flight) {
-            throw errorMessage(404, "找不到該航班");
+            return next(errorMessage(404, "找不到該航班"));
         }
-        return sendResponse(res, 200, flight, "獲取航班詳情成功");
+
+        let filteredSchedules = flight.schedules;
+
+        if (startDate && endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+
+            filteredSchedules = flight.schedules.filter(schedule => {
+                const date = new Date(schedule.departureDate);
+                return date >= start && date <= end;
+            });
+        }
+
+        // 格式化 + 計算價格
+        const formattedSchedules = filteredSchedules.map(schedule => {
+            const departureDate = new Date(schedule.departureDate);
+            const arrivalDate = new Date(schedule.arrivalDate);
+
+            // 計算每個艙等的實際價格
+            const prices = {};
+            flight.cabinClasses.forEach(cabin => {
+                const rawPrice = flight.calculateFinalPrice(cabin.category, departureDate);
+                prices[cabin.category] = Math.round(rawPrice); //四捨五入價格
+            });
+
+            return {
+                departureDate: departureDate.toISOString().split('T')[0],
+                arrivalDate: arrivalDate.toISOString().split('T')[0],
+                availableSeats: schedule.availableSeats,
+                prices
+            };
+        });
+
+        return sendResponse(res, 200, {
+            _id: flight._id,
+            flightNumber: flight.flightNumber,
+            route: flight.route,
+            schedules: formattedSchedules
+        }, "獲取航班詳情成功");
+
     } catch (err) {
-        throw errorMessage(500, "獲取航班詳情失敗", err);
+        next(errorMessage(500, "獲取航班詳情失敗", err));
     }
 };
+
 
 // 更新航班信息
 export const updateFlight = async (req, res) => {
@@ -67,11 +128,11 @@ export const updateFlight = async (req, res) => {
             { new: true }
         );
         if (!updatedFlight) {
-            throw errorMessage(404, "找不到該航班");
+            next(errorMessage(404, "找不到該航班"));
         }
         return sendResponse(res, 200, updatedFlight, "航班更新成功");
     } catch (err) {
-        throw errorMessage(500, "更新航班失敗", err);
+        next(errorMessage(500, "更新航班失敗", err));
     }
 };
 
@@ -80,11 +141,11 @@ export const deleteFlight = async (req, res) => {
     try {
         const flight = await Flight.findByIdAndDelete(req.params.id);
         if (!flight) {
-            throw errorMessage(404, "找不到該航班");
+            next(errorMessage(404, "找不到該航班"));
         }
         return sendResponse(res, 200, flight, "航班刪除成功");
     } catch (err) {
-        throw errorMessage(500, "刪除航班失敗", err);
+        next(errorMessage(500, "刪除航班失敗", err));
     }
 };
 
@@ -95,7 +156,7 @@ export const calculatePrice = async (req, res) => {
         const flight = await Flight.findById(flightId);
 
         if (!flight) {
-            throw errorMessage(404, "找不到該航班");
+            next(errorMessage(404, "找不到該航班"));
         }
 
         const finalPrice = flight.calculateFinalPrice(
@@ -110,7 +171,7 @@ export const calculatePrice = async (req, res) => {
             finalPrice
         }, "票價計算成功");
     } catch (err) {
-        throw errorMessage(500, "計算票價失敗", err);
+        next(errorMessage(500, "計算票價失敗", err));
     }
 };
 
@@ -121,7 +182,7 @@ export const checkSeats = async (req, res) => {
         const flight = await Flight.findById(flightId);
 
         if (!flight) {
-            throw errorMessage(404, "找不到該航班");
+            next(errorMessage(404, "找不到該航班"));
         }
 
         const schedule = flight.schedules.find(s =>
@@ -129,12 +190,12 @@ export const checkSeats = async (req, res) => {
         );
 
         if (!schedule) {
-            throw errorMessage(404, "找不到該日期的航班班次");
+            next(errorMessage(404, "找不到該日期的航班班次"));
         }
 
         return sendResponse(res, 200, schedule.availableSeats, "查詢座位成功");
     } catch (err) {
-        throw errorMessage(500, "查詢座位失敗", err);
+        next(errorMessage(500, "查詢座位失敗", err));
     }
 };
 
@@ -147,28 +208,28 @@ export const createFlightOrder = async (req, res) => {
 
         // 檢查用戶身份
         if (!req.user || !req.user.id) {
-            throw errorMessage(401, "未登入或登入已過期");
+            next(errorMessage(401, "未登入或登入已過期"));
         }
         const userId = req.user.id; // 假設使用者信息從認證中間件獲取
 
         // 檢查航班
         const flight = await Flight.findById(flightId);
         if (!flight) {
-            throw errorMessage(404, "找不到該航班");
+            next(errorMessage(404, "找不到該航班"));
         }
 
         // 檢查座位可用性
         const schedule = flight.schedules.find(s =>
             s.departureDate.toISOString().split('T')[0] === departureDate
         );
-        
+
         if (!schedule) {
-            throw errorMessage(404, "該日期的航班不存在");
+            next(errorMessage(404, "該日期的航班不存在"));
         }
 
         // 檢查座位可用性
         if (schedule.availableSeats[category] < passengerInfo.length) {
-            throw errorMessage(400, "座位數量不足");
+            next(errorMessage(400, "座位數量不足"));
         }
 
         // 計算票價
@@ -202,7 +263,7 @@ export const createFlightOrder = async (req, res) => {
 
         return sendResponse(res, 201, savedOrder, "訂單創建成功");
     } catch (err) {
-        throw errorMessage(500, "創建訂單失敗", err);
+        next(errorMessage(500, "創建訂單失敗", err));
     }
 };
 
@@ -211,7 +272,7 @@ export const getUserOrders = async (req, res) => {
     try {
         // 檢查用戶身份
         if (!req.user || !req.user.id) {
-            throw errorMessage(401, "未登入或登入已過期");
+            next(errorMessage(401, "未登入或登入已過期"));
         }
         const userId = req.user.id;
         const orders = await FlightOrder.find({ userId })
@@ -220,7 +281,7 @@ export const getUserOrders = async (req, res) => {
 
         return sendResponse(res, 200, orders, "獲取訂單列表成功");
     } catch (err) {
-        throw errorMessage(500, "獲取訂單列表失敗", err);
+        next(errorMessage(500, "獲取訂單列表失敗", err));
     }
 };
 
@@ -232,12 +293,12 @@ export const getOrderDetail = async (req, res) => {
             .populate('userId', 'name email');
 
         if (!order) {
-            throw errorMessage(404, "找不到該訂單");
+            next(errorMessage(404, "找不到該訂單"));
         }
 
         return sendResponse(res, 200, order, "獲取訂單詳情成功");
     } catch (err) {
-        throw errorMessage(500, "獲取訂單詳情失敗", err);
+        next(errorMessage(500, "獲取訂單詳情失敗", err));
     }
 };
 
@@ -246,11 +307,11 @@ export const cancelOrder = async (req, res) => {
     try {
         const order = await FlightOrder.findById(req.params.orderId);
         if (!order) {
-            throw errorMessage(404, "找不到該訂單");
+            next(errorMessage(404, "找不到該訂單"));
         }
 
         if (order.status !== 'PENDING') {
-            throw errorMessage(400, "只能取消待付款的訂單");
+            next(errorMessage(400, "只能取消待付款的訂單"));
         }
 
         order.status = 'CANCELLED';
@@ -267,7 +328,7 @@ export const cancelOrder = async (req, res) => {
 
         return sendResponse(res, 200, order, "訂單取消成功");
     } catch (err) {
-        throw errorMessage(500, "取消訂單失敗", err);
+        next(errorMessage(500, "取消訂單失敗", err));
     }
 };
 
