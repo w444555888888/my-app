@@ -23,5 +23,8 @@
     "nodemailer": "^6.9.15",
     "nodemon": "^2.0.22",
     "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "pm2": "^6.0.5"
   }
 }
