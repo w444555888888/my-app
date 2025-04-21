@@ -12,18 +12,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faThumbsUp } from '@fortawesome/free-solid-svg-icons'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-const SearchItem = ({ hotel }) => {
-
+const SearchItem =  React.memo(({ hotel }) => {
   const location = useLocation();
   const navigate = useNavigate();
- 
+
+
   const handleHotelDetail = () => {
     navigate(`/hotels${location.search}&hotelId=${hotel._id}`, {
       state: { hotel },
     });
   };
-
-  
 
   //SearchItem的active狀態
   const [addactive, setAddActive] = useState(false)
@@ -99,6 +97,6 @@ const SearchItem = ({ hotel }) => {
     </div>
 
   )
-}
+})
 
 export default SearchItem
