@@ -37,6 +37,6 @@ const userSlice = createSlice({
   }
 })
 
-export const { logIn, logOut, toggleTheme, updateUser } = userSlice.actions
+export const { logIn, logOut, toggleTheme } = userSlice.actions
 
 export default userSlice.reducer

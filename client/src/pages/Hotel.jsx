@@ -11,8 +11,8 @@ import "./hotel.scss"
 import { useLocation, useParams, useSearchParams, useNavigate } from 'react-router-dom'
 import { DateRange } from 'react-date-range'
 import { differenceInDays, format } from "date-fns"
-import { useDispatch } from 'react-redux'
-import { setCurrentHotel, setAvailableRooms } from '../../src/redux/hotelSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchHotelData, setCurrentHotel, setAvailableRooms } from '../redux/hotelSlice'
 import EmptyState from '../subcomponents/EmptyState'
 import { toast } from 'react-toastify'
 
@@ -20,11 +20,9 @@ const Hotel = () => {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const dispatch = useDispatch()
-  const [hotelData, setHotelData] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const { currentHotel, availableRooms, loading, error } = useSelector(state => state.hotel)
   const [openSlider, setOpenSlider] = useState(false)
   const [sliderIndex, setSiderIndex] = useState(0)
-  const [rooms, setRooms] = useState([])
   const [night, setNight] = useState('')
   const comments = useRef(null)
 
@@ -50,19 +48,10 @@ const Hotel = () => {
     }
   ])
 
+
   // 獲取酒店數據
   useEffect(() => {
-    const fetchHotelData = async () => {
-      const result = await request('GET', `/hotels/search?${searchParams.toString()}`, {}, setLoading)
-      if (result.success) {
-        setHotelData(result?.data?.[0])
-        setRooms(result?.data?.[0]?.availableRooms)
-        // 設置 Redux 狀態(Order頁面)
-        dispatch(setCurrentHotel(result?.data?.[0]))
-        dispatch(setAvailableRooms(result?.data?.[0]?.availableRooms))
-      } else toast.error(`${result.message}`)
-    }
-    fetchHotelData()
+    dispatch(fetchHotelData(searchParams))
   }, [searchParams, dispatch])
 
 
@@ -119,7 +108,7 @@ const Hotel = () => {
 
   const slideDirection = (direction) => {
     let newSliderIndex
-    let lastPicutre = hotelData.photos.length - 1
+    let lastPicutre = currentHotel.photos.length - 1
     if (direction === "left") {
       sliderIndex === 0 ? newSliderIndex = lastPicutre : newSliderIndex = sliderIndex - 1
       setSiderIndex(newSliderIndex)
@@ -144,10 +133,14 @@ const Hotel = () => {
   ]
 
 
-  if (!hotelData) return <EmptyState
-    title="找不到酒店資訊"
-    description="很抱歉，我們無法找到相關的酒店資訊"
-  />
+  if (!currentHotel) return (
+    <div className="empty-state-container">
+      <EmptyState
+        title="找不到酒店資訊"
+        description="很抱歉，我們無法找到相關的酒店資訊"
+      />
+    </div>
+  )
 
   return (
     <div className='hotel'>
@@ -156,13 +149,13 @@ const Hotel = () => {
         <div className="slider">
           <div className="sliderWrapper">
             <div className="wrapperTitle">
-              <div className='TitleName'>{hotelData.name}</div>
+              <div className='TitleName'>{currentHotel.name}</div>
               <span className="CloseSign" onClick={() => setOpenSlider(false)}>關閉
                 <FontAwesomeIcon icon={faXmark} /></span>
             </div>
             <div className="wrapperBody">
               <FontAwesomeIcon icon={faAngleLeft} className="arrow" onClick={() => slideDirection("left")} />
-              <img src={hotelData.photos[sliderIndex]} />
+              <img src={currentHotel.photos[sliderIndex]} />
               <FontAwesomeIcon icon={faAngleRight} className="arrow" onClick={() => slideDirection("right")} />
             </div>
           </div>
@@ -178,10 +171,10 @@ const Hotel = () => {
           </div>
           <div className="hotelTitle">
             <div className="titleLeft">
-              <span className="type">{hotelData.type}</span>
-              <span className='hotelName'>{hotelData.name}</span>
+              <span className="type">{currentHotel.type}</span>
+              <span className='hotelName'>{currentHotel.name}</span>
               <span className='recommend'><span className="recommendSvg"><FontAwesomeIcon icon={faPeopleGroup} /></span>推薦四人住宿</span>
-              <div className="address"><FontAwesomeIcon icon={faLocationDot} /> {hotelData.address} </div>
+              <div className="address"><FontAwesomeIcon icon={faLocationDot} /> {currentHotel.address} </div>
             </div>
             <div className="titleRight">
               <button className="reservationBtn">現在就預訂</button>
@@ -190,13 +183,13 @@ const Hotel = () => {
           <div className="hotelImgWrapper">
             <div className="popupcomment" onMouseEnter={handleHover} onMouseOut={handleHoverExit}>
               <div className='commentInfo' ref={comments}>
-                <button className='commentRate'>{hotelData.rating}</button>
+                <button className='commentRate'>{currentHotel.rating}</button>
                 傑出<br />
-                {hotelData.comments}則評論
+                {currentHotel.comments}則評論
               </div>
             </div>
             <div className="hotelImg">
-              {hotelData.photos.map((e, index) => (
+              {currentHotel.photos.map((e, index) => (
                 <div key={index} className="Imgwrap" onClick={() => clickSlider(index)}>
                   <img src={e} key={index} />
                 </div>
@@ -205,14 +198,14 @@ const Hotel = () => {
           </div>
           <div className="hotelDes">
             <div className="hotelDesText">
-              {hotelData.title}
+              {currentHotel.title}
               <br />
-              {hotelData.desc}
+              {currentHotel.desc}
               <h2>熱門設施</h2>
               <p className="textIcon">
                 {facilitiesList.map(
                   (facility) =>
-                    hotelData.facilities[facility.key] &&
+                    currentHotel.facilities[facility.key] &&
                     (
                       <React.Fragment key={facility.key}>
                         <FontAwesomeIcon icon={facility.icon} className="textIconItem" />
@@ -248,12 +241,12 @@ const Hotel = () => {
                 {format(dates[0].startDate, "MM/dd/yyyy")} - {format(dates[0].endDate, "MM/dd/yyyy")}
               </p>
               <p>入住 {night} 晚的最佳選擇！
-                此住宿位於{hotelData.city}的地區，地理位置評分高達 {hotelData.rating} 分
+                此住宿位於{currentHotel.city}的地區，地理位置評分高達 {currentHotel.rating} 分
                 深受獨行旅客歡迎</p>
             </div>
           </div>
           <hr />
-          {rooms && <div className="roomDes">
+          {availableRooms && <div className="roomDes">
             <div className="roomDesText">
               <table>
                 <thead>
@@ -266,7 +259,7 @@ const Hotel = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {rooms.map((e) => (
+                  {availableRooms.map((e) => (
                     <tr key={e._id} className={e._id}>
                       <td>
                         <span className="roomTitle">{e.title}{e.roomType}</span>

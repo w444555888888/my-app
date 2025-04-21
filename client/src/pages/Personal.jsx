@@ -12,7 +12,7 @@ import './personal.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleRight } from '@fortawesome/free-solid-svg-icons'
 import { useDispatch, useSelector } from 'react-redux'
-import { updateUser, logOut } from '../redux/userSlice'
+import { logOut } from '../redux/userSlice'
 import { request } from '../utils/apiService'
 import { toast } from 'react-toastify'
 import EmptyState from '../subcomponents/EmptyState'
@@ -189,44 +189,44 @@ const Personal = () => {
       <div className="personalContainer">
         <h2>My Flight Orders</h2>
         <div className="orderList">
-        {flightOrders.length === 0 ? (
+          {flightOrders.length === 0 ? (
             <EmptyState title="無航班訂單" />
           ) : (
-          flightOrders.map((order) => (
-            <div key={order._id} className="orderItem">
-              <div className="orderHeader">
-                <span>訂單編號: {order.orderNumber}</span>
-                <span>狀態: {
-                  order.status === 'PENDING' ? '待處理' :
-                    order.status === 'CONFIRMED' ? '已確認' :
-                      order.status === 'CANCELLED' ? '已取消' :
-                        order.status === 'COMPLETED' ? '已完成' : ''
-                }</span>
-              </div>
-              <div className="orderDetails">
-                <p>出發日期: {new Date(order.departureDate).toLocaleDateString()}</p>
-                <p>艙等: {
-                  order.category === 'ECONOMY' ? '經濟艙' :
-                    order.category === 'BUSINESS' ? '商務艙' :
-                      order.category === 'FIRST' ? '頭等艙' : ''
-                }</p>
-                <p>基本票價: ${order.price.basePrice}</p>
-                <p>稅金: ${order.price.tax}</p>
-                <p>總價: ${order.price.totalPrice}</p>
-                <div className="passengerInfo">
-                  <p>乘客資訊</p>
-                  {order.passengerInfo.map((passenger, index) => (
-                    <div key={passenger._id} className="passenger">
-                      <p>乘客 {index + 1}</p>
-                      <p data-label="姓名">{passenger.name}</p>
-                      <p data-label="身份證號">{passenger.idNumber}</p>
-                      <p data-label="電話">{passenger.phone}</p>
-                    </div>
-                  ))}
+            flightOrders.map((order) => (
+              <div key={order._id} className="orderItem">
+                <div className="orderHeader">
+                  <span>訂單編號: {order.orderNumber}</span>
+                  <span>狀態: {
+                    order.status === 'PENDING' ? '待處理' :
+                      order.status === 'CONFIRMED' ? '已確認' :
+                        order.status === 'CANCELLED' ? '已取消' :
+                          order.status === 'COMPLETED' ? '已完成' : ''
+                  }</span>
+                </div>
+                <div className="orderDetails">
+                  <p>出發日期: {new Date(order.departureDate).toLocaleDateString()}</p>
+                  <p>艙等: {
+                    order.category === 'ECONOMY' ? '經濟艙' :
+                      order.category === 'BUSINESS' ? '商務艙' :
+                        order.category === 'FIRST' ? '頭等艙' : ''
+                  }</p>
+                  <p>基本票價: ${order.price.basePrice}</p>
+                  <p>稅金: ${order.price.tax}</p>
+                  <p>總價: ${order.price.totalPrice}</p>
+                  <div className="passengerInfo">
+                    <p>乘客資訊</p>
+                    {order.passengerInfo.map((passenger, index) => (
+                      <div key={passenger._id} className="passenger">
+                        <p>乘客 {index + 1}</p>
+                        <p data-label="姓名">{passenger.name}</p>
+                        <p data-label="身份證號">{passenger.idNumber}</p>
+                        <p data-label="電話">{passenger.phone}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          )))}
+            )))}
         </div>
       </div>
     </div>

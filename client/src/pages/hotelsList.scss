@@ -1,3 +1,11 @@
+.empty-state-wrapper {
+  width: 100%;
+  min-height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .listContainer {
   display: flex;
   justify-content: center;
@@ -12,6 +20,7 @@
 }
 
 .listSearch {
+  flex: 0 0 360px;
   background-color: rgb(241, 241, 241);
   padding: 30px;
   border-radius: 10px;
@@ -23,6 +32,11 @@
     color: black;
     font-size: 22px;
   }
+}
+
+.listResult {
+  flex: 1;
+  min-width: 0;
 }
 
 .listItem {
@@ -135,78 +149,6 @@
   margin-bottom: 15px;
 }
 
-// Responsive Design
-
-@media (max-width: 1024px) {
-  .listContainer {
-    padding: 0 10px;
-  }
-
-  .listWrapper {
-    gap: 20px;
-
-  }
-
-  .listItem {
-    width: 48%;
-    font-size: 14px;
-  }
-}
-
-@media (max-width: 768px) {
-  .listWrapper {
-    gap: 15px;
-
-  }
-
-  .listItem {
-    width: 100%;
-    font-size: 16px;
-    margin-top: 10px;
-  }
-
-  .searchTitle {
-    font-size: 18px;
-  }
-
-  .listSearch {
-    padding: 20px;
-  }
-
-  .searchbtn {
-    font-size: 18px;
-    padding: 8px;
-  }
-}
-
-@media (max-width: 480px) {
-  .listWrapper {
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .listItem {
-    width: 100%;
-    font-size: 18px;
-    margin-top: 8px;
-  }
-
-  .searchTitle {
-    font-size: 16px;
-  }
-
-  .listSearch {
-    padding: 15px;
-  }
-
-  .searchbtn {
-    font-size: 16px;
-    padding: 7px;
-  }
-}
-
-
-
 .skeleton-item {
   padding: 20px;
   margin-bottom: 20px;
@@ -250,5 +192,89 @@
         width: 100px;
       }
     }
+  }
+}
+
+@media (max-width: 1024px) {
+  .listContainer {
+    padding: 0 10px;
+  }
+
+  .listWrapper {
+    gap: 20px;
+  }
+
+  .listItem {
+    width: 100%;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .listWrapper {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .listSearch {
+    flex: none;
+    width: 100%;
+    position: static;
+  }
+
+  .listResult {
+    width: 100%;
+  }
+
+  .listItem {
+    width: 100%;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+
+  .searchTitle {
+    font-size: 18px;
+  }
+
+  .listSearch {
+    padding: 20px;
+  }
+
+  .searchbtn {
+    font-size: 18px;
+    padding: 8px;
+  }
+
+  .skeleton-wrapper {
+    flex-direction: column;
+  }
+
+  .skeleton-image {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .listWrapper {
+    gap: 10px;
+  }
+
+  .listItem {
+    width: 100%;
+    font-size: 18px;
+    margin-top: 8px;
+  }
+
+  .searchTitle {
+    font-size: 16px;
+  }
+
+  .listSearch {
+    padding: 15px;
+  }
+
+  .searchbtn {
+    font-size: 16px;
+    padding: 7px;
   }
 }

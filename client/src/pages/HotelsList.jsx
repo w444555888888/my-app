@@ -152,40 +152,40 @@ const HotelsList = () => {
                                 </span>
                                 <div className="listItmConditions">
                                     <span className="SearchText" onClick={() => setOpenConditions(!openConditions)}>
-                                    {`${conditions.adult} 位成人 · ${conditions.room} 間房`}
+                                        {`${conditions.adult} 位成人 · ${conditions.room} 間房`}
                                     </span>
                                     {openConditions &&
-                                            <div className="ConditionsContainer">
-                                                <div className="condition">
-                                                    成人
-                                                    <div className="conditionCounter">
-                                                        <button className="conditionCounterButton" disabled={conditions.adult <= 1}
-                                                            onClick={() => handleCounter("adult", "decrease")} >
-                                                            -
-                                                        </button>
-                                                        <span className="number">{conditions.adult}</span>
-                                                        <button className="conditionCounterButton" onClick={() => handleCounter("adult", "increase")}>
-                                                            +
-                                                        </button>
-                                                    </div>
-                                                </div>
-
-
-                                                <div className="condition">
-                                                    房間
-                                                    <div className="conditionCounter">
-                                                        <button className="conditionCounterButton" disabled={conditions.room <= 1}
-                                                            onClick={() => handleCounter("room", "decrease")}>
-                                                            -
-                                                        </button>
-                                                        <span className="number"> {conditions.room}</span>
-                                                        <button className="conditionCounterButton" onClick={() => handleCounter("room", "increase")}>
-                                                            +
-                                                        </button>
-                                                    </div>
+                                        <div className="ConditionsContainer">
+                                            <div className="condition">
+                                                成人
+                                                <div className="conditionCounter">
+                                                    <button className="conditionCounterButton" disabled={conditions.adult <= 1}
+                                                        onClick={() => handleCounter("adult", "decrease")} >
+                                                        -
+                                                    </button>
+                                                    <span className="number">{conditions.adult}</span>
+                                                    <button className="conditionCounterButton" onClick={() => handleCounter("adult", "increase")}>
+                                                        +
+                                                    </button>
                                                 </div>
                                             </div>
-                                        }
+
+
+                                            <div className="condition">
+                                                房間
+                                                <div className="conditionCounter">
+                                                    <button className="conditionCounterButton" disabled={conditions.room <= 1}
+                                                        onClick={() => handleCounter("room", "decrease")}>
+                                                        -
+                                                    </button>
+                                                    <span className="number"> {conditions.room}</span>
+                                                    <button className="conditionCounterButton" onClick={() => handleCounter("room", "increase")}>
+                                                        +
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                             <div className="listItem">
@@ -219,10 +219,12 @@ const HotelsList = () => {
                                     <SearchItem key={hotel._id} hotel={hotel} />
                                 ))
                             ) : (
-                                <EmptyState
-                                    title="找不到酒店資訊"
-                                    description="很抱歉，我們無法找到相關的酒店資訊"
-                                />
+                                <div className="empty-state-wrapper">
+                                    <EmptyState
+                                        title="找不到酒店資訊"
+                                        description="很抱歉，我們無法找到相關的酒店資訊"
+                                    />
+                                </div>
                             )}
 
                         </div>
