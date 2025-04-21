@@ -18,7 +18,7 @@ export async function calculateArrivalDate(departureDate, flightDurationMinutes,
     const arrCity = await City.findOne({ name: arrivalCity });
 
     if (!depCity || !arrCity) {
-        throw new Error(`City DB找不到城市：${departureCity} 或 ${arrivalCity}`);
+        console.error("找不到城市資訊：", { departureCity, arrivalCity, depCity, arrCity });
     }
 
     const depTZ = depCity.timeZone;
