@@ -5,11 +5,7 @@ export const fetchHotelData = createAsyncThunk(
   'hotel/fetchHotelData',
   async (searchParams, { rejectWithValue }) => {
     const result = await request('GET', `/hotels/search?${searchParams.toString()}`)
-    if (result.success) {
-      return result.data[0]
-    } else {
-      return rejectWithValue(result.message)
-    }
+    return result.success ? result.data[0] : rejectWithValue(result.message);
   }
 )
 
