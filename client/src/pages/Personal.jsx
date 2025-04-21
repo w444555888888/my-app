@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { updateUser, logOut } from '../redux/userSlice'
 import { request } from '../utils/apiService'
 import { toast } from 'react-toastify'
+import EmptyState from '../subcomponents/EmptyState'
 const Personal = () => {
   const dispatch = useDispatch()
   const userInfo = useSelector((state) => state.user.userInfo)
@@ -144,47 +145,54 @@ const Personal = () => {
       <div className="personalContainer">
         <h2>My Orders</h2>
         <div className="orderList">
-          {orders.map((order) => (
-            <div key={order._id} className="orderItem">
-              <div className="orderHeader">
-                <span>訂單編號: {order._id}</span>
-                <span>狀態: {
-                  order.status === 'pending' ? '支付中' :
-                    order.status === 'confirmed' ? '已確認' :
-                      order.status === 'cancelled' ? '已取消' :
-                        order.status === 'completed' ? '已完成' :
-                          ''
-                }</span>
-              </div>
-              <div className="orderDetails">
-                <p>入住日期: {new Date(order.checkInDate).toLocaleDateString()}</p>
-                <p>退房日期: {new Date(order.checkOutDate).toLocaleDateString()}</p>
-                <p>總價: ${order.totalPrice}</p>
-                <p>支付方式: {
-                  order.payment.method === 'credit_card' ? '信用卡' :
-                    order.payment.method === 'paypal' ? 'PayPal' :
-                      order.payment.method === 'bank_transfer' ? '銀行轉帳' :
-                        order.payment.method === 'on_site_payment' ? '現場支付' :
-                          ''
-                }</p>
+          {orders.length === 0 ? (
+            <EmptyState title="無訂房訂單" />
+          ) : (
+            orders.map((order) => (
+              <div key={order._id} className="orderItem">
+                <div className="orderHeader">
+                  <span>訂單編號: {order._id}</span>
+                  <span>狀態: {
+                    order.status === 'pending' ? '支付中' :
+                      order.status === 'confirmed' ? '已確認' :
+                        order.status === 'cancelled' ? '已取消' :
+                          order.status === 'completed' ? '已完成' :
+                            ''
+                  }</span>
+                </div>
+                <div className="orderDetails">
+                  <p>入住日期: {new Date(order.checkInDate).toLocaleDateString()}</p>
+                  <p>退房日期: {new Date(order.checkOutDate).toLocaleDateString()}</p>
+                  <p>總價: ${order.totalPrice}</p>
+                  <p>支付方式: {
+                    order.payment.method === 'credit_card' ? '信用卡' :
+                      order.payment.method === 'paypal' ? 'PayPal' :
+                        order.payment.method === 'bank_transfer' ? '銀行轉帳' :
+                          order.payment.method === 'on_site_payment' ? '現場支付' :
+                            ''
+                  }</p>
 
-                <p>支付狀態: {
-                  order.payment.status === 'pending' ? '支付中' :
-                    order.payment.status === 'paid' ? '已支付' :
-                      order.payment.status === 'failed' ? '支付失敗' :
-                        order.payment.status === 'refunded' ? '已退款' :
-                          ''
-                }</p>
+                  <p>支付狀態: {
+                    order.payment.status === 'pending' ? '支付中' :
+                      order.payment.status === 'paid' ? '已支付' :
+                        order.payment.status === 'failed' ? '支付失敗' :
+                          order.payment.status === 'refunded' ? '已退款' :
+                            ''
+                  }</p>
 
+                </div>
               </div>
-            </div>
-          ))}
+            )))
+          }
         </div>
       </div>
       <div className="personalContainer">
         <h2>My Flight Orders</h2>
         <div className="orderList">
-          {flightOrders.map((order) => (
+        {flightOrders.length === 0 ? (
+            <EmptyState title="無航班訂單" />
+          ) : (
+          flightOrders.map((order) => (
             <div key={order._id} className="orderItem">
               <div className="orderHeader">
                 <span>訂單編號: {order.orderNumber}</span>
@@ -218,7 +226,7 @@ const Personal = () => {
                 </div>
               </div>
             </div>
-          ))}
+          )))}
         </div>
       </div>
     </div>
