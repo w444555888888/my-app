@@ -1,10 +1,10 @@
 import mongoose from 'mongoose'
-import { calculateArrivalDate, cityTimeZoneMap } from '../utils/flightTimeUtil.js';
+import { calculateArrivalDate } from '../utils/flightTimeUtil.js';
 
 const FlightSchema = new mongoose.Schema({
     flightNumber: {
         type: String,
-        required: true, 
+        required: true,
         unique: true
     },
 
@@ -80,7 +80,7 @@ FlightSchema.methods.calculateFinalPrice = function (category, departureDate) {
         multiplier *= this.priceRules.holidayMultiplier;
     }
 
-    
+
     // 檢查是否符合早鳥優惠
     const MILLISECONDS_IN_ONE_DAY = 1000 * 60 * 60 * 24; // 每天毫秒數
     const now = new Date();
@@ -95,28 +95,23 @@ FlightSchema.methods.calculateFinalPrice = function (category, departureDate) {
 };
 
 
-FlightSchema.pre('save', function (next) {
+FlightSchema.pre('save', async function (next) {
     const flight = this;
     if (flight.schedules && flight.schedules.length > 0) {
-        flight.schedules.forEach(schedule => {
-            const depCity = flight.route.departureCity;
-            const arrCity = flight.route.arrivalCity;
-            const depTZ = cityTimeZoneMap[depCity];
-            const arrTZ = cityTimeZoneMap[arrCity];
-
-            if (!depTZ || !arrTZ) {
-                throw new Error(`找不到時區設定：${depCity} 或 ${arrCity}`);
+        for (let schedule of flight.schedules) {
+            try {
+                schedule.arrivalDate = await calculateArrivalDate(
+                    schedule.departureDate,
+                    flight.route.flightDuration,
+                    flight.route.departureCity,
+                    flight.route.arrivalCity
+                );
+            } catch (error) {
+                return next(error);
             }
-
-            schedule.arrivalDate = calculateArrivalDate(
-                schedule.departureDate,
-                flight.route.flightDuration,
-                depTZ,
-                arrTZ
-            );
-        });
+        }
     }
     next();
-});
+});;
 
 export default mongoose.model("Flight", FlightSchema)

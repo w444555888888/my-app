@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import './bookingFlight.scss'
+import { zhTW } from 'date-fns/locale'
 import { toZonedTime, formatInTimeZone } from 'date-fns-tz';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlane } from '@fortawesome/free-solid-svg-icons'
@@ -135,7 +136,7 @@ const BookingFlight = () => {
         };
 
         handleBookingFlight()
-    }, [])
+    }, [id, searchParams])
 
 
 
@@ -191,7 +192,7 @@ const BookingFlight = () => {
                         <div className="flightDate">
                             {selectedDate && (
                                 <div>
-                                    {formatInTimeZone(new Date(selectedDate), 'UTC', 'yyyy年MM月dd日 EEEE')}
+                                    {formatInTimeZone(new Date(selectedDate), cityTimeZoneMap[flightData.route.departureCity], 'yyyy年MM月dd日 EEEE',  { locale: zhTW })}
                                 </div>
                             )}
                         </div>
@@ -201,9 +202,12 @@ const BookingFlight = () => {
                         <div className="departure">
                             <div className="city">{flightData.route.departureCity}</div>
                             <div className="time">
-                                {flightData.route.standardDepartureTime}
+                                {formatInTimeZone(
+                                    new Date(flightData.schedules[0].departureDate),
+                                    cityTimeZoneMap[flightData.route.departureCity],
+                                    'HH:mm'
+                                )}
                                 <div className="timezone">
-
                                     <span>(GMT{cityGMTMap[flightData.route.departureCity]})</span>
                                 </div>
                             </div>
@@ -217,7 +221,11 @@ const BookingFlight = () => {
                         <div className="arrival">
                             <div className="city">{flightData.route.arrivalCity}</div>
                             <div className="time">
-                                {formatInTimeZone(flightData.schedules[0].arrivalDate, 'UTC', 'HH:mm')}
+                                {formatInTimeZone(
+                                    new Date(flightData.schedules[0].arrivalDate),
+                                    cityTimeZoneMap[flightData.route.arrivalCity],
+                                    'HH:mm'
+                                )}
                                 {isNextDay && <span className="nextDay">+1</span>}
 
                                 <div className="timezone">

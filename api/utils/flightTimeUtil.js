@@ -1,27 +1,6 @@
 import { DateTime } from "luxon";
+import City from '../models/City.js';
 
-// 城市對應的時區
-export const cityTimeZoneMap = {
-    'Taipei': 'Asia/Taipei',
-    'Tokyo': 'Asia/Tokyo',
-    'Seoul': 'Asia/Seoul',
-    'Beijing': 'Asia/Shanghai',
-    'Singapore': 'Asia/Singapore',
-    'Hong Kong': 'Asia/Hong_Kong',
-    'Bangkok': 'Asia/Bangkok',
-    'Sydney': 'Australia/Sydney',
-    'Melbourne': 'Australia/Melbourne',
-    'Dubai': 'Asia/Dubai',
-    'London': 'Europe/London',
-    'Paris': 'Europe/Paris',
-    'New York': 'America/New_York',
-    'Los Angeles': 'America/Los_Angeles',
-    'Vancouver': 'America/Vancouver',
-    'Toronto': 'America/Toronto',
-    'Manila': 'Asia/Manila',
-    'Kuala Lumpur': 'Asia/Kuala_Lumpur',
-    'Ho Chi Minh': 'Asia/Ho_Chi_Minh'
-};
 
 
 /**
@@ -33,17 +12,24 @@ export const cityTimeZoneMap = {
  * @returns {Date} 抵達城市的當地時間
  */
 
+export async function calculateArrivalDate(departureDate, flightDurationMinutes, departureCity, arrivalCity) {
+    // 查詢出發地與目的地的時區
+    const depCity = await City.findOne({ name: departureCity });
+    const arrCity = await City.findOne({ name: arrivalCity });
 
-/**
- * 根據出發時間、飛行時間（分鐘）、出發地與目的地時區，計算抵達時間
- */
-export function calculateArrivalDate(departureDate, flightDurationMinutes, departureTimeZone, arrivalTimeZone) {
-    // 將 departureDate 套用出發地時區
-    const dep = DateTime.fromJSDate(departureDate, { zone: departureTimeZone });
-    // 在出發地時區加上飛行時間
-    const arrivalInDepTZ = dep.plus({ minutes: flightDurationMinutes });
-    // 將時間轉換成抵達地時區
-    const arrivalInArrTZ = arrivalInDepTZ.setZone(arrivalTimeZone);
-    // 回傳 JS Date 格式
-    return arrivalInArrTZ.toJSDate();
+    if (!depCity || !arrCity) {
+        throw new Error(`City DB找不到城市：${departureCity} 或 ${arrivalCity}`);
+    }
+
+    const depTZ = depCity.timeZone;
+    const arrTZ = arrCity.timeZone;
+
+    // 將出發地當地時間轉成 UTC
+    const departureInUTC = DateTime.fromJSDate(departureDate, { zone: depTZ }).toUTC();
+    // UTC 加上飛行時間
+    const arrivalInUTC = departureInUTC.plus({ minutes: flightDurationMinutes });
+    // 將 UTC 抵達時間轉換成抵達城市當地時間
+    const arrivalInLocal = arrivalInUTC.setZone(arrTZ);
+    // 回傳 UTC 格式的 JS Date 物件（儲存在 DB）
+    return arrivalInLocal.toUTC().toJSDate();
 }

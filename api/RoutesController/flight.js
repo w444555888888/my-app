@@ -1,21 +1,50 @@
 import { errorMessage } from "../errorMessage.js"
 import { sendResponse } from "../sendResponse.js"
 import { v4 as uuidv4 } from 'uuid';
+import { DateTime } from "luxon";
 import Flight from "../models/Flight.js"
+import City from "../models/City.js"
 import FlightOrder from "../models/FightOrder.js"
 
 // 創建新航班
-export const createFlight = async (req, res) => {
+export const createFlight = async (req, res, next) => {
     try {
         const existing = await Flight.findOne({ flightNumber: req.body.flightNumber });
         if (existing) {
-            next(errorMessage(400, "flightNumber已存在"))
+            return next(errorMessage(400, "flightNumber已存在"));
         }
-        const newFlight = new Flight(req.body);
+
+        const { route, schedules } = req.body;
+        const { departureCity } = route;
+
+        // 出發城市的時區
+        const city = await City.findOne({ name: departureCity });
+        if (!city) {
+            return next(errorMessage(404, `找不到城市時區資訊：${departureCity}`));
+        }
+
+        const timeZone = city.timeZone; // IANA 時區字串
+
+        // 處理每一筆 schedule 的 departureDate
+        const fixedSchedules = schedules.map(schedule => {
+            const localDT = DateTime.fromISO(schedule.departureDate, { zone: timeZone });
+            //「當地時間」轉為 UTC 格式儲存
+            const fixedDepartureUTC = localDT.toUTC().toJSDate();
+            return {
+                ...schedule,
+                departureDate: fixedDepartureUTC
+            };
+        });
+
+        const newFlight = new Flight({
+            ...req.body,
+            schedules: fixedSchedules
+        });
+
         const savedFlight = await newFlight.save();
         return sendResponse(res, 201, savedFlight, "航班創建成功");
     } catch (err) {
-        throw errorMessage(400, "創建航班失敗", err);
+        next(errorMessage(400, "創建航班失敗", err));
     }
 };
 

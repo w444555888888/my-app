@@ -26,7 +26,30 @@ const Flight = () => {
             key: 'selection'
         }
     ])
-    
+
+
+    const cityTimeZoneMap = {
+        'Taipei': 'Asia/Taipei',
+        'Tokyo': 'Asia/Tokyo',
+        'Seoul': 'Asia/Seoul',
+        'Beijing': 'Asia/Shanghai',
+        'Singapore': 'Asia/Singapore',
+        'Hong Kong': 'Asia/Hong_Kong',
+        'Bangkok': 'Asia/Bangkok',
+        'Sydney': 'Australia/Sydney',
+        'Melbourne': 'Australia/Melbourne',
+        'Dubai': 'Asia/Dubai',
+        'London': 'Europe/London',
+        'Paris': 'Europe/Paris',
+        'New York': 'America/New_York',
+        'Los Angeles': 'America/Los_Angeles',
+        'Vancouver': 'America/Vancouver',
+        'Toronto': 'America/Toronto',
+        'Manila': 'Asia/Manila',
+        'Kuala Lumpur': 'Asia/Kuala_Lumpur',
+        'Ho Chi Minh': 'Asia/Ho_Chi_Minh'
+    };
+
 
     useEffect(() => {
         const handleAllFlight = async () => {
@@ -44,11 +67,11 @@ const Flight = () => {
     const handleSearch = async () => {
         const params = {};
 
-        if(departureCity){
+        if (departureCity) {
             params.departureCity = departureCity
         }
 
-        if(arrivalCity){
+        if (arrivalCity) {
             params.arrivalCity = arrivalCity
         }
 
@@ -126,44 +149,53 @@ const Flight = () => {
                     </div>
                 </div>
                 <div className="flightList">
-                    {flights.length > 0 ?
+                    {flights.length > 0 ? (
                         flights.map((flight) =>
-                            flight.schedules.map((schedule, index) => (
-                                <div className="flightItem" key={`${flight._id}-${index}`}>
-                                    <div className="flightInfo">
-                                        <div className="airline">航班號：{flight.flightNumber}</div>
-                                        <div className="date">出發日期：{formatInTimeZone(flight.schedules[0].departureDate, 'UTC', 'yyyy-MM-dd')}</div>
-                                    </div>
-                                    <div className="routeInfo">
-                                        <div className="departure">
-                                            <div className="city">{flight.route.departureCity}</div>
-                                            <div className="time">{formatInTimeZone(flight.schedules[0].departureDate, 'UTC', 'HH:mm')}</div>
-                                        </div>
-                                        <div className="arrow">→</div>
-                                        <div className="arrival">
-                                            <div className="city">{flight.route.arrivalCity}</div>
-                                            <div className="time">
-                                                {formatInTimeZone(flight.schedules[0].arrivalDate, 'UTC', 'HH:mm')}
+                            flight.schedules.map((schedule, index) => {
+                                const departureTimeZone = cityTimeZoneMap[flight.route.departureCity] || 'UTC';
+                                const arrivalTimeZone = cityTimeZoneMap[flight.route.arrivalCity] || 'UTC';
+
+                                return (
+                                    <div className="flightItem" key={`${flight._id}-${index}`}>
+                                        <div className="flightInfo">
+                                            <div className="airline">航班號：{flight.flightNumber}</div>
+                                            <div className="date">
+                                                出發日期：{formatInTimeZone(schedule.departureDate, departureTimeZone, 'yyyy-MM-dd')}
                                             </div>
                                         </div>
+                                        <div className="routeInfo">
+                                            <div className="departure">
+                                                <div className="city">{flight.route.departureCity}</div>
+                                                <div className="time">
+                                                    {formatInTimeZone(schedule.departureDate, departureTimeZone, 'HH:mm')}
+                                                </div>
+                                            </div>
+                                            <div className="arrow">→</div>
+                                            <div className="arrival">
+                                                <div className="city">{flight.route.arrivalCity}</div>
+                                                <div className="time">
+                                                    {formatInTimeZone(schedule.arrivalDate, arrivalTimeZone, 'HH:mm')}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="bookSection">
+                                            <button
+                                                className="bookButton"
+                                                onClick={() => handleBookingFlightRouter(flight._id, schedule.departureDate)}
+                                            >
+                                                訂票
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div className="bookSection">
-                                        <button
-                                            className="bookButton"
-                                            onClick={() => handleBookingFlightRouter(flight._id, schedule.departureDate)}
-                                        >
-                                            訂票
-                                        </button>
-                                    </div>
-                                </div>
-                            ))
+                                );
+                            })
                         )
-                        : (
-                            <EmptyState
-                                title="目前沒有符合條件的航班"
-                                description="很抱歉，我們無法找到相關的航班資訊"
-                            />
-                        )}
+                    ) : (
+                        <EmptyState
+                            title="目前沒有符合條件的航班"
+                            description="很抱歉，我們無法找到相關的航班資訊"
+                        />
+                    )}
                 </div>
             </div>
         </div>
