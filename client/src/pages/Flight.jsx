@@ -5,6 +5,7 @@ import { faPlane, faCalendarDays } from '@fortawesome/free-solid-svg-icons'
 import { DateRange } from 'react-date-range'
 import Navbar from '../components/Navbar'
 import { format, parse, addMinutes } from 'date-fns'
+import { toZonedTime, formatInTimeZone } from 'date-fns-tz';
 import zhTW from 'date-fns/locale/zh-TW'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { request } from '../utils/apiService';
@@ -70,13 +71,6 @@ const Flight = () => {
     };
 
 
-    const calculateArrivalTime = (departureTime, duration) => {
-        const departureDate = parse(departureTime, 'HH:mm', new Date());
-        const arrivalDate = addMinutes(departureDate, duration);
-        return format(arrivalDate, 'HH:mm');
-    };
-
-
     return (
         <div className='flight'>
             <Navbar />
@@ -138,18 +132,18 @@ const Flight = () => {
                                 <div className="flightItem" key={`${flight._id}-${index}`}>
                                     <div className="flightInfo">
                                         <div className="airline">航班號：{flight.flightNumber}</div>
-                                        <div className="date">出發日期：{new Date(schedule.departureDate).toLocaleDateString()}</div>
+                                        <div className="date">出發日期：{formatInTimeZone(flight.schedules[0].departureDate, 'UTC', 'yyyy-MM-dd')}</div>
                                     </div>
                                     <div className="routeInfo">
                                         <div className="departure">
                                             <div className="city">{flight.route.departureCity}</div>
-                                            <div className="time">{flight.route.standardDepartureTime}</div>
+                                            <div className="time">{formatInTimeZone(flight.schedules[0].departureDate, 'UTC', 'HH:mm')}</div>
                                         </div>
                                         <div className="arrow">→</div>
                                         <div className="arrival">
                                             <div className="city">{flight.route.arrivalCity}</div>
                                             <div className="time">
-                                                {calculateArrivalTime(flight.route.standardDepartureTime, flight.route.flightDuration)}
+                                                {formatInTimeZone(flight.schedules[0].arrivalDate, 'UTC', 'HH:mm')}
                                             </div>
                                         </div>
                                     </div>

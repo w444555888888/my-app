@@ -99,8 +99,8 @@ export const getFlight = async (req, res, next) => {
             });
 
             return {
-                departureDate: departureDate.toISOString().split('T')[0],
-                arrivalDate: arrivalDate.toISOString().split('T')[0],
+                departureDate: departureDate.toISOString(),
+                arrivalDate: arrivalDate.toISOString(),
                 availableSeats: schedule.availableSeats,
                 prices
             };

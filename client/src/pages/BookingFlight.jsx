@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import './bookingFlight.scss'
-import { parse, addMinutes, format } from 'date-fns';
 import { toZonedTime, formatInTimeZone } from 'date-fns-tz';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlane } from '@fortawesome/free-solid-svg-icons'
@@ -18,7 +17,7 @@ const BookingFlight = () => {
     const [selectedDate, setSelectedDate] = useState(null);
     const [flightData, setFlightData] = useState(null);
     const [passengers, setPassengers] = useState([{ name: '', idNumber: '', phone: '' }]);
-
+    const [isNextDay, setIsNextDay] = useState(false);
     const cabinTypeMap = {
         'FIRST': '頭等艙',
         'BUSINESS': '商務艙',
@@ -70,21 +69,6 @@ const BookingFlight = () => {
     };
 
 
-    const calculateArrivalTime = (departureTime, duration, departureCity, arrivalCity) => {
-        const dateStr = selectedDate + 'T' + departureTime;
-        // 將departureTime轉為出發城市的當地時間
-        const departureLocal = parse(dateStr, 'yyyy-MM-dd\'T\'HH:mm', new Date())
-        const departureZoned = toZonedTime(departureLocal, cityTimeZoneMap[departureCity]);
-        // 加上飛行時間（仍在出發地時區）
-        const arrivalUTC = addMinutes(departureZoned, duration);
-        // 轉為抵達城市的當地時間
-        const arrivalZoned = toZonedTime(arrivalUTC, cityTimeZoneMap[arrivalCity]);
-        const isNextDay = arrivalZoned.getDate() !== departureZoned.getDate();
-        return {
-            time: format(arrivalZoned, 'HH:mm'),
-            isNextDay
-        };
-    };
 
 
     const getCabinClasses = (availableSeats, prices) => {
@@ -125,7 +109,7 @@ const BookingFlight = () => {
         const result = await request('POST', '/flight/order', {
             flightId: id,
             category: selectedClass,
-            departureDate: format(new Date(selectedDate), 'yyyy-MM-dd'),
+            departureDate: formatInTimeZone(new Date(selectedDate), 'UTC', 'yyyy-MM-dd'),
             passengerInfo: passengers
         }, setLoading);
 
@@ -142,14 +126,16 @@ const BookingFlight = () => {
                 setFlightData(result.data);
                 if (result.data.schedules.length > 0) {
                     setSelectedDate(result.data.schedules[0].departureDate);
+                    // 計算是否為隔天（以 UTC 日期為準）
+                    const arrivalDateStr = formatInTimeZone(result.data.schedules[0].arrivalDate, 'UTC', 'yyyy-MM-dd');
+                    const departureDateStr = formatInTimeZone(result.data.schedules[0].departureDate, 'UTC', 'yyyy-MM-dd');
+                    setIsNextDay(arrivalDateStr !== departureDateStr);
                 }
             } else toast.error(result.message);
         };
 
         handleBookingFlight()
     }, [])
-
-
 
 
 
@@ -205,7 +191,7 @@ const BookingFlight = () => {
                         <div className="flightDate">
                             {selectedDate && (
                                 <div>
-                                    {format(new Date(selectedDate), 'yyyy年MM月dd日 EEEE')}
+                                    {formatInTimeZone(new Date(selectedDate), 'UTC', 'yyyy年MM月dd日 EEEE')}
                                 </div>
                             )}
                         </div>
@@ -231,22 +217,10 @@ const BookingFlight = () => {
                         <div className="arrival">
                             <div className="city">{flightData.route.arrivalCity}</div>
                             <div className="time">
-                                {(() => {
-                                    const arrival = calculateArrivalTime(
-                                        flightData.route.standardDepartureTime,
-                                        flightData.route.flightDuration,
-                                        flightData.route.departureCity,
-                                        flightData.route.arrivalCity
-                                    );
-                                    return (
-                                        <>
-                                            {arrival.time}
-                                            {arrival.isNextDay && <span className="nextDay">+1</span>}
-                                        </>
-                                    );
-                                })()}
-                                <div className="timezone">
+                                {formatInTimeZone(flightData.schedules[0].arrivalDate, 'UTC', 'HH:mm')}
+                                {isNextDay && <span className="nextDay">+1</span>}
 
+                                <div className="timezone">
                                     <span>(GMT{cityGMTMap[flightData.route.arrivalCity]})</span>
                                 </div>
                             </div>

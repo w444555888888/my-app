@@ -44,6 +44,6 @@ export function calculateArrivalDate(departureDate, flightDurationMinutes, depar
     const arrivalInDepTZ = dep.plus({ minutes: flightDurationMinutes });
     // 將時間轉換成抵達地時區
     const arrivalInArrTZ = arrivalInDepTZ.setZone(arrivalTimeZone);
-    // 回傳 JS Date 格式（mongoose 要的）
+    // 回傳 JS Date 格式
     return arrivalInArrTZ.toJSDate();
 }

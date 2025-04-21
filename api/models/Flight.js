@@ -96,7 +96,6 @@ FlightSchema.methods.calculateFinalPrice = function (category, departureDate) {
 
 
 FlightSchema.pre('save', function (next) {
-
     const flight = this;
     if (flight.schedules && flight.schedules.length > 0) {
         flight.schedules.forEach(schedule => {
