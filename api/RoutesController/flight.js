@@ -14,7 +14,7 @@ export const createFlight = async (req, res, next) => {
             return next(errorMessage(400, "flightNumber已存在"));
         }
 
-        const { route, schedules } = req.body;
+        const { route, schedules, cabinClasses } = req.body;
         const { departureCity } = route;
 
         // 出發城市的時區
@@ -25,14 +25,21 @@ export const createFlight = async (req, res, next) => {
 
         const timeZone = city.timeZone; // IANA 時區字串
 
-        // 處理每一筆 schedule 的 departureDate
+        // 自動產生每筆 schedule 的 availableSeats 和 departureDate（轉成 UTC）
         const fixedSchedules = schedules.map(schedule => {
+            // 轉換當地時間成 UTC
             const localDT = DateTime.fromISO(schedule.departureDate, { zone: timeZone });
-            //「當地時間」轉為 UTC 格式儲存
             const fixedDepartureUTC = localDT.toUTC().toJSDate();
+
+            // 根據 cabinClasses 設定自動生成 availableSeats
+            const availableSeats = {};
+            cabinClasses.forEach(cabin => {
+                availableSeats[cabin.category] = cabin.totalSeats;
+            });
+
             return {
-                ...schedule,
-                departureDate: fixedDepartureUTC
+                departureDate: fixedDepartureUTC,
+                availableSeats
             };
         });
 
@@ -157,7 +164,7 @@ export const updateFlight = async (req, res) => {
             { new: true }
         );
         if (!updatedFlight) {
-            next(errorMessage(404, "找不到該航班"));
+            return next(errorMessage(404, "找不到該航班"));
         }
         return sendResponse(res, 200, updatedFlight, "航班更新成功");
     } catch (err) {
@@ -170,7 +177,7 @@ export const deleteFlight = async (req, res) => {
     try {
         const flight = await Flight.findByIdAndDelete(req.params.id);
         if (!flight) {
-            next(errorMessage(404, "找不到該航班"));
+            return next(errorMessage(404, "找不到該航班"));
         }
         return sendResponse(res, 200, flight, "航班刪除成功");
     } catch (err) {
@@ -178,31 +185,10 @@ export const deleteFlight = async (req, res) => {
     }
 };
 
-// 計算航班票價
-export const calculatePrice = async (req, res) => {
-    try {
-        const { flightId, category, departureDate } = req.query;
-        const flight = await Flight.findById(flightId);
 
-        if (!flight) {
-            next(errorMessage(404, "找不到該航班"));
-        }
-
-        const finalPrice = flight.calculateFinalPrice(
-            category,
-            new Date(departureDate)
-        );
-
-        return sendResponse(res, 200, {
-            flightId,
-            category,
-            departureDate,
-            finalPrice
-        }, "票價計算成功");
-    } catch (err) {
-        next(errorMessage(500, "計算票價失敗", err));
-    }
-};
+/**
+ * 訂票FlightOrder
+*/
 
 // 查詢可用座位
 export const checkSeats = async (req, res) => {
@@ -211,15 +197,24 @@ export const checkSeats = async (req, res) => {
         const flight = await Flight.findById(flightId);
 
         if (!flight) {
-            next(errorMessage(404, "找不到該航班"));
+            return next(errorMessage(404, "找不到該航班"));
         }
 
+        // timeZone
+        const city = await City.findOne({ name: flight.route.departureCity });
+        if (!city) {
+            return next(errorMessage(404, `找不到城市時區資訊：${flight.route.departureCity}`));
+        }
+        const timeZone = city.timeZone;
+
+        // 這裡要轉換傳入的 departureDate 為 UTC
+        const localDepartureDate = DateTime.fromISO(departureDate, { zone: timeZone }).toUTC().toJSDate();
         const schedule = flight.schedules.find(s =>
-            s.departureDate.toISOString().split('T')[0] === departureDate
+            new Date(s.departureDate).toISOString().split('T')[0] === localDepartureDate.toISOString().split('T')[0]
         );
 
         if (!schedule) {
-            next(errorMessage(404, "找不到該日期的航班班次"));
+            return next(errorMessage(404, "找不到該日期的航班班次"));
         }
 
         return sendResponse(res, 200, schedule.availableSeats, "查詢座位成功");
@@ -242,7 +237,7 @@ export const createFlightOrder = async (req, res) => {
 
         // 檢查用戶身份
         if (!req.user || !req.user.id) {
-            next(errorMessage(401, "未登入或登入已過期"));
+            return next(errorMessage(401, "未登入或登入已過期"));
         }
         const userId = req.user.id; // 假設使用者信息從認證中間件獲取
 
@@ -250,12 +245,12 @@ export const createFlightOrder = async (req, res) => {
         for (const passenger of passengerInfo) {
             if (!passenger.name || !passenger.gender || !passenger.birthDate ||
                 !passenger.passportNumber || !passenger.email) {
-                next(errorMessage(400, "乘客信息不完整"));
+                return next(errorMessage(400, "乘客信息不完整"));
             }
 
             // 驗證性別值
             if (![0, 1].includes(passenger.gender)) {
-                next(errorMessage(400, "性別格式不正確"));
+                return next(errorMessage(400, "性別格式不正確"));
             }
 
             // 驗證日期格式和合理性
@@ -268,14 +263,14 @@ export const createFlightOrder = async (req, res) => {
             // 驗證電子郵件格式
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(passenger.email)) {
-                next(errorMessage(400, "電子郵件格式不正確"));
+                return next(errorMessage(400, "電子郵件格式不正確"));
             }
         }
 
         // 檢查航班
         const flight = await Flight.findById(flightId);
         if (!flight) {
-            next(errorMessage(404, "找不到該航班"));
+            return next(errorMessage(404, "找不到該航班"));
         }
 
         // 檢查艙等是否存在
@@ -284,18 +279,29 @@ export const createFlightOrder = async (req, res) => {
             return next(errorMessage(400, "無效的艙等類型"));
         }
 
+
+        // timeZone
+        const city = await City.findOne({ name: flight.route.departureCity });
+        if (!city) {
+            return next(errorMessage(404, `找不到城市時區資訊：${flight.route.departureCity}`));
+        }
+        const timeZone = city.timeZone;  // IANA 時區字串（例如 "Asia/Taipei"）
+
+
         // 檢查航班起飛地
+        // 這裡要轉換傳入的 departureDate 為 UTC
+        const localDepartureDate = DateTime.fromISO(departureDate, { zone: timeZone }).toUTC().toJSDate();
         const schedule = flight.schedules.find(s =>
-            s.departureDate.toISOString().split('T')[0] === departureDate
+            new Date(s.departureDate).toISOString().split('T')[0] === localDepartureDate.toISOString().split('T')[0]
         );
 
         if (!schedule) {
-            next(errorMessage(404, "該日期的航班不存在"));
+            return next(errorMessage(404, "該日期的航班不存在"));
         }
 
         // 檢查座位可用性
         if (schedule.availableSeats[category] < passengerInfo.length) {
-            next(errorMessage(400, "座位數量不足"));
+            return next(errorMessage(400, "座位數量不足"));
         }
 
         // 計算票價
@@ -338,7 +344,7 @@ export const getUserOrders = async (req, res) => {
     try {
         // 檢查用戶身份
         if (!req.user || !req.user.id) {
-            next(errorMessage(401, "未登入或登入已過期"));
+            return next(errorMessage(401, "未登入或登入已過期"));
         }
         const userId = req.user.id;
         const orders = await FlightOrder.find({ userId })
@@ -359,7 +365,7 @@ export const getOrderDetail = async (req, res) => {
             .populate('userId', 'name email');
 
         if (!order) {
-            next(errorMessage(404, "找不到該訂單"));
+            return next(errorMessage(404, "找不到該訂單"));
         }
 
         return sendResponse(res, 200, order, "獲取訂單詳情成功");
@@ -373,11 +379,11 @@ export const cancelOrder = async (req, res) => {
     try {
         const order = await FlightOrder.findById(req.params.orderId);
         if (!order) {
-            next(errorMessage(404, "找不到該訂單"));
+            return next(errorMessage(404, "找不到該訂單"));
         }
 
         if (order.status !== 'PENDING') {
-            next(errorMessage(400, "只能取消待付款的訂單"));
+            return next(errorMessage(400, "只能取消待付款的訂單"));
         }
 
         order.status = 'CANCELLED';

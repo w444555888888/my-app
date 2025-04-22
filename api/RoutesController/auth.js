@@ -184,7 +184,7 @@ export const verifyToken = async (req, res, next) => {
     const token = req.cookies.JWT_token
 
     if (!token) {
-      throw errorMessage(401, "請先登入")
+      next(errorMessage(401, "請先登入"))
     }
 
     // 解析 token

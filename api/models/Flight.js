@@ -42,7 +42,7 @@ const FlightSchema = new mongoose.Schema({
         }
     },
 
-    // 航班排程（系統自動生成）
+    // 航班排程（系統自動生成Date都是UTC）
     schedules: [{
         departureDate: { type: Date, required: true },// 實際起飛日期時間
         arrivalDate: { type: Date }, // 預計抵達日期時間
