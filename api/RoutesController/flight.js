@@ -241,6 +241,31 @@ export const createFlightOrder = async (req, res) => {
         }
         const userId = req.user.id; // 假設使用者信息從認證中間件獲取
 
+        // 驗證乘客信息
+        for (const passenger of passengerInfo) {
+            if (!passenger.name || !passenger.gender || !passenger.birthDate ||
+                !passenger.passportNumber || !passenger.email) {
+                next(errorMessage(400, "乘客信息不完整"));
+            }
+
+            // 驗證性別值
+            if (![0, 1].includes(passenger.gender)) {
+                next(errorMessage(400, "性別格式不正確"));
+            }
+
+            // 驗證日期格式
+            const birthDate = new Date(passenger.birthDate);
+            if (isNaN(birthDate.getTime())) {
+                next(errorMessage(400, "出生日期格式不正確"));
+            }
+
+            // 驗證電子郵件格式
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(passenger.email)) {
+                next(errorMessage(400, "電子郵件格式不正確"));
+            }
+        }
+
         // 檢查航班
         const flight = await Flight.findById(flightId);
         if (!flight) {

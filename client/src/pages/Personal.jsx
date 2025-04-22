@@ -219,8 +219,10 @@ const Personal = () => {
                       <div key={passenger._id} className="passenger">
                         <p>乘客 {index + 1}</p>
                         <p data-label="姓名">{passenger.name}</p>
-                        <p data-label="身份證號">{passenger.idNumber}</p>
-                        <p data-label="電話">{passenger.phone}</p>
+                        <p data-label="性別">{passenger.gender}</p>
+                        <p data-label="出生年月日">{passenger.birthDate}</p>
+                        <p data-label="護照號碼">{passenger.passportNumber}</p>
+                        <p data-label="E-mail">{passenger.email}</p>
                       </div>
                     ))}
                   </div>

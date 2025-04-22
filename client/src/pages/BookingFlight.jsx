@@ -17,12 +17,30 @@ const BookingFlight = () => {
     const [selectedClass, setSelectedClass] = useState(null);
     const [selectedDate, setSelectedDate] = useState(null);
     const [flightData, setFlightData] = useState(null);
-    const [passengers, setPassengers] = useState([{ name: '', idNumber: '', phone: '' }]);
+    const [passengers, setPassengers] = useState([{ name: '', gender: '', birthDate: '', passportNumber: '', email: '' }]);
     const [isNextDay, setIsNextDay] = useState(false);
     const cabinTypeMap = {
         'FIRST': '頭等艙',
         'BUSINESS': '商務艙',
         'ECONOMY': '經濟艙'
+    };
+
+    const cabinDescriptionMap = {
+        'FIRST': {
+            features: ['享受最奢華的飛行體驗', '180度全平躺座椅', '專屬貴賓室', '機上米其林餐點', '優先登機與行李托運'],
+            baggage: '40公斤',
+            meal: '米其林主廚特製餐點',
+        },
+        'BUSINESS': {
+            features: ['舒適商務座椅', '商務艙貴賓室', '優質餐飲服務', '優先登機'],
+            baggage: '30公斤',
+            meal: '商務艙特選餐點',
+        },
+        'ECONOMY': {
+            features: ['標準座椅', '基本餐飲服務'],
+            baggage: '20公斤',
+            meal: '經濟艙餐點',
+        }
     };
 
     const cityTimeZoneMap = {
@@ -82,7 +100,7 @@ const BookingFlight = () => {
     };
 
     const handleAddPassenger = () => {
-        setPassengers([...passengers, { name: '', idNumber: '', phone: '' }]);
+        setPassengers([...passengers, { name: '', gender: '', birthDate: '', passportNumber: '', email: '' }]);
     };
 
     const handleRemovePassenger = (index) => {
@@ -98,22 +116,22 @@ const BookingFlight = () => {
 
     const handleSubmit = async () => {
         if (!selectedClass || !selectedDate) {
-            toast.error('請選擇艙等 || 預設航班日期');
+            toast.error('請選擇艙等與預設航班日期');
             return;
         }
-
-        if (passengers.some(p => !p.name || !p.idNumber)) {
+    
+        if (passengers.some(p => !p.name || !p.gender || !p.birthDate || !p.passportNumber || !p.email)) {
             toast.error('請填寫完整的乘客信息');
             return;
         }
-
+    
         const result = await request('POST', '/flight/order', {
             flightId: id,
             category: selectedClass,
             departureDate: formatInTimeZone(new Date(selectedDate), 'UTC', 'yyyy-MM-dd'),
             passengerInfo: passengers
         }, setLoading);
-
+    
         if (result.success) {
             toast.success('訂票成功！');
         } else toast.error(result.message);
@@ -184,7 +202,25 @@ const BookingFlight = () => {
         <div className="bookingFlight">
             <Navbar />
             <div className="bookingContainer">
-                <h1>訂票詳情</h1>
+                <div className="progressSteps">
+                    <div className="step flightActive">
+                        <div className="stepNumber">1</div>
+                        <div className="stepText">查詢行程</div>
+                    </div>
+                    <div className="step flightActive">
+                        <div className="stepNumber">2</div>
+                        <div className="stepText">選擇航班</div>
+                    </div>
+                    <div className="step flightActive">
+                        <div className="stepNumber">3</div>
+                        <div className="stepText">填寫資料</div>
+                    </div>
+                    <div className="step">
+                        <div className="stepNumber">4</div>
+                        <div className="stepText">完成訂購</div>
+                    </div>
+                </div>
+
 
                 <div className="flightDetails">
                     <div className="flightHeader">
@@ -192,7 +228,7 @@ const BookingFlight = () => {
                         <div className="flightDate">
                             {selectedDate && (
                                 <div>
-                                    {formatInTimeZone(new Date(selectedDate), cityTimeZoneMap[flightData.route.departureCity], 'yyyy年MM月dd日 EEEE',  { locale: zhTW })}
+                                    {formatInTimeZone(new Date(selectedDate), cityTimeZoneMap[flightData.route.departureCity], 'yyyy年MM月dd日 EEEE', { locale: zhTW })}
                                 </div>
                             )}
                         </div>
@@ -236,7 +272,10 @@ const BookingFlight = () => {
                     </div>
 
                     <div className="cabinSelection">
-                        <div>選擇艙等</div>
+                        <div className="cabinTitle">選擇艙等</div>
+                        <div className="cabinDescription">
+                            請選擇您想要的艙等，每個艙等都提供不同的服務與特權
+                        </div>
                         <div className="cabinOptions">
                             {flightData && flightData.schedules[0] &&
                                 getCabinClasses(
@@ -248,10 +287,24 @@ const BookingFlight = () => {
                                         className={`cabinOption ${selectedClass === cabin.category ? 'selected' : ''}`}
                                         onClick={() => setSelectedClass(cabin.category)}
                                     >
-                                        <div className="cabinType">{cabinTypeMap[cabin.category]}</div>
-                                        <div className="price">${cabin.basePrice}</div>
-                                        <div className="seats">
-                                            剩餘座位: {cabin.availableSeats}
+                                        <div className="cabinHeader">
+                                            <div className="cabinType">{cabinTypeMap[cabin.category]}</div>
+                                            <div className="price">${cabin.basePrice}</div>
+                                        </div>
+                                        <div className="cabinDetails">
+                                            <div className="seats">剩餘座位: {cabin.availableSeats}</div>
+                                            <div className="features">
+                                                <div className="featureTitle">艙等特權：</div>
+                                                <ul>
+                                                    {cabinDescriptionMap[cabin.category].features.map((feature, index) => (
+                                                        <li key={index}>{feature}</li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                            <div className="additionalInfo">
+                                                <div>托運行李：{cabinDescriptionMap[cabin.category].baggage}</div>
+                                                <div>餐點服務：{cabinDescriptionMap[cabin.category].meal}</div>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
@@ -259,36 +312,85 @@ const BookingFlight = () => {
                     </div>
 
 
-
                     <div className="passengerInfo">
-                        <div>乘客信息</div>
+                        <h2>旅客資訊</h2>
+                        <div className="infoNotice">
+                            <p>請正確輸入旅行文件上所登載的姓名。如果您的姓名不正確，您可能無法登機且必須支付取消手續費。</p>
+                            <p>為了能順利出遊，請確認旅客的旅行文件於旅程結束當日，仍有至少 6 個月有效期。</p>
+                        </div>
                         {passengers.map((passenger, index) => (
                             <div key={index} className="passengerForm">
-                                <input
-                                    type="text"
-                                    placeholder="乘客姓名"
-                                    value={passenger.name}
-                                    onChange={(e) => handlePassengerChange(index, 'name', e.target.value)}
-                                />
-                                <input
-                                    type="text"
-                                    placeholder="身份證號"
-                                    value={passenger.idNumber}
-                                    onChange={(e) => handlePassengerChange(index, 'idNumber', e.target.value)}
-                                />
-                                <input
-                                    type="text"
-                                    placeholder="手機號碼"
-                                    value={passenger.phone}
-                                    onChange={(e) => handlePassengerChange(index, 'phone', e.target.value)}
-                                />
-                                {passengers.length > 1 && (
-                                    <button onClick={() => handleRemovePassenger(index)}>移除</button>
-                                )}
+                                <div className="fieldRow">
+                                    <div className="field">
+                                        <label>姓名</label>
+                                        <input
+                                            type="text"
+                                            placeholder="請輸入姓名"
+                                            value={passenger.name}
+                                            onChange={(e) => handlePassengerChange(index, 'name', e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="field">
+                                        <label>性別</label>
+                                        <select
+                                            value={passenger.gender}
+                                            onChange={(e) => handlePassengerChange(index, 'gender', e.target.value)}
+                                        >
+                                            <option value="">請選擇性別</option>
+                                            <option value="1">男</option>
+                                            <option value="0">女</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="fieldRow">
+                                    <div className="field">
+                                        <label>出生日期</label>
+                                        <input
+                                            type="date"
+                                            value={passenger.birthDate}
+                                            onChange={(e) => handlePassengerChange(index, 'birthDate', e.target.value)}
+                                        />
+                                    </div>
+                                    <div className="field">
+                                        <label>護照號碼</label>
+                                        <input
+                                            type="text"
+                                            placeholder="請輸入護照號碼"
+                                            value={passenger.passportNumber}
+                                            onChange={(e) => handlePassengerChange(index, 'passportNumber', e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="fieldRow">
+                                    <div className="field">
+                                        <label>電子郵件</label>
+                                        <input
+                                            type="email"
+                                            placeholder="請輸入電子郵件"
+                                            value={passenger.email}
+                                            onChange={(e) => handlePassengerChange(index, 'email', e.target.value)}
+                                        />
+                                    </div>
+
+                                    {passengers.length > 1 && (
+                                        <button
+                                            className="removeBtn"
+                                            onClick={() => handleRemovePassenger(index)}
+                                        >
+                                            移除旅客
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         ))}
-                        <button onClick={handleAddPassenger}>添加乘客</button>
+
+                        <button className="addBtn" onClick={handleAddPassenger}>
+                            新增旅客
+                        </button>
                     </div>
+
 
                     <button
                         className="bookButton"

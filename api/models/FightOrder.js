@@ -19,8 +19,10 @@ const FlightOrderSchema = new mongoose.Schema({
     },
     passengerInfo: [{
         name: { type: String, required: true },
-        idNumber: { type: String, required: true },
-        phone: { type: String, required: true }
+        gender: { type: Number, enum: [0, 1], required: true }, // 0: 女, 1: 男
+        birthDate: { type: Date, required: true },
+        passportNumber: { type: String, required: true },
+        email: { type: String, required: true },
     }],
     category: {
         type: String,
