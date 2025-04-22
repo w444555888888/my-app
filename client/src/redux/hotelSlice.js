@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { request } from '../utils/apiService';
+import { toast } from 'react-toastify';
+
 
 export const fetchHotelData = createAsyncThunk(
   'hotel/fetchHotelData',
@@ -8,6 +10,7 @@ export const fetchHotelData = createAsyncThunk(
     return result.success ? result.data[0] : rejectWithValue(result.message);
   }
 )
+
 
 const hotelSlice = createSlice({
   name: 'hotel',
@@ -35,10 +38,12 @@ const hotelSlice = createSlice({
         state.loading = false
         state.currentHotel = action.payload
         state.availableRooms = action.payload.availableRooms
+        toast.success('成功獲取飯店資料')
       })
       .addCase(fetchHotelData.rejected, (state, action) => {
         state.loading = false
-        state.error = action.payload || 'Fetch failed'
+        state.error = action.payload || '獲取飯店資料失敗'
+        toast.error(action.payload || '獲取飯店資料失敗')
       })
   }
 })
