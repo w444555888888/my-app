@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom'
 import './personal.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleRight } from '@fortawesome/free-solid-svg-icons'
+import { format } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux'
 import { logOut } from '../redux/userSlice'
 import { request } from '../utils/apiService'
@@ -215,16 +216,18 @@ const Personal = () => {
                   <p>總價: ${order.price.totalPrice}</p>
                   <div className="passengerInfo">
                     <p>乘客資訊</p>
-                    {order.passengerInfo.map((passenger, index) => (
+                    {order.passengerInfo.map((passenger, index) =>
+                    (
                       <div key={passenger._id} className="passenger">
                         <p>乘客 {index + 1}</p>
                         <p data-label="姓名">{passenger.name}</p>
                         <p data-label="性別">{passenger.gender}</p>
-                        <p data-label="出生年月日">{passenger.birthDate}</p>
+                        <p data-label="出生年月日">{new Date(passenger.birthDate).toLocaleDateString()}</p>
                         <p data-label="護照號碼">{passenger.passportNumber}</p>
                         <p data-label="E-mail">{passenger.email}</p>
                       </div>
-                    ))}
+                    ))
+                    }
                   </div>
                 </div>
               </div>
