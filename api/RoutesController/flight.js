@@ -235,6 +235,11 @@ export const createFlightOrder = async (req, res) => {
     try {
         const { flightId, category, departureDate, passengerInfo } = req.body;
 
+        // 基本數據驗證
+        if (!flightId || !category || !departureDate || !passengerInfo) {
+            return next(errorMessage(400, "缺少必要的訂單信息"));
+        }
+
         // 檢查用戶身份
         if (!req.user || !req.user.id) {
             next(errorMessage(401, "未登入或登入已過期"));
@@ -253,10 +258,11 @@ export const createFlightOrder = async (req, res) => {
                 next(errorMessage(400, "性別格式不正確"));
             }
 
-            // 驗證日期格式
+            // 驗證日期格式和合理性
             const birthDate = new Date(passenger.birthDate);
-            if (isNaN(birthDate.getTime())) {
-                next(errorMessage(400, "出生日期格式不正確"));
+            const today = new Date();
+            if (isNaN(birthDate.getTime()) || birthDate > today) {
+                return next(errorMessage(400, "出生日期格式不正確或不合理"));
             }
 
             // 驗證電子郵件格式
@@ -272,7 +278,13 @@ export const createFlightOrder = async (req, res) => {
             next(errorMessage(404, "找不到該航班"));
         }
 
-        // 檢查座位可用性
+        // 檢查艙等是否存在
+        const validCategory = flight.cabinClasses.some(c => c.category === category);
+        if (!validCategory) {
+            return next(errorMessage(400, "無效的艙等類型"));
+        }
+
+        // 檢查航班起飛地
         const schedule = flight.schedules.find(s =>
             s.departureDate.toISOString().split('T')[0] === departureDate
         );

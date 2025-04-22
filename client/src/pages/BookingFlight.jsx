@@ -334,7 +334,7 @@ const BookingFlight = () => {
                                         <label>性別</label>
                                         <select
                                             value={passenger.gender}
-                                            onChange={(e) => handlePassengerChange(index, 'gender', e.target.value)}
+                                            onChange={(e) => handlePassengerChange(index, 'gender', Number(e.target.value))}
                                         >
                                             <option value="">請選擇性別</option>
                                             <option value="1">男</option>
