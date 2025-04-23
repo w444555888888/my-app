@@ -13,7 +13,6 @@ const FlightSchema = new mongoose.Schema({
         departureCity: { type: String, required: true }, //起飛城市
         arrivalCity: { type: String, required: true }, //到達城市
         flightDuration: { type: Number, required: true }, // 飛行時間（分鐘）
-        standardDepartureTime: { type: String, required: true }, // 標準起飛時間格式為 "HH:MM"， 舉例"14:30"
     },
 
     // 艙等和價格設定（由航空公司在後台管理）
@@ -42,7 +41,7 @@ const FlightSchema = new mongoose.Schema({
         }
     },
 
-    // 航班排程（系統自動生成Date都是UTC）
+    // 航班排程  =>  只有實際起飛日期時間要自己設定(資料庫日期都是UTC）  
     schedules: [{
         departureDate: { type: Date, required: true },// 實際起飛日期時間
         arrivalDate: { type: Date }, // 預計抵達日期時間

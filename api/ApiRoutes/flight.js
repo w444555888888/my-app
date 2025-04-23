@@ -7,13 +7,14 @@
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import express from "express"
-import { createFlight, getAllFlights, getFlight, deleteFlight, createFlightOrder, getUserOrders, getOrderDetail, cancelOrder } from "../RoutesController/flight.js"
+import { createFlight, updateFlight, getAllFlights, getFlight, deleteFlight, createFlightOrder, getUserOrders, getOrderDetail, cancelOrder } from "../RoutesController/flight.js"
 import { verifyToken } from "../RoutesController/auth.js";
 
 const router = express.Router()
 
 // 航班管理路由
 router.post("/", createFlight)
+router.put("/:id", updateFlight)
 router.get("/", getAllFlights)
 router.get("/:id", getFlight)
 router.delete("/:id", deleteFlight)

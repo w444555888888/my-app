@@ -5,7 +5,7 @@ import { DateTime } from "luxon";
 import Flight from "../models/Flight.js"
 import City from "../models/City.js"
 import FlightOrder from "../models/FightOrder.js"
-
+import { calculateArrivalDate } from '../utils/flightTimeUtil.js';
 // 創建新航班
 export const createFlight = async (req, res, next) => {
     try {
@@ -54,6 +54,78 @@ export const createFlight = async (req, res, next) => {
         return next(errorMessage(400, "創建航班失敗", err));
     }
 };
+
+
+
+// 更新航班
+export const updateFlight = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const updateData = req.body;
+
+        // 查找現有航班
+        const flight = await Flight.findById(id);
+        if (!flight) {
+            return next(errorMessage(404, "找不到該航班"));
+        }
+
+        // 1. 取得時區
+        let cityTimeZone;
+        if (updateData.route && updateData.route.departureCity) {
+            const departureCity = updateData.route.departureCity;
+            const city = await City.findOne({ name: departureCity });
+            if (!city) {
+                return next(errorMessage(400, `找不到城市時區資訊：${departureCity}`));
+            }
+            cityTimeZone = city.timeZone;
+            flight.route.departureCity = departureCity;
+        }
+
+        // 2. 處理 schedules.departureDate
+        if (updateData.schedules && updateData.schedules.length > 0 && flight.route?.departureCity) {
+            const city = await City.findOne({ name: flight.route.departureCity });
+            if (!city) {
+                return next(errorMessage(400, `找不到城市時區資訊：${flight.route.departureCity}`));
+            }
+            const depTZ = city.timeZone;
+
+            const updatedSchedules = updateData.schedules.map(schedule => {
+                const localDateTime = DateTime.fromISO(schedule.departureDate, { zone: depTZ });
+
+                // 初始化 availableSeats
+                const availableSeats = {};
+                if (flight.cabinClasses && flight.cabinClasses.length > 0) {
+                    for (const cabin of flight.cabinClasses) {
+                        availableSeats[cabin.category] = cabin.totalSeats;
+                    }
+                }
+
+                return {
+                    ...schedule,
+                    departureDate: localDateTime.toUTC().toJSDate(),
+                    availableSeats,
+                };
+            });
+
+            flight.schedules = updatedSchedules;
+        }
+
+        // 3. 更新艙等
+        if (updateData.cabinClasses && updateData.cabinClasses.length > 0) {
+            flight.cabinClasses = updateData.cabinClasses;
+        }
+
+        // 4. 儲存
+        const updatedFlight = await flight.save();
+        return sendResponse(res, 200, updatedFlight, "航班更新成功");
+
+    } catch (error) {
+        return next(errorMessage(500, error.message));
+    }
+};
+
+
+
 
 
 // 獲取所有航班列表 || (日期開始 && 日期結束 && 起飛城市 && 目的城市)
@@ -359,7 +431,7 @@ export const cancelOrder = async (req, res, next) => {
         }
 
         // 直接比較 UTC 時間
-        const schedule = flight.schedules.find(s => 
+        const schedule = flight.schedules.find(s =>
             s.departureDate.toISOString().split('T')[0] === order.departureDate.toISOString().split('T')[0]
         );
 
