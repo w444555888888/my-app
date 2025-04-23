@@ -18,7 +18,7 @@ export const createOrder = async (req, res, next) => {
 
   // 檢查用戶身份
   if (!req.user || !req.user.id) {
-    throw errorMessage(401, "未登入或登入已過期");
+    return next(errorMessage(401, "未登入或登入已過期"));
   }
   // 從cookie 中間件獲取用戶 ID
   const userId = req.user.id; 

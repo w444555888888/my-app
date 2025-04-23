@@ -41,7 +41,7 @@ export const updateUser = async (req, res, next) => {
 
     sendResponse(res, 200, updatedUser);
   } catch (error) {
-    next(errorMessage(500, "更改用戶失敗", error))
+    return next(errorMessage(500, "更改用戶失敗", error))
   }
 }
 
@@ -58,7 +58,7 @@ export const deletedUser = async (req, res, next) => {
     await User.findByIdAndDelete(id)
     sendResponse(res, 200, null, { message: "用戶成功刪除" });
   } catch (error) {
-    next(errorMessage(500, "刪除用戶失敗", error))
+    return next(errorMessage(500, "刪除用戶失敗", error))
   }
 }
 
@@ -73,13 +73,13 @@ export const getUser = async (req, res, next) => {
   try {
     const user = await User.findById(id);
     if (!user) {
-      return sendResponse(res, 404, null, { message: "用戶未找到" });
+      return next(errorMessage(404, "用戶未找到"))
     }
     const allOrder = await Order.find({ userId: id });
     const allFightOrder = await FightOrder.find({ userId: id });
     sendResponse(res, 200, { ...user.toObject(), allOrder, allFightOrder });
   } catch (error) {
-    next(errorMessage(500, "讀取用戶失敗", error))
+    return next(errorMessage(500, "讀取用戶失敗", error))
   }
 }
 
@@ -95,6 +95,6 @@ export const getAllUsers = async (req, res, next) => {
     const getUsers = await User.find()
     sendResponse(res, 200, getUsers);
   } catch (error) {
-    next(errorMessage(500, "讀取全部用戶失敗", error))
+    return next(errorMessage(500, "讀取全部用戶失敗", error))
   }
 }

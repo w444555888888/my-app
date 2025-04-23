@@ -10,7 +10,7 @@ export const createRoom = async (req, res, next) => {
     const saveRoom = await newRoom.save()
     sendResponse(res, 200, saveRoom);
   } catch (error) {
-    next(errorMessage(500, "房型創建失敗，可能為格式錯誤", error))
+    return next(errorMessage(500, "房型創建失敗，可能為格式錯誤", error))
   }
 }
 
@@ -22,7 +22,7 @@ export const updatedRoom = async (req, res, next) => {
     const updatedRoom = await Room.findByIdAndUpdate(roomId, { $set: req.body }, { new: true })
     sendResponse(res, 200, updatedRoom);
   } catch (error) {
-    next(errorMessage(500, "房型更新失敗，可能為格式錯誤或找不到其 ID", error))
+    return next(errorMessage(500, "房型更新失敗，可能為格式錯誤或找不到其 ID", error))
   }
 }
 
@@ -34,7 +34,7 @@ export const deleteRoom = async (req, res, next) => {
     await Room.findByIdAndDelete(roomId)
     sendResponse(res, 200, null, { message: "成功刪除房型資訊" });
   } catch (error) {
-    next(errorMessage(500, "刪除房型失敗，找不到其 ID", error))
+    return next(errorMessage(500, "刪除房型失敗，找不到其 ID", error))
   }
 }
 
@@ -45,7 +45,7 @@ export const getAllRooms = async (req, res, next) => {
     const getRooms = await Room.find()
     sendResponse(res, 200, getRooms);
   } catch (error) {
-    next(errorMessage(500, "搜尋失敗，為資料庫變動問題", error))
+    return next(errorMessage(500, "搜尋失敗，為資料庫變動問題", error))
   }
 }
 
@@ -66,7 +66,7 @@ export const getHotelRooms = async (req, res, next) => {
     const roomsList = await Room.find({ hotelId: gethotel });
     sendResponse(res, 200, roomsList);
   } catch (error) {
-    next(errorMessage(500, "找尋房型時發生錯誤，可能為 Room 資料庫問題", error));
+    return next(errorMessage(500, "找尋房型時發生錯誤，可能為 Room 資料庫問題", error));
   }
 };
 

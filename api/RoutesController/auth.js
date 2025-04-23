@@ -21,7 +21,9 @@ export const register = async (req, res, next) => {
   try {
     const registerWrong = await User.findOne({ username: registerData.username }) || await User.findOne({ email: registerData.email })
 
-    if (registerWrong) return (next(errorMessage(400, "此帳號或信箱已被註冊")))
+    if (registerWrong) {
+      return (next(errorMessage(400, "此帳號或信箱已被註冊")))
+    }
 
     // 密碼bcrypt加密bcrypt加密  
     const salt = bcrypt.genSaltSync(10)
@@ -36,7 +38,7 @@ export const register = async (req, res, next) => {
 
     sendResponse(res, 200, saveUser)
   } catch (error) {
-    next(errorMessage(500, "註冊失敗", error))
+    return next(errorMessage(500, "註冊失敗", error))
   }
 }
 
@@ -82,7 +84,7 @@ export const login = async (req, res, next) => {
     sendResponse(res, 200, { userDetails })
 
   } catch (error) {
-    next(errorMessage(500, "登入失敗", error))
+    return next(errorMessage(500, "登入失敗", error))
   }
 }
 

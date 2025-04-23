@@ -19,7 +19,7 @@ export const getAllHotels = async (req, res, next) => {
         const hotels = await Hotel.find({})
         sendResponse(res, 200, hotels);
     } catch (err) {
-        next(errorMessage(500, "查詢飯店資料失敗"))
+        return next(errorMessage(500, "查詢飯店資料失敗"))
     }
 }
 
@@ -122,7 +122,7 @@ export const getSearchHotels = async (req, res, next) => {
 
         sendResponse(res, 200, filterPriceHotels);
     } catch (err) {
-        next(errorMessage(500, "查詢飯店失敗"))
+        return next(errorMessage(500, "查詢飯店失敗"))
     }
 }
 
@@ -136,7 +136,7 @@ export const createHotel = async (req, res, next) => { //新增next
 
         sendResponse(res, 200, saveHotel);
     } catch (error) {
-        next(errorMessage(500, "資料上傳錯誤請確認格式"))
+        return next(errorMessage(500, "資料上傳錯誤請確認格式"))
     }
 }
 export const getHotel = async (req, res, next) => {
@@ -146,7 +146,7 @@ export const getHotel = async (req, res, next) => {
 
         sendResponse(res, 200, getHotel);
     } catch (error) {
-        next(errorMessage(500, "找不到資料，請檢查使否有此id", error))
+        return next(errorMessage(500, "找不到資料，請檢查使否有此id", error))
     }
 }
 export const updatedHotel = async (req, res, next) => {
@@ -156,7 +156,7 @@ export const updatedHotel = async (req, res, next) => {
         const updatedHotel = await Hotel.findByIdAndUpdate(id, { $set: body }, { new: true })
         sendResponse(res, 200, updatedHotel);
     } catch (error) {
-        next(errorMessage(500, "修改失敗，請確認是否有其id與是否欄位輸入格式正確", error))
+        return next(errorMessage(500, "修改失敗，請確認是否有其id與是否欄位輸入格式正確", error))
     }
 }
 export const deleteHotel = async (req, res, next) => {
@@ -165,6 +165,6 @@ export const deleteHotel = async (req, res, next) => {
         await Hotel.findByIdAndDelete(id)
         sendResponse(res, 200, null, { message: "刪除資料成功" });
     } catch (error) {
-        next(errorMessage(500, "刪除失敗，請確認是否有其id", error))
+        return next(errorMessage(500, "刪除失敗，請確認是否有其id", error))
     }
 }

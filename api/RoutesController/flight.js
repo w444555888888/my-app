@@ -51,7 +51,7 @@ export const createFlight = async (req, res, next) => {
         const savedFlight = await newFlight.save();
         return sendResponse(res, 201, savedFlight, "航班創建成功");
     } catch (err) {
-        next(errorMessage(400, "創建航班失敗", err));
+        return next(errorMessage(400, "創建航班失敗", err));
     }
 };
 
@@ -95,7 +95,7 @@ export const getAllFlights = async (req, res, next) => {
 
         return sendResponse(res, 200, filteredFlights, "獲取航班列表成功");
     } catch (err) {
-        next(errorMessage(500, "獲取航班列表失敗", err));
+        return next(errorMessage(500, "獲取航班列表失敗", err));
     }
 };
 
@@ -150,7 +150,7 @@ export const getFlight = async (req, res, next) => {
         }, "獲取航班詳情成功");
 
     } catch (err) {
-        next(errorMessage(500, "獲取航班詳情失敗", err));
+        return next(errorMessage(500, "獲取航班詳情失敗", err));
     }
 };
 
@@ -168,7 +168,7 @@ export const updateFlight = async (req, res) => {
         }
         return sendResponse(res, 200, updatedFlight, "航班更新成功");
     } catch (err) {
-        next(errorMessage(500, "更新航班失敗", err));
+        return next(errorMessage(500, "更新航班失敗", err));
     }
 };
 
@@ -181,7 +181,7 @@ export const deleteFlight = async (req, res) => {
         }
         return sendResponse(res, 200, flight, "航班刪除成功");
     } catch (err) {
-        next(errorMessage(500, "刪除航班失敗", err));
+        return next(errorMessage(500, "刪除航班失敗", err));
     }
 };
 
@@ -219,7 +219,7 @@ export const checkSeats = async (req, res) => {
 
         return sendResponse(res, 200, schedule.availableSeats, "查詢座位成功");
     } catch (err) {
-        next(errorMessage(500, "查詢座位失敗", err));
+        return next(errorMessage(500, "查詢座位失敗", err));
     }
 };
 
@@ -335,7 +335,7 @@ export const createFlightOrder = async (req, res) => {
 
         return sendResponse(res, 201, savedOrder, "訂單創建成功");
     } catch (err) {
-        next(errorMessage(500, "創建訂單失敗", err));
+        return next(errorMessage(500, "創建訂單失敗", err));
     }
 };
 
@@ -353,7 +353,7 @@ export const getUserOrders = async (req, res) => {
 
         return sendResponse(res, 200, orders, "獲取訂單列表成功");
     } catch (err) {
-        next(errorMessage(500, "獲取訂單列表失敗", err));
+        return next(errorMessage(500, "獲取訂單列表失敗", err));
     }
 };
 
@@ -370,7 +370,7 @@ export const getOrderDetail = async (req, res) => {
 
         return sendResponse(res, 200, order, "獲取訂單詳情成功");
     } catch (err) {
-        next(errorMessage(500, "獲取訂單詳情失敗", err));
+        return next(errorMessage(500, "獲取訂單詳情失敗", err));
     }
 };
 
@@ -400,7 +400,7 @@ export const cancelOrder = async (req, res) => {
 
         return sendResponse(res, 200, order, "訂單取消成功");
     } catch (err) {
-        next(errorMessage(500, "取消訂單失敗", err));
+        return next(errorMessage(500, "取消訂單失敗", err));
     }
 };
 
