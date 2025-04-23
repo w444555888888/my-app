@@ -347,9 +347,9 @@ export const getUserOrders = async (req, res) => {
 };
 
 // 獲取訂單詳情
-export const getOrderDetail = async (req, res) => {
+export const getOrderDetail = async (req, res, next) => {
     try {
-        const order = await FlightOrder.findById(req.params.orderId)
+        const order = await FlightOrder.findById(req.params.id)
             .populate('flightId')
             .populate('userId', 'name email');
 
@@ -372,7 +372,7 @@ export const cancelOrder = async (req, res, next) => {
             return next(errorMessage(401, "未登入或登入已過期"));
         }
 
-        const order = await FlightOrder.findById(req.params.orderId);
+        const order = await FlightOrder.findById(req.params.id);
         if (!order) {
             return next(errorMessage(404, "找不到該訂單"));
         }
