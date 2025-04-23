@@ -178,40 +178,6 @@ export const deleteFlight = async (req, res) => {
  * 訂票FlightOrder
 */
 
-// 查詢可用座位
-export const checkSeats = async (req, res) => {
-    try {
-        const { flightId, departureDate } = req.query;
-        const flight = await Flight.findById(flightId);
-
-        if (!flight) {
-            return next(errorMessage(404, "找不到該航班"));
-        }
-
-        // timeZone
-        const city = await City.findOne({ name: flight.route.departureCity });
-        if (!city) {
-            return next(errorMessage(404, `找不到城市時區資訊：${flight.route.departureCity}`));
-        }
-        const timeZone = city.timeZone;
-
-        // 這裡要轉換傳入的 departureDate 為 UTC
-        const localDepartureDate = DateTime.fromISO(departureDate, { zone: timeZone }).toUTC().toJSDate();
-        const schedule = flight.schedules.find(s =>
-            new Date(s.departureDate).toISOString().split('T')[0] === localDepartureDate.toISOString().split('T')[0]
-        );
-
-        if (!schedule) {
-            return next(errorMessage(404, "找不到該日期的航班班次"));
-        }
-
-        return sendResponse(res, 200, schedule.availableSeats, "查詢座位成功");
-    } catch (err) {
-        return next(errorMessage(500, "查詢座位失敗", err));
-    }
-};
-
-
 
 // 創建航班訂單
 export const createFlightOrder = async (req, res) => {
