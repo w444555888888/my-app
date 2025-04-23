@@ -55,33 +55,52 @@ export const createFlight = async (req, res, next) => {
     }
 };
 
-// 獲取所有航班列表 || 日期 || 起飛城市 || 目的城市
+
+// 獲取所有航班列表 || (日期開始 && 日期結束 && 起飛城市 && 目的城市)
 export const getAllFlights = async (req, res, next) => {
     try {
         const { departureCity, arrivalCity, startDate, endDate } = req.query;
 
-        let query = {};
+        const isSearchMode = departureCity || arrivalCity || startDate || endDate;
 
-        if (departureCity) {
-            query['route.departureCity'] = departureCity;
+        if (isSearchMode && (!departureCity || !arrivalCity || !startDate || !endDate)) {
+            return next(errorMessage(400, "搜尋航班需要同時提供：出發地、目的地、起始時間、結束時間"));
         }
 
-        if (arrivalCity) {
+        let query = {};
+        if (isSearchMode) {
+            query['route.departureCity'] = departureCity;
             query['route.arrivalCity'] = arrivalCity;
         }
 
         const flights = await Flight.find(query);
 
+        // 如果是搜尋模式，先獲取城市時區
+        let cityTimeZone;
+        if (isSearchMode) {
+            const city = await City.findOne({ name: departureCity });
+            if (!city) {
+                return next(errorMessage(400, `找不到城市時區資訊：${departureCity}`));
+            }
+            cityTimeZone = city.timeZone;
+        }
+
         let filteredFlights = flights.map(flight => {
             let filteredSchedules = flight.schedules;
 
-            if (startDate && endDate) {
-                const start = new Date(startDate);
-                const end = new Date(endDate);
+            if (isSearchMode && cityTimeZone) {
+                const startUTC = DateTime.fromISO(startDate, { zone: cityTimeZone })
+                    .startOf('day')
+                    .toUTC()
+                    .toJSDate();
+                const endUTC = DateTime.fromISO(endDate, { zone: cityTimeZone })
+                    .endOf('day')
+                    .toUTC()
+                    .toJSDate();
 
                 filteredSchedules = flight.schedules.filter(schedule => {
-                    const date = new Date(schedule.departureDate);
-                    return date >= start && date <= end;
+                    const scheduleDate = new Date(schedule.departureDate);
+                    return scheduleDate >= startUTC && scheduleDate <= endUTC;
                 });
             }
 
@@ -91,7 +110,7 @@ export const getAllFlights = async (req, res, next) => {
                 route: flight.route,
                 schedules: filteredSchedules
             };
-        }).filter(flight => flight.schedules.length > 0); // 移除沒有符合時間的航班
+        }).filter(flight => flight.schedules.length > 0);
 
         return sendResponse(res, 200, filteredFlights, "獲取航班列表成功");
     } catch (err) {
@@ -103,27 +122,13 @@ export const getAllFlights = async (req, res, next) => {
 // 獲取單個航班詳情
 export const getFlight = async (req, res, next) => {
     try {
-        const { startDate, endDate } = req.query;
-
         const flight = await Flight.findById(req.params.id);
         if (!flight) {
             return next(errorMessage(404, "找不到該航班"));
         }
 
-        let filteredSchedules = flight.schedules;
-
-        if (startDate && endDate) {
-            const start = new Date(startDate);
-            const end = new Date(endDate);
-
-            filteredSchedules = flight.schedules.filter(schedule => {
-                const date = new Date(schedule.departureDate);
-                return date >= start && date <= end;
-            });
-        }
-
         // 格式化 + 計算價格
-        const formattedSchedules = filteredSchedules.map(schedule => {
+        const formattedSchedules = flight.schedules.map(schedule => {
             const departureDate = new Date(schedule.departureDate);
             const arrivalDate = new Date(schedule.arrivalDate);
 
@@ -131,7 +136,7 @@ export const getFlight = async (req, res, next) => {
             const prices = {};
             flight.cabinClasses.forEach(cabin => {
                 const rawPrice = flight.calculateFinalPrice(cabin.category, departureDate);
-                prices[cabin.category] = Math.round(rawPrice); //四捨五入價格
+                prices[cabin.category] = Math.round(rawPrice);
             });
 
             return {
@@ -154,23 +159,6 @@ export const getFlight = async (req, res, next) => {
     }
 };
 
-
-// 更新航班信息
-export const updateFlight = async (req, res) => {
-    try {
-        const updatedFlight = await Flight.findByIdAndUpdate(
-            req.params.id,
-            { $set: req.body },
-            { new: true }
-        );
-        if (!updatedFlight) {
-            return next(errorMessage(404, "找不到該航班"));
-        }
-        return sendResponse(res, 200, updatedFlight, "航班更新成功");
-    } catch (err) {
-        return next(errorMessage(500, "更新航班失敗", err));
-    }
-};
 
 // 刪除航班
 export const deleteFlight = async (req, res) => {
@@ -339,6 +327,7 @@ export const createFlightOrder = async (req, res) => {
     }
 };
 
+
 // 獲取用戶的所有訂單
 export const getUserOrders = async (req, res) => {
     try {
@@ -374,27 +363,49 @@ export const getOrderDetail = async (req, res) => {
     }
 };
 
+
 // 取消訂單
-export const cancelOrder = async (req, res) => {
+export const cancelOrder = async (req, res, next) => {
     try {
+        // 檢查用戶身份
+        if (!req.user || !req.user.id) {
+            return next(errorMessage(401, "未登入或登入已過期"));
+        }
+
         const order = await FlightOrder.findById(req.params.orderId);
         if (!order) {
             return next(errorMessage(404, "找不到該訂單"));
+        }
+
+        // 確認是訂單擁有者
+        if (order.userId.toString() !== req.user.id) {
+            return next(errorMessage(403, "無權限取消此訂單"));
         }
 
         if (order.status !== 'PENDING') {
             return next(errorMessage(400, "只能取消待付款的訂單"));
         }
 
+        // 檢查航班
+        const flight = await Flight.findById(order.flightId);
+        if (!flight) {
+            return next(errorMessage(404, "找不到相關航班信息"));
+        }
+
+        // 直接比較 UTC 時間
+        const schedule = flight.schedules.find(s => 
+            s.departureDate.toISOString().split('T')[0] === order.departureDate.toISOString().split('T')[0]
+        );
+
+        if (!schedule) {
+            return next(errorMessage(404, "找不到對應航班班次"));
+        }
+
+        // 更新訂單狀態
         order.status = 'CANCELLED';
         await order.save();
 
         // 恢復航班座位
-        const flight = await Flight.findById(order.flightId);
-        const schedule = flight.schedules.find(s =>
-            s.departureDate.toISOString().split('T')[0] ===
-            order.departureDate.toISOString().split('T')[0]
-        );
         schedule.availableSeats[order.category] += order.passengerInfo.length;
         await flight.save();
 
