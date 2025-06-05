@@ -16,7 +16,7 @@ const UserSchma = new mongoose.Schema({
     },
     isAdmin: {
         type: Boolean,
-        default: false,
+        default: true,
     },
     address: {
         type: String,

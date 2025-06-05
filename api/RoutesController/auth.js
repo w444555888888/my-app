@@ -73,11 +73,11 @@ export const login = async (req, res, next) => {
     // console.log("生成的 JWT:", token)
 
     // 排除密碼和 isAdmin，回傳其餘用戶資訊
-    const { password, isAdmin, ...userDetails } = userData._doc
+    const { password, ...userDetails } = userData._doc
     // console.log("回傳的使用者資訊:", userDetails)
 
     res.cookie("JWT_token", token, {
-      httpOnly: true,
+      httpOnly: false,
       secure: false,
       path: "/",
     })
