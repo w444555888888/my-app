@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import {
   Form,
   Input,
@@ -13,6 +12,8 @@ import {
   message
 } from 'antd';
 import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
+import { request } from '../utils/apiService';
+import './login.scss';  
 
 const { Title } = Typography;
 
@@ -31,47 +32,30 @@ const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<LoginFormData>({ account: '', password: '' });
   const [error, setError] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [registerForm] = Form.useForm();
 
   const handleSubmit = async () => {
-    setLoading(true);
-    setError('');
-
-    try {
-      const res = await axios.post('http://localhost:5000/api/v1/auth/login', formData, {
-        withCredentials: true
-      });
-
-      if (res.data.data.userDetails.isAdmin) {
-        navigate('/dashboard');
-      } else {
-        setError('非管理員帳號，無法登入！');
-      }
-    } catch (err: any) {
-      setError(err.response?.data?.message || '登入失敗，請稍後再試');
-    } finally {
-      setLoading(false);
-    }
+    const res = await request('POST', '/auth/login', formData);
+    res.success ? navigate('/users') : setError(res.message ?? '');
   };
 
   const handleRegister = async (values: RegisterFormData) => {
-    try {
-      await axios.post('http://localhost:5000/api/v1/auth/register', values);
+    const res = await request('POST', '/auth/register', values);
+    if (res.success) {
       message.success('註冊成功，請登入');
       setIsRegisterModalOpen(false);
       registerForm.resetFields();
-    } catch (err: any) {
-      message.error(err.response?.data?.message || '註冊失敗');
+    } else {
+      message.error(res.message || '註冊失敗');
     }
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '80px' }}>
-      <Card style={{ width: 400 }}>
-        <Space direction="vertical" style={{ width: '100%' }}>
-          <Title level={3} style={{ textAlign: 'center' }}>管理員登入</Title>
+    <div className="login-container">
+      <Card className="login-card">
+        <Space direction="vertical" className="login-space">
+          <Title level={3} className="login-title">管理員登入</Title>
 
           {error && <Alert type="error" message={error} showIcon />}
 
@@ -102,8 +86,8 @@ const Login = () => {
               />
             </Form.Item>
 
-            <Button type="primary" htmlType="submit" block loading={loading}>
-              {loading ? '登入中...' : '登入'}
+            <Button type="primary" htmlType="submit" block>
+              登入
             </Button>
           </Form>
 

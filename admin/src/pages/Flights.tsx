@@ -12,8 +12,9 @@ import {
   Empty,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import axios from 'axios';
 import dayjs from 'dayjs';
+import { request } from '../utils/apiService';
+import './flights.scss';
 
 interface FlightType {
   _id: string;
@@ -35,12 +36,9 @@ const Flights: React.FC = () => {
   const fetchFlights = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/v1/flight');
-      const raw = response.data;
-
-      
-      if (raw.success && Array.isArray(raw.data)) {
-        setFlights(raw.data);
+      const res = await request('GET', '/flight');
+      if (res.success && Array.isArray(res.data)) {
+        setFlights(res.data);
       } else {
         setFlights([]);
         message.warning('獲取資料格式錯誤');
@@ -54,9 +52,13 @@ const Flights: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`/api/v1/flight/${id}`);
-      message.success('刪除航班成功');
-      fetchFlights();
+      const res = await request('DELETE', `/flight/${id}`);
+      if (res.success) {
+        message.success('刪除航班成功');
+        fetchFlights();
+      } else {
+        message.error(res.message || '刪除航班失敗');
+      }
     } catch (error) {
       message.error('刪除航班失敗');
     }
@@ -69,11 +71,15 @@ const Flights: React.FC = () => {
         departureTime: values.departureTime.format(),
         arrivalTime: values.arrivalTime.format(),
       };
-      await axios.post('/api/v1/flight', formattedValues);
-      message.success('新增航班成功');
-      setIsModalVisible(false);
-      form.resetFields();
-      fetchFlights();
+      const res = await request('POST', '/flight', formattedValues);
+      if (res.success) {
+        message.success('新增航班成功');
+        setIsModalVisible(false);
+        form.resetFields();
+        fetchFlights();
+      } else {
+        message.error(res.message || '新增航班失敗');
+      }
     } catch (error) {
       message.error('新增航班失敗');
     }
@@ -139,8 +145,8 @@ const Flights: React.FC = () => {
   ];
 
   return (
-    <div>
-      <div style={{ marginBottom: 16 }}>
+    <div className="flights-container">
+      <div className="flights-header" style={{ marginBottom: 16 }}>
         <Button type="primary" onClick={() => setIsModalVisible(true)}>
           新增航班
         </Button>

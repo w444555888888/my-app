@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Space, Button, message, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import axios from 'axios';
 import dayjs from 'dayjs';
+import { request } from '../utils/apiService';
+import './orders.scss';
 
 interface OrderType {
   _id: string;
@@ -30,15 +31,10 @@ const Orders: React.FC = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/v1/order');
-      const raw = response.data;
+      const res = await request('GET', '/order');
 
-      // ✅ 修正重點：只設 data 陣列
-      if (raw.success && Array.isArray(raw.data)) {
-        setOrders(raw.data);
-      } else {
-        setOrders([]);
-        message.warning('訂單資料格式錯誤');
+      if (res.success && res.data) {
+        setOrders(res.data.length > 0 ? res.data : []);
       }
     } catch (error) {
       message.error('獲取訂單列表失敗');
@@ -49,7 +45,7 @@ const Orders: React.FC = () => {
 
   const handleCancel = async (id: string) => {
     try {
-      await axios.post(`/api/v1/flight/orders/${id}/cancel`);
+      await request('POST', `flight/orders/${id}/cancel`);
       message.success('取消訂單成功');
       fetchOrders();
     } catch (error) {
@@ -141,8 +137,8 @@ const Orders: React.FC = () => {
   ];
 
   return (
-    <div>
-      <h2 style={{ marginBottom: 16 }}>訂單管理</h2>
+    <div className="orders-container">
+      <h2 className="orders-title">訂單管理</h2>
       <Table
         columns={columns}
         dataSource={orders}

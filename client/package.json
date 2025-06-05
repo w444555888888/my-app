@@ -57,8 +57,7 @@
   },
   "options": {
     "allowedHosts": [
-      "localhost",
-      ".localhost"
+      "all"
     ],
     "proxy": "http://localhost:5000/api/v1"
   }

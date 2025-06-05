@@ -29,7 +29,21 @@ const Dashboard: React.FC = () => {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider width={200} theme="dark">
-        <div style={{ height: '32px', margin: '16px', background: 'rgba(255,255,255,0.2)' }} />
+        <div
+          style={{
+            height: 64,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+            fontSize: 18,
+            fontWeight: 'bold',
+            marginBottom: 16,
+          }}
+        >
+          <DashboardOutlined style={{ fontSize: 24, marginRight: 8 }} />
+          訂房後台
+        </div>
         <Menu
           mode="inline"
           theme="dark"

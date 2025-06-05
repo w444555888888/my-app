@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Space, Button, message, Modal, Form, Input, InputNumber } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import axios from 'axios';
+import { request } from '../utils/apiService';
+import './hotels.scss'; 
 
 interface HotelType {
   _id: string;
@@ -39,8 +40,8 @@ interface HotelType {
 
 interface ApiResponse {
   success: boolean;
-  data: HotelType[];
-  message: string;
+  data?: HotelType[]; 
+  message?: string;   
 }
 
 const Hotels: React.FC = () => {
@@ -52,13 +53,10 @@ const Hotels: React.FC = () => {
   const fetchHotels = async () => {
     try {
       setLoading(true);
-      const response = await axios.get<ApiResponse>('/api/v1/hotels');
-      if (response.data.success && Array.isArray(response.data.data)) {
-        setHotels(response.data.data);
-      } else {
-        message.error('獲取飯店數據格式錯誤');
-        setHotels([]);
-      }
+      const res: ApiResponse = await request('GET', '/hotels');
+      if (res.success && res.data) {
+        setHotels(res.data.length > 0 ? res.data : []);
+      } 
     } catch (error) {
       message.error('獲取飯店列表失敗');
       setHotels([]);
@@ -69,9 +67,13 @@ const Hotels: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`/api/v1/hotels/${id}`);
-      message.success('刪除飯店成功');
-      fetchHotels();
+      const res = await request('DELETE', `/hotels/${id}`);
+      if (res.success) {
+        message.success('刪除飯店成功');
+        fetchHotels();
+      } else {
+        message.error(res.message || '刪除飯店失敗');
+      }
     } catch (error) {
       message.error('刪除飯店失敗');
     }
@@ -79,11 +81,15 @@ const Hotels: React.FC = () => {
 
   const handleAdd = async (values: any) => {
     try {
-      await axios.post('/api/v1/hotels', values);
-      message.success('新增飯店成功');
-      setIsModalVisible(false);
-      form.resetFields();
-      fetchHotels();
+      const res = await request('POST', '/hotels', values);
+      if (res.success) {
+        message.success('新增飯店成功');
+        setIsModalVisible(false);
+        form.resetFields();
+        fetchHotels();
+      } else {
+        message.error(res.message || '新增飯店失敗');
+      }
     } catch (error) {
       message.error('新增飯店失敗');
     }
@@ -137,18 +143,19 @@ const Hotels: React.FC = () => {
   ];
 
   return (
-    <div>
-      <div style={{ marginBottom: 16 }}>
+    <div className="hotels-container">
+      <div className="hotels-header" style={{ marginBottom: 16 }}>
         <Button type="primary" onClick={() => setIsModalVisible(true)}>
           新增飯店
         </Button>
       </div>
-      
+
       <Table
         columns={columns}
         dataSource={hotels}
         rowKey="_id"
         loading={loading}
+        locale={{ emptyText: '尚無飯店資料' }}
       />
 
       <Modal
@@ -204,4 +211,4 @@ const Hotels: React.FC = () => {
   );
 };
 
-export default Hotels; 
+export default Hotels;
