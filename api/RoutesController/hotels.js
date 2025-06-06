@@ -12,6 +12,9 @@ import { addDays, format, isSameDay, parseISO } from 'date-fns'
 import { errorMessage } from "../errorMessage.js"
 import { sendResponse } from "../sendResponse.js"
 
+
+
+
 // 獲取所有飯店資料（不帶任何過濾條件）
 export const getAllHotels = async (req, res, next) => {
     try {

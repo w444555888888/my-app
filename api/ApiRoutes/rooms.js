@@ -25,6 +25,6 @@ router.delete("/:id", deleteRoom)
 router.get("/", getAllRooms)
 
 // 獲取特定酒店的所有房間
-router.get("/findHotel/:hotelid", getHotelRooms)
+router.get("/findHotel/:hotelId", getHotelRooms)
 
 export default router

@@ -1,7 +1,7 @@
-import { errorMessage } from "../errorMessage.js"
 import Hotel from "../models/Hotel.js"
 import Room from "../models/Room.js"
-
+import { errorMessage } from "../errorMessage.js"
+import { sendResponse } from "../sendResponse.js"
 // 創建房型
 export const createRoom = async (req, res, next) => {
   const newRoom = new Room(req.body)
@@ -52,21 +52,16 @@ export const getAllRooms = async (req, res, next) => {
 
 // 獲取特定id飯店的所有房型
 export const getHotelRooms = async (req, res, next) => {
-  // 飯店id
-  const gethotel = req.params.hotelid;
+  const hotelId = req.params.hotelId;
 
   try {
-    // 確保 `Hotel` 存在
-    const hoteldata = await Hotel.findById(gethotel);
+    const hoteldata = await Hotel.findById(hotelId);
     if (!hoteldata) {
-      return next(errorMessage(404, "找不到該飯店"))
+      return next(errorMessage(404, "找不到該飯店"));
     }
-
-    // 直接查找 rooms，條件改為匹配 `hotelId`
-    const roomsList = await Room.find({ hotelId: gethotel });
+    const roomsList = await Room.find({ hotelId });
     sendResponse(res, 200, roomsList);
   } catch (error) {
     return next(errorMessage(500, "找尋房型時發生錯誤，可能為 Room 資料庫問題", error));
   }
 };
-

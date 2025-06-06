@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {
+  CoffeeOutlined,
+  CarOutlined,
+  ShoppingOutlined
+} from "@ant-design/icons";
+import {
   Table,
   Space,
   Button,
@@ -50,9 +55,18 @@ interface HotelType {
   nearbyAttractions: string[];
 }
 
+interface RoomType {
+  _id: string;
+  name: string;
+  description: string;
+  maxPeople: number;
+  price: number;
+  hotelId: string;
+}
+
 interface ApiResponse {
   success: boolean;
-  data?: HotelType[];
+  data?: any;
   message?: string;
 }
 
@@ -62,17 +76,18 @@ const Hotels: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [editingHotel, setEditingHotel] = useState<HotelType | null>(null);
+  const [roomList, setRoomList] = useState<RoomType[]>([]);
+  const [roomModalVisible, setRoomModalVisible] = useState(false);
 
   const fetchHotels = async () => {
     try {
       setLoading(true);
       const res: ApiResponse = await request("GET", "/hotels");
       if (res.success && res.data) {
-        setHotels(res.data.length > 0 ? res.data : []);
+        setHotels(res.data);
       }
-    } catch (error) {
+    } catch {
       message.error("獲取飯店列表失敗");
-      setHotels([]);
     } finally {
       setLoading(false);
     }
@@ -82,75 +97,81 @@ const Hotels: React.FC = () => {
     try {
       const res = await request("DELETE", `/hotels/${id}`);
       if (res.success) {
-        message.success("刪除飯店成功");
+        message.success("刪除成功");
         fetchHotels();
       } else {
-        message.error(res.message || "刪除飯店失敗");
+        message.error(res.message || "刪除失敗");
       }
-    } catch (error) {
-      message.error("刪除飯店失敗");
+    } catch {
+      message.error("刪除發生錯誤");
     }
   };
 
-  const handleSubmit = async (values: any) => {
-    const body = {
-      ...values,
-      checkInTime: values.checkInTime.format('HH:mm'),
-      checkOutTime: values.checkOutTime.format('HH:mm'),
-      photos: values.photos?.split(',').map((s: string) => s.trim()),
-      nearbyAttractions: values.nearbyAttractions?.split(',').map((s: string) => s.trim()),
-      facilities: {
-        wifi: values.facilities?.includes('wifi') || false,
-        parking: values.facilities?.includes('parking') || false,
-        pool: values.facilities?.includes('pool') || false,
-        gym: values.facilities?.includes('gym') || false,
-        spa: values.facilities?.includes('spa') || false,
-        restaurant: values.facilities?.includes('restaurant') || false,
-        bar: values.facilities?.includes('bar') || false,
-      },
-    };
-
-    try {
-      const res = editingHotel
-        ? await request('PUT', `/hotels/${editingHotel._id}`, body)
-        : await request('POST', '/hotels', body);
-
-      if (res.success) {
-        message.success(editingHotel ? '編輯成功' : '新增成功');
-        setIsModalVisible(false);
-        form.resetFields();
-        setEditingHotel(null);
-        fetchHotels();
-      } else {
-        message.error(res.message || (editingHotel ? '編輯失敗' : '新增失敗'));
-      }
-    } catch (error) {
-      message.error(editingHotel ? '編輯失敗' : '新增失敗');
-    }
-  }
-
-
   const handleEdit = async (id: string) => {
     try {
-      const res = await request('GET', `/hotels/find/${id}`);
+      const res = await request("GET", `/hotels/find/${id}`);
       if (res.success && res.data) {
         const hotel = res.data;
         form.setFieldsValue({
           ...hotel,
           photos: hotel.photos.join(','),
           nearbyAttractions: hotel.nearbyAttractions.join(','),
-          facilities: Object.keys(hotel.facilities).filter((key) => hotel.facilities[key]),
-          coordinates: hotel.coordinates,
+          facilities: Object.keys(hotel.facilities).filter(k => hotel.facilities[k]),
           checkInTime: dayjs(hotel.checkInTime, 'HH:mm'),
           checkOutTime: dayjs(hotel.checkOutTime, 'HH:mm'),
         });
         setEditingHotel(hotel);
         setIsModalVisible(true);
-      } else {
-        message.error('找不到飯店資料');
       }
-    } catch (error) {
-      message.error('讀取資料失敗');
+    } catch {
+      message.error("編輯失敗");
+    }
+  };
+
+  const handleSubmit = async (values: any) => {
+    const body = {
+      ...values,
+      checkInTime: values.checkInTime.format("HH:mm"),
+      checkOutTime: values.checkOutTime.format("HH:mm"),
+      photos: values.photos?.split(",").map((s: string) => s.trim()),
+      nearbyAttractions: values.nearbyAttractions?.split(",").map((s: string) => s.trim()),
+      facilities: {
+        wifi: values.facilities?.includes("wifi") || false,
+        parking: values.facilities?.includes("parking") || false,
+        pool: values.facilities?.includes("pool") || false,
+        gym: values.facilities?.includes("gym") || false,
+        spa: values.facilities?.includes("spa") || false,
+        restaurant: values.facilities?.includes("restaurant") || false,
+        bar: values.facilities?.includes("bar") || false,
+      },
+    };
+
+    const res = editingHotel
+      ? await request("PUT", `/hotels/${editingHotel._id}`, body)
+      : await request("POST", "/hotels", body);
+
+    if (res.success) {
+      message.success(editingHotel ? "編輯成功" : "新增成功");
+      setIsModalVisible(false);
+      form.resetFields();
+      fetchHotels();
+      setEditingHotel(null);
+    } else {
+      message.error(res.message || "操作失敗");
+    }
+  };
+
+  const handleViewRooms = async (hotelId: string) => {
+    try {
+      const res: ApiResponse = await request("GET", `/rooms/findHotel/${hotelId}`);
+      if (res.success && res.data) {
+        setRoomList(res.data);
+        setRoomModalVisible(true);
+      } else {
+        message.error("查詢房型失敗");
+      }
+    } catch {
+      message.error("查詢房型發生錯誤");
     }
   };
 
@@ -159,26 +180,10 @@ const Hotels: React.FC = () => {
   }, []);
 
   const columns: ColumnsType<HotelType> = [
-    {
-      title: "飯店名稱",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "城市",
-      dataIndex: "city",
-      key: "city",
-    },
-    {
-      title: "類型",
-      dataIndex: "type",
-      key: "type",
-    },
-    {
-      title: "評分",
-      dataIndex: "rating",
-      key: "rating",
-    },
+    { title: "飯店名稱", dataIndex: "name", key: "name" },
+    { title: "城市", dataIndex: "city", key: "city" },
+    { title: "類型", dataIndex: "type", key: "type" },
+    { title: "評分", dataIndex: "rating", key: "rating" },
     {
       title: "最低價格",
       dataIndex: "cheapestPrice",
@@ -189,17 +194,10 @@ const Hotels: React.FC = () => {
       title: "操作",
       key: "action",
       render: (_, record) => (
-        <Space size="middle">
-          <Button type="primary" onClick={() => handleEdit(record._id)}>
-            編輯
-          </Button>
-          <Button
-            type="primary"
-            danger
-            onClick={() => handleDelete(record._id)}
-          >
-            刪除
-          </Button>
+        <Space>
+          <Button type="primary" onClick={() => handleEdit(record._id)}>編輯</Button>
+          <Button danger onClick={() => handleDelete(record._id)}>刪除</Button>
+          <Button onClick={() => handleViewRooms(record._id)}>查看房型</Button>
         </Space>
       ),
     },
@@ -207,105 +205,138 @@ const Hotels: React.FC = () => {
 
   return (
     <div className="hotels-container">
-      <div className="hotels-header" style={{ marginBottom: 16 }}>
-        <Button type="primary" onClick={() => {
-          setEditingHotel(null);
-          form.resetFields();
-          setIsModalVisible(true);
-        }}>
-          新增飯店
-        </Button>
-      </div>
+      <Button type="primary" onClick={() => {
+        setEditingHotel(null);
+        setIsModalVisible(true);
+        form.resetFields();
+      }}>新增飯店</Button>
 
       <Table
         columns={columns}
         dataSource={hotels}
         rowKey="_id"
         loading={loading}
-        locale={{ emptyText: "尚無飯店資料" }}
+        style={{ marginTop: 16 }}
       />
 
       <Modal
-        title={editingHotel ? '編輯飯店' : '新增飯店'}
+        title={editingHotel ? "編輯飯店" : "新增飯店"}
         open={isModalVisible}
         onCancel={() => {
           setIsModalVisible(false);
           setEditingHotel(null);
-          form.resetFields();
         }}
         footer={null}
       >
         <Form form={form} onFinish={handleSubmit} layout="vertical">
-          <Form.Item name="name" label="飯店名稱" rules={[{ required: true, message: '請輸入飯店名稱' }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item name="city" label="城市" rules={[{ required: true, message: '請輸入城市' }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item name="type" label="類型" rules={[{ required: true, message: '請輸入類型' }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item name="address" label="地址" rules={[{ required: true, message: '請輸入地址' }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item name="cheapestPrice" label="最低價格" rules={[{ required: true, message: '請輸入最低價格' }]}>
-            <InputNumber min={0} className="full-width" />
-          </Form.Item>
-
-
-          <Form.Item name="photos" label="照片 (逗號分隔)" rules={[{ required: true, message: '請輸入照片' }]}>
-            <Input placeholder="https://..., https://..." />
-          </Form.Item>
-          <Form.Item name="title" label="標題" rules={[{ required: true, message: '請輸入標題' }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item name="desc" label="描述" rules={[{ required: true, message: '請輸入描述' }]}>
-            <Input.TextArea />
-          </Form.Item>
-          <Form.Item name="checkInTime" label="入住時間" rules={[{ required: true, message: '請選擇入住時間' }]}>
-            <TimePicker format="HH:mm" className="full-width" />
-          </Form.Item>
-          <Form.Item name="checkOutTime" label="退房時間" rules={[{ required: true, message: '請選擇退房時間' }]}>
-            <TimePicker format="HH:mm" className="full-width" />
-          </Form.Item>
-          <Form.Item name="email" label="聯絡信箱" rules={[{ required: true, message: '請輸入聯絡信箱' }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item name="phone" label="聯絡電話" rules={[{ required: true, message: '請輸入聯絡電話' }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item label="座標 - 緯度" required>
-            <Form.Item name={['coordinates', 'latitude']} rules={[{ required: true, message: '請輸入緯度' }]} noStyle>
-              <InputNumber className="full-width" />
-            </Form.Item>
-          </Form.Item>
-          <Form.Item label="座標 - 經度" required>
-            <Form.Item name={['coordinates', 'longitude']} rules={[{ required: true, message: '請輸入經度' }]} noStyle>
-              <InputNumber className="full-width" />
-            </Form.Item>
-          </Form.Item>
-          <Form.Item name="nearbyAttractions" label="附近景點 (逗號分隔)" rules={[{ required: true, message: '請輸入景點' }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item name="facilities" label="設施">
-            <Checkbox.Group>
-              <Checkbox value="wifi">Wi-Fi</Checkbox>
-              <Checkbox value="parking">停車場</Checkbox>
-              <Checkbox value="pool">游泳池</Checkbox>
-              <Checkbox value="gym">健身房</Checkbox>
-              <Checkbox value="spa">SPA</Checkbox>
-              <Checkbox value="restaurant">餐廳</Checkbox>
-              <Checkbox value="bar">酒吧</Checkbox>
-            </Checkbox.Group>
-          </Form.Item>
-
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              提交
-            </Button>
-          </Form.Item>
+          <Form.Item name="name" label="飯店名稱" rules={[{ required: true }]}><Input /></Form.Item>
+          <Form.Item name="city" label="城市" rules={[{ required: true }]}><Input /></Form.Item>
+          <Form.Item name="type" label="類型" rules={[{ required: true }]}><Input /></Form.Item>
+          <Form.Item name="address" label="地址" rules={[{ required: true }]}><Input /></Form.Item>
+          <Form.Item name="cheapestPrice" label="最低價格" rules={[{ required: true }]}><InputNumber min={0} style={{ width: '100%' }} /></Form.Item>
+          <Form.Item name="photos" label="照片 (逗號分隔)" rules={[{ required: true }]}><Input /></Form.Item>
+          <Form.Item name="title" label="標題" rules={[{ required: true }]}><Input /></Form.Item>
+          <Form.Item name="desc" label="描述" rules={[{ required: true }]}><Input.TextArea /></Form.Item>
+          <Form.Item name="checkInTime" label="入住時間" rules={[{ required: true }]}><TimePicker format="HH:mm" style={{ width: '100%' }} /></Form.Item>
+          <Form.Item name="checkOutTime" label="退房時間" rules={[{ required: true }]}><TimePicker format="HH:mm" style={{ width: '100%' }} /></Form.Item>
+          <Form.Item name="email" label="聯絡信箱" rules={[{ required: true }]}><Input /></Form.Item>
+          <Form.Item name="phone" label="聯絡電話" rules={[{ required: true }]}><Input /></Form.Item>
+          <Form.Item label="座標 - 緯度"><Form.Item name={["coordinates", "latitude"]} noStyle rules={[{ required: true }]}><InputNumber style={{ width: '100%' }} /></Form.Item></Form.Item>
+          <Form.Item label="座標 - 經度"><Form.Item name={["coordinates", "longitude"]} noStyle rules={[{ required: true }]}><InputNumber style={{ width: '100%' }} /></Form.Item></Form.Item>
+          <Form.Item name="nearbyAttractions" label="附近景點 (逗號分隔)" rules={[{ required: true }]}><Input /></Form.Item>
+          <Form.Item name="facilities" label="設施"><Checkbox.Group>
+            <Checkbox value="wifi">Wi-Fi</Checkbox>
+            <Checkbox value="parking">停車場</Checkbox>
+            <Checkbox value="pool">游泳池</Checkbox>
+            <Checkbox value="gym">健身房</Checkbox>
+            <Checkbox value="spa">SPA</Checkbox>
+            <Checkbox value="restaurant">餐廳</Checkbox>
+            <Checkbox value="bar">酒吧</Checkbox>
+          </Checkbox.Group></Form.Item>
+          <Form.Item><Button type="primary" htmlType="submit">提交</Button></Form.Item>
         </Form>
       </Modal>
+
+      <Modal
+        title="房型列表"
+        open={roomModalVisible}
+        onCancel={() => setRoomModalVisible(false)}
+        width={1000}
+        footer={null}
+      >
+        <Table
+          dataSource={roomList}
+          rowKey="_id"
+          columns={[
+            {
+              title: "房型名稱",
+              dataIndex: "title",
+            },
+            {
+              title: "平日價格",
+              dataIndex: "pricing",
+              render: (pricing: any[]) => {
+                const weekdays = [1, 2, 3, 4, 0];
+                const item = pricing?.find(p => p.days_of_week?.some(d => weekdays.includes(d)));
+                return item ? `$${item.price}` : "-";
+              }
+            },
+            {
+              title: "週六價格",
+              dataIndex: "pricing",
+              render: (pricing: any[]) => {
+                const item = pricing?.find(p => p.days_of_week?.includes(5));
+                return item ? `$${item.price}` : "-";
+              }
+            },
+            {
+              title: "週日價格",
+              dataIndex: "pricing",
+              render: (pricing: any[]) => {
+                const item = pricing?.find(p => p.days_of_week?.includes(6));
+                return item ? `$${item.price}` : "-";
+              }
+            },
+            {
+              title: "特殊節日",
+              dataIndex: "holidays",
+              render: (holidays: any[]) => {
+                if (!holidays || holidays.length === 0) return "—";
+                return holidays.map(h => `${h.date}：$${h.price}`).join("\n");
+              }
+            },
+            {
+              title: "付款方式",
+              dataIndex: "paymentOptions",
+              render: (options: any[]) => {
+                if (!options || options.length === 0) return "—";
+                return options.map(opt => opt.description).join("、");
+              }
+            },
+            {
+              title: "服務項目",
+              dataIndex: "service",
+              render: (service: any) => {
+                if (!service) return "—";
+                return (
+                  <div style={{ display: "flex", gap: 8 }}>
+                    {service.breakfast && <CoffeeOutlined title="含早餐" />}
+                    {service.parking && <CarOutlined title="含停車" />}
+                    {service.dinner && <ShoppingOutlined title="含晚餐" />}
+                  </div>
+                );
+              }
+            },
+            {
+              title: "可住人數",
+              dataIndex: "maxPeople"
+            }
+          ]}
+          pagination={false}
+          scroll={{ x: true }}
+        />
+      </Modal>
+
     </div>
   );
 };
