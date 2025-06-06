@@ -7,8 +7,8 @@ import {
   Modal,
   Form,
   Input,
-  DatePicker,
   InputNumber,
+  DatePicker,
   Empty,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -16,21 +16,33 @@ import dayjs from 'dayjs';
 import { request } from '../utils/apiService';
 import './flights.scss';
 
+interface FlightSchedule {
+  _id: string;
+  departureDate: string;
+  arrivalDate: string;
+  availableSeats: {
+    ECONOMY?: number;
+    BUSINESS?: number;
+    FIRST?: number;
+  };
+}
+
 interface FlightType {
   _id: string;
   flightNumber: string;
-  departure: string;
-  arrival: string;
-  departureTime: string;
-  arrivalTime: string;
-  price: number;
-  seats: number;
+  route: {
+    departureCity: string;
+    arrivalCity: string;
+    flightDuration: number;
+  };
+  schedules: FlightSchedule[];
 }
 
 const Flights: React.FC = () => {
   const [flights, setFlights] = useState<FlightType[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [editingFlight, setEditingFlight] = useState<FlightType | null>(null);
   const [form] = Form.useForm();
 
   const fetchFlights = async () => {
@@ -40,7 +52,6 @@ const Flights: React.FC = () => {
       if (res.success && Array.isArray(res.data)) {
         setFlights(res.data);
       } else {
-        setFlights([]);
         message.warning('獲取資料格式錯誤');
       }
     } catch (error) {
@@ -64,24 +75,69 @@ const Flights: React.FC = () => {
     }
   };
 
-  const handleAdd = async (values: any) => {
+  const handleEdit = (flight: FlightType) => {
+    setEditingFlight(flight);
+    setIsModalVisible(true);
+    form.setFieldsValue({
+      flightNumber: flight.flightNumber,
+      departureCity: flight.route.departureCity,
+      arrivalCity: flight.route.arrivalCity,
+      flightDuration: flight.route.flightDuration,
+      departureDate: dayjs(flight.schedules[0].departureDate),
+      seatsECONOMY: flight.schedules[0].availableSeats?.ECONOMY || 0,
+      seatsBUSINESS: flight.schedules[0].availableSeats?.BUSINESS || 0,
+      seatsFIRST: flight.schedules[0].availableSeats?.FIRST || 0,
+    });
+  };
+
+  const handleSubmit = async (values: any) => {
+    const body = {
+      flightNumber: values.flightNumber,
+      route: {
+        departureCity: values.departureCity,
+        arrivalCity: values.arrivalCity,
+        flightDuration: values.flightDuration,
+      },
+      cabinClasses: [
+        {
+          category: 'ECONOMY',
+          totalSeats: values.seatsECONOMY,
+          basePrice: 1000,
+        },
+        {
+          category: 'BUSINESS',
+          totalSeats: values.seatsBUSINESS,
+          basePrice: 2000,
+        },
+        {
+          category: 'FIRST',
+          totalSeats: values.seatsFIRST,
+          basePrice: 3000,
+        },
+      ].filter(c => c.totalSeats > 0),
+      schedules: [
+        {
+          departureDate: values.departureDate.format(),
+        },
+      ],
+    };
+
     try {
-      const formattedValues = {
-        ...values,
-        departureTime: values.departureTime.format(),
-        arrivalTime: values.arrivalTime.format(),
-      };
-      const res = await request('POST', '/flight', formattedValues);
+      const res = editingFlight
+        ? await request('PUT', `/flight/${editingFlight._id}`, body)
+        : await request('POST', '/flight', body);
+
       if (res.success) {
-        message.success('新增航班成功');
+        message.success(`${editingFlight ? '編輯' : '新增'}航班成功`);
         setIsModalVisible(false);
         form.resetFields();
+        setEditingFlight(null);
         fetchFlights();
       } else {
-        message.error(res.message || '新增航班失敗');
+        message.error(res.message || `${editingFlight ? '編輯' : '新增'}航班失敗`);
       }
     } catch (error) {
-      message.error('新增航班失敗');
+      message.error(`${editingFlight ? '編輯' : '新增'}航班失敗`);
     }
   };
 
@@ -96,47 +152,55 @@ const Flights: React.FC = () => {
       key: 'flightNumber',
     },
     {
-      title: '出發地',
-      dataIndex: 'departure',
-      key: 'departure',
+      title: '航線',
+      key: 'route',
+      render: (_, record) => `${record.route.departureCity} → ${record.route.arrivalCity}`,
     },
     {
-      title: '目的地',
-      dataIndex: 'arrival',
-      key: 'arrival',
+      title: '飛行時間',
+      key: 'flightDuration',
+      render: (_, record) => `${record.route.flightDuration} 分鐘`,
     },
     {
       title: '出發時間',
-      dataIndex: 'departureTime',
-      key: 'departureTime',
-      render: (time: string) => dayjs(time).format('YYYY-MM-DD HH:mm'),
+      key: 'departureDate',
+      render: (_, record) =>
+        record.schedules[0]
+          ? dayjs(record.schedules[0].departureDate).format('YYYY-MM-DD HH:mm')
+          : '-',
     },
     {
       title: '到達時間',
-      dataIndex: 'arrivalTime',
-      key: 'arrivalTime',
-      render: (time: string) => dayjs(time).format('YYYY-MM-DD HH:mm'),
+      key: 'arrivalDate',
+      render: (_, record) =>
+        record.schedules[0]
+          ? dayjs(record.schedules[0].arrivalDate).format('YYYY-MM-DD HH:mm')
+          : '-',
     },
     {
-      title: '價格',
-      dataIndex: 'price',
-      key: 'price',
-      render: (price: number) => `$${price}`,
+      title: '經濟艙',
+      key: 'economy',
+      render: (_, record) => record.schedules[0]?.availableSeats?.ECONOMY ?? '-',
     },
     {
-      title: '剩餘座位',
-      dataIndex: 'seats',
-      key: 'seats',
+      title: '商務艙',
+      key: 'business',
+      render: (_, record) => record.schedules[0]?.availableSeats?.BUSINESS ?? '-',
+    },
+    {
+      title: '頭等艙',
+      key: 'first',
+      render: (_, record) => record.schedules[0]?.availableSeats?.FIRST ?? '-',
     },
     {
       title: '操作',
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <Button type="primary" onClick={() => console.log('編輯', record._id)}>
+          <Button type="primary" onClick={() => handleEdit(record)}>
             編輯
           </Button>
-          <Button type="primary" danger onClick={() => handleDelete(record._id)}>
+          <Button danger onClick={() => handleDelete(record._id)}>
             刪除
           </Button>
         </Space>
@@ -161,12 +225,16 @@ const Flights: React.FC = () => {
       />
 
       <Modal
-        title="新增航班"
+        title={editingFlight ? '編輯航班' : '新增航班'}
         open={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
+        onCancel={() => {
+          setIsModalVisible(false);
+          form.resetFields();
+          setEditingFlight(null);
+        }}
         footer={null}
       >
-        <Form form={form} onFinish={handleAdd} layout="vertical">
+        <Form form={form} onFinish={handleSubmit} layout="vertical">
           <Form.Item
             name="flightNumber"
             label="航班號"
@@ -175,46 +243,41 @@ const Flights: React.FC = () => {
             <Input />
           </Form.Item>
           <Form.Item
-            name="departure"
-            label="出發地"
-            rules={[{ required: true, message: '請輸入出發地' }]}
+            name="departureCity"
+            label="出發城市"
+            rules={[{ required: true, message: '請輸入出發城市' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name="arrival"
-            label="目的地"
-            rules={[{ required: true, message: '請輸入目的地' }]}
+            name="arrivalCity"
+            label="到達城市"
+            rules={[{ required: true, message: '請輸入到達城市' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name="departureTime"
+            name="flightDuration"
+            label="飛行時間（分鐘）"
+            rules={[{ required: true, message: '請輸入飛行時間' }]}
+          >
+            <InputNumber min={1} className="full-width" />
+          </Form.Item>
+          <Form.Item
+            name="departureDate"
             label="出發時間"
             rules={[{ required: true, message: '請選擇出發時間' }]}
           >
-            <DatePicker showTime />
+            <DatePicker showTime className="full-width" />
           </Form.Item>
-          <Form.Item
-            name="arrivalTime"
-            label="到達時間"
-            rules={[{ required: true, message: '請選擇到達時間' }]}
-          >
-            <DatePicker showTime />
+          <Form.Item name="seatsECONOMY" label="經濟艙座位" rules={[{ required: true, message: '請輸入經濟艙座位數' }]}>
+            <InputNumber min={0} className="full-width" />
           </Form.Item>
-          <Form.Item
-            name="price"
-            label="價格"
-            rules={[{ required: true, message: '請輸入價格' }]}
-          >
-            <InputNumber min={0} />
+          <Form.Item name="seatsBUSINESS" label="商務艙座位">
+            <InputNumber min={0} className="full-width" />
           </Form.Item>
-          <Form.Item
-            name="seats"
-            label="座位數"
-            rules={[{ required: true, message: '請輸入座位數' }]}
-          >
-            <InputNumber min={0} />
+          <Form.Item name="seatsFIRST" label="頭等艙座位">
+            <InputNumber min={0} className="full-width" />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">

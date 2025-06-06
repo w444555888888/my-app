@@ -7,20 +7,19 @@ import './orders.scss';
 
 interface OrderType {
   _id: string;
+  hotelId: string;
+  roomId: string;
   userId: string;
-  flightId: string;
-  status: string;
+  checkInDate: string;
+  checkOutDate: string;
   totalPrice: number;
-  createdAt: string;
-  flight: {
-    flightNumber: string;
-    departure: string;
-    arrival: string;
-    departureTime: string;
-  };
-  user: {
-    username: string;
-    email: string;
+  status: string;
+  createdAt?: string;
+  updatedAt?: string;
+  payment: {
+    method: string;
+    status: string;
+    transactionId: string;
   };
 }
 
@@ -32,7 +31,6 @@ const Orders: React.FC = () => {
     try {
       setLoading(true);
       const res = await request('GET', '/order');
-
       if (res.success && res.data) {
         setOrders(res.data.length > 0 ? res.data : []);
       }
@@ -45,7 +43,7 @@ const Orders: React.FC = () => {
 
   const handleCancel = async (id: string) => {
     try {
-      await request('POST', `flight/orders/${id}/cancel`);
+      await request('DELETE', `/order/${id}`);
       message.success('取消訂單成功');
       fetchOrders();
     } catch (error) {
@@ -65,36 +63,45 @@ const Orders: React.FC = () => {
       width: 220,
     },
     {
-      title: '用戶名',
-      dataIndex: ['user', 'username'],
-      key: 'username',
+      title: '飯店 ID',
+      dataIndex: 'hotelId',
+      key: 'hotelId',
     },
     {
-      title: '航班號',
-      dataIndex: ['flight', 'flightNumber'],
-      key: 'flightNumber',
+      title: '房型 ID',
+      dataIndex: 'roomId',
+      key: 'roomId',
     },
     {
-      title: '航線',
-      key: 'route',
-      render: (_, record) => (
-        <span>
-          {record.flight?.departure || '-'} → {record.flight?.arrival || '-'}
-        </span>
-      ),
+      title: '入住日期',
+      dataIndex: 'checkInDate',
+      key: 'checkInDate',
+      render: (val: string) => dayjs(val).format('YYYY-MM-DD'),
     },
     {
-      title: '出發時間',
-      dataIndex: ['flight', 'departureTime'],
-      key: 'departureTime',
-      render: (time: string) =>
-        time ? dayjs(time).format('YYYY-MM-DD HH:mm') : '-',
+      title: '退房日期',
+      dataIndex: 'checkOutDate',
+      key: 'checkOutDate',
+      render: (val: string) => dayjs(val).format('YYYY-MM-DD'),
     },
     {
       title: '總價',
       dataIndex: 'totalPrice',
       key: 'totalPrice',
       render: (price: number) => `$${price}`,
+    },
+    {
+      title: '付款方式',
+      dataIndex: ['payment', 'method'],
+      key: 'paymentMethod',
+    },
+    {
+      title: '付款狀態',
+      dataIndex: ['payment', 'status'],
+      key: 'paymentStatus',
+      render: (status: string) => (
+        <Tag color={status === 'pending' ? 'gold' : 'green'}>{status}</Tag>
+      ),
     },
     {
       title: '狀態',
@@ -106,23 +113,16 @@ const Orders: React.FC = () => {
             ? 'green'
             : status === 'cancelled'
             ? 'red'
-            : 'gold';
+            : 'orange';
         return <Tag color={color}>{status.toUpperCase()}</Tag>;
       },
-    },
-    {
-      title: '下單時間',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (time: string) =>
-        time ? dayjs(time).format('YYYY-MM-DD HH:mm') : '-',
     },
     {
       title: '操作',
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          {record.status === 'confirmed' && (
+          {record.status === 'pending' && (
             <Button
               type="primary"
               danger

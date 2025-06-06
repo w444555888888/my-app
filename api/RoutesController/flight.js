@@ -17,6 +17,10 @@ export const createFlight = async (req, res, next) => {
         const { route, schedules, cabinClasses } = req.body;
         const { departureCity } = route;
 
+        if (!cabinClasses) {
+            return next(errorMessage(400, "缺少 cabinClasses"));
+        }
+
         // 出發城市的時區
         const city = await City.findOne({ name: departureCity });
         if (!city) {
