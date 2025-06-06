@@ -14,7 +14,8 @@ import {
   Input,
   InputNumber,
   Checkbox,
-  TimePicker
+  TimePicker,
+  Select
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import dayjs from 'dayjs';
@@ -78,6 +79,54 @@ const Hotels: React.FC = () => {
   const [editingHotel, setEditingHotel] = useState<HotelType | null>(null);
   const [roomList, setRoomList] = useState<RoomType[]>([]);
   const [roomModalVisible, setRoomModalVisible] = useState(false);
+  const [roomEditModalVisible, setRoomEditModalVisible] = useState(false);
+  const [editingRoom, setEditingRoom] = useState<RoomType | null>(null);
+  const [roomForm] = Form.useForm();
+
+  const handleEditRoom = (room: RoomType) => {
+    setEditingRoom(room);
+    setRoomEditModalVisible(true);
+    roomForm.setFieldsValue({
+      ...room,
+      desc: room?.desc?.join(", "),
+    });
+  };
+
+  const handleAddRoom = () => {
+    setEditingRoom(null);
+    roomForm.resetFields();
+    setRoomEditModalVisible(true);
+  };
+
+  const handleRoomSubmit = async (values: any) => {
+    try {
+      const hotelId = editingHotel?._id;
+      const url = editingRoom ? `/rooms/${editingRoom._id}` : "/rooms";
+      const method = editingRoom ? "PUT" : "POST";
+
+      const payload = {
+        ...values,
+        hotelId,
+        desc: values.desc.split(',').map(str => str.trim()).filter(Boolean),
+        pricing: values.pricing,
+        paymentOptions: values.paymentOptions,
+        service: values.service,
+        holidays: values.holidays,
+      };
+
+      const res = await request(method, url, payload);
+      if (res.success) {
+        message.success(editingRoom ? "房型編輯成功" : "房型新增成功");
+        setRoomModalVisible(false);
+        setRoomEditModalVisible(false);
+        fetchHotels();
+      } else {
+        message.error(res.message || "操作失敗");
+      }
+    } catch {
+      message.error("提交房型失敗");
+    }
+  };
 
   const fetchHotels = async () => {
     try {
@@ -264,6 +313,7 @@ const Hotels: React.FC = () => {
         width={1000}
         footer={null}
       >
+        <Button type="primary" onClick={handleAddRoom} style={{ marginBottom: 8 }}>新增房型</Button>
         <Table
           dataSource={roomList}
           rowKey="_id"
@@ -330,11 +380,138 @@ const Hotels: React.FC = () => {
             {
               title: "可住人數",
               dataIndex: "maxPeople"
+            },
+            {
+              title: "操作",
+              render: (_: any, record: any) => (
+                <Button type="link" onClick={() => handleEditRoom(record)}>編輯</Button>
+              )
             }
           ]}
           pagination={false}
           scroll={{ x: true }}
         />
+      </Modal>
+
+
+
+      <Modal
+        title={editingRoom ? "編輯房型" : "新增房型"}
+        open={roomEditModalVisible}
+        onCancel={() => setRoomEditModalVisible(false)}
+        footer={null}
+      >
+        <Form form={roomForm} onFinish={handleRoomSubmit} layout="vertical">
+          <Form.Item name="title" label="房型名稱" rules={[{ required: true }]}><Input /></Form.Item>
+          <Form.Item name="roomType" label="房型類型" rules={[{ required: true }]}>
+            <Select>
+              <Select.Option value="Single Room">單人房</Select.Option>
+              <Select.Option value="Double Room">雙人房</Select.Option>
+              <Select.Option value="Twin Room">雙床房</Select.Option>
+              <Select.Option value="Family Room">家庭房</Select.Option>
+              <Select.Option value="Deluxe Room">豪華房</Select.Option>
+            </Select>
+          </Form.Item>
+          <Form.Item name="maxPeople" label="可住人數" rules={[{ required: true }]}><InputNumber min={1} style={{ width: '100%' }} /></Form.Item>
+
+          <Form.Item
+            name="desc"
+            label="設施（以逗號分隔）"
+            rules={[{ required: true, message: "請輸入設施名稱（以逗號分隔）" }]}
+          >
+            <Input.TextArea placeholder="例如：免費盥洗用品, 浴袍, 保險箱" rows={4} />
+          </Form.Item>
+
+          <Form.Item label="服務選項" required>
+            <Form.Item name={['service', 'breakfast']} valuePropName="checked" noStyle>
+              <Checkbox>含早餐</Checkbox>
+            </Form.Item>
+            <Form.Item name={['service', 'dinner']} valuePropName="checked" noStyle>
+              <Checkbox>含晚餐</Checkbox>
+            </Form.Item>
+            <Form.Item name={['service', 'parking']} valuePropName="checked" noStyle>
+              <Checkbox>提供停車</Checkbox>
+            </Form.Item>
+          </Form.Item>
+
+          <Form.List name="paymentOptions">
+            {(fields, { add, remove }) => (
+              <>
+                {fields.map(({ key, name, ...restField }) => (
+                  <Space key={key} align="baseline">
+                    <Form.Item {...restField} name={[name, 'type']} rules={[{ required: true }]}>
+                      <Input placeholder="付款類型" />
+                    </Form.Item>
+                    <Form.Item {...restField} name={[name, 'description']} rules={[{ required: true }]}>
+                      <Input placeholder="付款描述" />
+                    </Form.Item>
+                    <Form.Item {...restField} name={[name, 'refundable']} valuePropName="checked">
+                      <Checkbox>可退款</Checkbox>
+                    </Form.Item>
+                    <Button danger onClick={() => remove(name)}>刪除</Button>
+                  </Space>
+                ))}
+                <Form.Item>
+                  <Button type="dashed" onClick={() => add()}>新增付款方式</Button>
+                </Form.Item>
+              </>
+            )}
+          </Form.List>
+
+          <Form.List name="pricing">
+            {(fields, { add, remove }) => (
+              <>
+                {fields.map(({ key, name, ...restField }) => (
+                  <Space key={key} align="baseline">
+                    <Form.Item {...restField} name={[name, 'days_of_week']} rules={[{ required: true }]}>
+                      <Select mode="multiple" placeholder="選擇星期">
+                        <Select.Option value={0}>週日</Select.Option>
+                        <Select.Option value={1}>週一</Select.Option>
+                        <Select.Option value={2}>週二</Select.Option>
+                        <Select.Option value={3}>週三</Select.Option>
+                        <Select.Option value={4}>週四</Select.Option>
+                        <Select.Option value={5}>週五</Select.Option>
+                        <Select.Option value={6}>週六</Select.Option>
+                      </Select>
+                    </Form.Item>
+                    <Form.Item {...restField} name={[name, 'price']} rules={[{ required: true }]}>
+                      <InputNumber placeholder="價格" />
+                    </Form.Item>
+                    <Button danger onClick={() => remove(name)}>刪除</Button>
+                  </Space>
+                ))}
+                <Form.Item>
+                  <Button type="dashed" onClick={() => add()}>新增價格</Button>
+                </Form.Item>
+              </>
+            )}
+          </Form.List>
+
+          <Form.List name="holidays">
+            {(fields, { add, remove }) => (
+              <>
+                {fields.map(({ key, name, ...restField }) => (
+                  <Space key={key} align="baseline">
+                    <Form.Item {...restField} name={[name, 'date']} rules={[{ required: true }]}>
+                      <Input placeholder="日期 2025-01-01" />
+                    </Form.Item>
+                    <Form.Item {...restField} name={[name, 'price']} rules={[{ required: true }]}>
+                      <InputNumber placeholder="價格" />
+                    </Form.Item>
+                    <Button danger onClick={() => remove(name)}>刪除</Button>
+                  </Space>
+                ))}
+                <Form.Item>
+                  <Button type="dashed" onClick={() => add()}>新增特殊節日</Button>
+                </Form.Item>
+              </>
+            )}
+          </Form.List>
+
+          <Form.Item>
+            <Button type="primary" htmlType="submit">提交</Button>
+          </Form.Item>
+        </Form>
       </Modal>
 
     </div>
