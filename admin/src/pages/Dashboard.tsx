@@ -6,10 +6,10 @@ import {
   ShoppingCartOutlined,
   ScheduleOutlined,
   DashboardOutlined,
-  FileDoneOutlined
+  FileDoneOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import './dashboard.scss'; 
+import './dashboard.scss';
 
 const { Header, Sider, Content } = Layout;
 
@@ -45,7 +45,20 @@ const Dashboard: React.FC = () => {
         />
       </Sider>
       <Layout>
-        <Header className="dashboard__header" />
+        <Header className="dashboard__header">
+          <div className="dashboard__header-content">
+            <span className="dashboard__welcome"><UserOutlined/>管理員</span>
+            <button
+              className="dashboard__logout"
+              onClick={() => {
+                document.cookie = "JWT_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                navigate('/login');
+              }}
+            >
+              登出
+            </button>
+          </div>
+        </Header>
         <Content className="dashboard__content">
           <Outlet />
         </Content>

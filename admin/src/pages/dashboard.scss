@@ -1,30 +1,59 @@
 .dashboard {
-  min-height: 100vh;
+    min-height: 100vh;
+    
+    &__logo {
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 16px;
+    }
 
-  &__logo {
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 16px;
-  }
+    &__icon {
+        font-size: 24px;
+        margin-right: 8px;
+    }
 
-  &__icon {
-    font-size: 24px;
-    margin-right: 8px;
-  }
+    &__header {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding: 0 20px;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        height: 64px;
+        z-index: 1;
 
-  &__header {
-    padding: 0;
-    background: #fff;
-  }
+        &-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-  &__content {
-    margin: 24px 16px;
-    padding: 24px;
-    background: #fff;
-  }
+        .dashboard__welcome {
+            font-weight: 500;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .dashboard__logout {
+            background: transparent;
+            border: 1px solid #d9d9d9;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #333;
+
+            &:hover {
+                background-color: #f5222d;
+                color: #fff;
+                border-color: #f5222d;
+            }
+        }
+    }
 }
