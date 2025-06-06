@@ -17,6 +17,7 @@ import Users from './pages/Users';
 import Hotels from './pages/Hotels';
 import Orders from './pages/Orders';
 import Flights from './pages/Flights';
+import FlightOrders from './pages/FlightOrders';
 
 
 const getCookie = (name: string) => {
@@ -48,6 +49,7 @@ function App() {
             <Route path="hotels" element={<Hotels />} />
             <Route path="orders" element={<Orders />} />
             <Route path="flights" element={<Flights />} />
+            <Route path="flight-orders" element={<FlightOrders />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Route>
         </Routes>

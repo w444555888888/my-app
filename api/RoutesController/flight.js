@@ -254,6 +254,17 @@ export const deleteFlight = async (req, res) => {
  * 訂票FlightOrder
 */
 
+// 後台用：獲取全部機票訂單
+export const getAllFlightOrders = async (req, res, next) => {
+  try {
+    const orders = await FlightOrder.find()
+
+    return sendResponse(res, 200, orders, "獲取所有機票訂單成功");
+  } catch (err) {
+    return next(errorMessage(500, "獲取機票訂單失敗", err));
+  }
+};
+
 
 // 創建航班訂單
 export const createFlightOrder = async (req, res) => {

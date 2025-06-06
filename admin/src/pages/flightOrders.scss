@@ -1,0 +1,19 @@
+.flight-orders-container {
+  padding: 24px;
+
+  h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  .ant-table {
+    background: #fff;
+    border-radius: 8px;
+  }
+
+  .ant-tag {
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+}

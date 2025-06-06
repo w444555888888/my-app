@@ -6,8 +6,10 @@ import {
   ShoppingCartOutlined,
   ScheduleOutlined,
   DashboardOutlined,
+  FileDoneOutlined
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import './dashboard.scss'; 
 
 const { Header, Sider, Content } = Layout;
 
@@ -20,6 +22,7 @@ const Dashboard: React.FC = () => {
     { key: 'hotels', icon: <HomeOutlined />, label: '飯店管理' },
     { key: 'flights', icon: <ScheduleOutlined />, label: '航班管理' },
     { key: 'orders', icon: <ShoppingCartOutlined />, label: '訂單管理' },
+    { key: 'flight-orders', icon: <FileDoneOutlined />, label: '機票訂單' }
   ];
 
   const handleMenuClick = ({ key }: { key: string }) => {
@@ -27,21 +30,10 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout className="dashboard">
       <Sider width={200} theme="dark">
-        <div
-          style={{
-            height: 64,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white',
-            fontSize: 18,
-            fontWeight: 'bold',
-            marginBottom: 16,
-          }}
-        >
-          <DashboardOutlined style={{ fontSize: 24, marginRight: 8 }} />
+        <div className="dashboard__logo">
+          <DashboardOutlined className="dashboard__icon" />
           訂房後台
         </div>
         <Menu
@@ -53,8 +45,8 @@ const Dashboard: React.FC = () => {
         />
       </Sider>
       <Layout>
-        <Header style={{ padding: 0, background: '#fff' }} />
-        <Content style={{ margin: '24px 16px', padding: 24, background: '#fff' }}>
+        <Header className="dashboard__header" />
+        <Content className="dashboard__content">
           <Outlet />
         </Content>
       </Layout>
