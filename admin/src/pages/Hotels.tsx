@@ -59,7 +59,7 @@ interface HotelType {
 interface RoomType {
   _id: string;
   name: string;
-  description: string;
+  desc?: string[];
   maxPeople: number;
   price: number;
   hotelId: string;
@@ -77,6 +77,7 @@ const Hotels: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [editingHotel, setEditingHotel] = useState<HotelType | null>(null);
+  const [editingHotelId, setEditingHotelId] = useState<string | null>(null);
   const [roomList, setRoomList] = useState<RoomType[]>([]);
   const [roomModalVisible, setRoomModalVisible] = useState(false);
   const [roomEditModalVisible, setRoomEditModalVisible] = useState(false);
@@ -100,14 +101,13 @@ const Hotels: React.FC = () => {
 
   const handleRoomSubmit = async (values: any) => {
     try {
-      const hotelId = editingHotel?._id;
       const url = editingRoom ? `/rooms/${editingRoom._id}` : "/rooms";
       const method = editingRoom ? "PUT" : "POST";
 
       const payload = {
         ...values,
-        hotelId,
-        desc: values.desc.split(',').map(str => str.trim()).filter(Boolean),
+        hotelId: editingHotelId,
+        desc: values.desc.split(',').map((str: string) => str.trim()).filter(Boolean),
         pricing: values.pricing,
         paymentOptions: values.paymentOptions,
         service: values.service,
@@ -214,6 +214,7 @@ const Hotels: React.FC = () => {
     try {
       const res: ApiResponse = await request("GET", `/rooms/findHotel/${hotelId}`);
       if (res.success && res.data) {
+        setEditingHotelId(hotelId);
         setRoomList(res.data);
         setRoomModalVisible(true);
       } else {
@@ -327,7 +328,7 @@ const Hotels: React.FC = () => {
               dataIndex: "pricing",
               render: (pricing: any[]) => {
                 const weekdays = [1, 2, 3, 4, 0];
-                const item = pricing?.find(p => p.days_of_week?.some(d => weekdays.includes(d)));
+                const item = pricing?.find(p => p.days_of_week?.some((d: number) => weekdays.includes(d)));
                 return item ? `$${item.price}` : "-";
               }
             },
@@ -439,8 +440,17 @@ const Hotels: React.FC = () => {
               <>
                 {fields.map(({ key, name, ...restField }) => (
                   <Space key={key} align="baseline">
-                    <Form.Item {...restField} name={[name, 'type']} rules={[{ required: true }]}>
-                      <Input placeholder="付款類型" />
+                    <Form.Item
+                      {...restField}
+                      name={[name, 'type']}
+                      rules={[{ required: true, message: '請選擇付款類型' }]}
+                    >
+                      <Select placeholder="選擇付款類型">
+                        <Select.Option value="credit_card">信用卡</Select.Option>
+                        <Select.Option value="paypal">PayPal</Select.Option>
+                        <Select.Option value="bank_transfer">銀行轉帳</Select.Option>
+                        <Select.Option value="on_site_payment">現場付款</Select.Option>
+                      </Select>
                     </Form.Item>
                     <Form.Item {...restField} name={[name, 'description']} rules={[{ required: true }]}>
                       <Input placeholder="付款描述" />

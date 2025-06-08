@@ -39,6 +39,7 @@ const RoomSchema = new mongoose.Schema({
         {
             type: {
                 type: String,
+                enum: ['credit_card', 'paypal', 'bank_transfer', 'on_site_payment'],
                 required: true, //付款類型
             },
             description: {
