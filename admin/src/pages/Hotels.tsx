@@ -120,25 +120,7 @@ const Hotels = () => {
     }
   ];
 
-  const handleSubmit = async (values: any) => {
-    const payload = {
-      ...values,
-      checkInTime: values.checkInTime,
-      checkOutTime: values.checkOutTime,
-      photos: values.photos.split(',').map((s: string) => s.trim()),
-      nearbyAttractions: values.nearbyAttractions.split(',').map((s: string) => s.trim()),
-      facilities: ['wifi', 'parking', 'pool', 'gym', 'spa', 'restaurant', 'bar'].reduce((obj, key) => {
-        obj[key] = values.facilities?.includes(key);
-        return obj;
-      }, {} as Record<string, boolean>)
-    };
-    const res = editingHotel ? await request('PUT', `/hotels/${editingHotel._id}`, payload) : await request('POST', '/hotels', payload);
-    if (res.success) {
-      message.success(editingHotel ? '編輯成功' : '新增成功');
-      setIsModalVisible(false);
-      fetchHotels();
-    }
-  };
+
 
   const handleSubmitRoom = async (values: any) => {
     const payload = {
@@ -158,7 +140,47 @@ const Hotels = () => {
     }
   };
 
-  const handleEdit = async (id: string) => {
+
+  const handleViewRooms = async (hotelId: string) => {
+    const res = await request('GET', `/rooms/findHotel/${hotelId}`);
+    if (res.success) {
+      setEditingHotelId(hotelId);
+      setRoomList(res.data);
+      setRoomModalVisible(true);
+    }
+  };
+
+
+  const handleEditRoom = (room: any) => {
+    setEditingRoom({
+      ...room,
+      desc: room.desc?.join(', '),
+      service: Object.entries(room.service || {}).filter(([_, v]) => v).map(([k]) => k)
+    });
+    setRoomEditModalVisible(true);
+  };
+
+
+  const handleDeleteRoom = async (roomId: string) => {
+    const res = await request('DELETE', `/rooms/${roomId}`);
+    if (res.success) {
+      message.success('房型已刪除');
+      handleViewRooms(editingHotelId!);
+    } else {
+      message.error(res.message || '刪除失敗');
+    }
+  };
+
+
+  const fetchHotels = async () => {
+    setLoading(true);
+    const res = await request('GET', '/hotels');
+    if (res.success) setHotels(res.data);
+    setLoading(false);
+  };
+
+
+  const handleEditHotel = async (id: string) => {
     const res = await request('GET', `/hotels/find/${id}`);
     if (res.success) {
       const h = res.data;
@@ -174,29 +196,34 @@ const Hotels = () => {
     }
   };
 
-  const handleViewRooms = async (hotelId: string) => {
-    const res = await request('GET', `/rooms/findHotel/${hotelId}`);
+  const handleDeleteHotel = async (hotelId: string) => {
+    const res = await request('DELETE', `/hotels/${hotelId}`);
     if (res.success) {
-      setEditingHotelId(hotelId);
-      setRoomList(res.data);
-      setRoomModalVisible(true);
+      message.success('飯店已刪除');
+      fetchHotels(); 
+    } else {
+      message.error(res.message || '刪除失敗');
     }
   };
 
-  const handleEditRoom = (room: any) => {
-    setEditingRoom({
-      ...room,
-      desc: room.desc?.join(', '),
-      service: Object.entries(room.service || {}).filter(([_, v]) => v).map(([k]) => k)
-    });
-    setRoomEditModalVisible(true);
-  };
-
-  const fetchHotels = async () => {
-    setLoading(true);
-    const res = await request('GET', '/hotels');
-    if (res.success) setHotels(res.data);
-    setLoading(false);
+  const handleSubmitHotel = async (values: any) => {
+    const payload = {
+      ...values,
+      checkInTime: values.checkInTime,
+      checkOutTime: values.checkOutTime,
+      photos: values.photos.split(',').map((s: string) => s.trim()),
+      nearbyAttractions: values.nearbyAttractions.split(',').map((s: string) => s.trim()),
+      facilities: ['wifi', 'parking', 'pool', 'gym', 'spa', 'restaurant', 'bar'].reduce((obj, key) => {
+        obj[key] = values.facilities?.includes(key);
+        return obj;
+      }, {} as Record<string, boolean>)
+    };
+    const res = editingHotel ? await request('PUT', `/hotels/${editingHotel._id}`, payload) : await request('POST', '/hotels', payload);
+    if (res.success) {
+      message.success(editingHotel ? '編輯飯店成功' : '新增飯店成功');
+      setIsModalVisible(false);
+      fetchHotels();
+    }
   };
 
   useEffect(() => { fetchHotels(); }, []);
@@ -217,8 +244,8 @@ const Hotels = () => {
       key: 'action',
       render: (_, record) => (
         <Space>
-          <Button onClick={() => handleEdit(record._id)}>編輯</Button>
-          <Button danger onClick={() => request('DELETE', `/hotels/${record._id}`).then(fetchHotels)}>刪除</Button>
+          <Button onClick={() => handleEditHotel(record._id)}>編輯</Button>
+          <Button danger onClick={() => handleDeleteHotel(record._id)}>刪除</Button>
           <Button onClick={() => handleViewRooms(record._id)}>查看房型</Button>
         </Space>
       )
@@ -236,7 +263,7 @@ const Hotels = () => {
         fields={hotelFields}
         initialValues={editingHotel || undefined}
         onCancel={() => setIsModalVisible(false)}
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmitHotel}
       />
 
       <DynamicFormModal
@@ -255,7 +282,7 @@ const Hotels = () => {
         footer={null}
         width={1000}
       >
-        <Button type="primary" onClick={() => { setEditingRoom(null); setRoomEditModalVisible(true); }}    className="add-room-btn">新增房型</Button>
+        <Button type="primary" onClick={() => { setEditingRoom(null); setRoomEditModalVisible(true); }} className="add-room-btn">新增房型</Button>
         <Table
           dataSource={roomList}
           rowKey="_id"
@@ -277,7 +304,10 @@ const Hotels = () => {
             {
               title: '操作',
               render: (_: any, record: any) => (
-                <Button type="link" onClick={() => handleEditRoom(record)}>編輯</Button>
+                <Space>
+                  <Button type="link" onClick={() => handleEditRoom(record)}>編輯</Button>
+                  <Button danger onClick={() => handleDeleteRoom(record._id)}>刪除</Button>
+                </Space>
               )
             }
           ]}
