@@ -84,6 +84,9 @@ const Hotels: React.FC = () => {
   const [editingRoom, setEditingRoom] = useState<RoomType | null>(null);
   const [roomForm] = Form.useForm();
 
+  // 觸發re-render
+  const [_, forceUpdate] = useState({});
+
   const handleEditRoom = (room: RoomType) => {
     setEditingRoom(room);
     setRoomEditModalVisible(true);
@@ -469,32 +472,60 @@ const Hotels: React.FC = () => {
           </Form.List>
 
           <Form.List name="pricing">
-            {(fields, { add, remove }) => (
-              <>
-                {fields.map(({ key, name, ...restField }) => (
-                  <Space key={key} align="baseline">
-                    <Form.Item {...restField} name={[name, 'days_of_week']} rules={[{ required: true }]}>
-                      <Select mode="multiple" placeholder="選擇星期">
-                        <Select.Option value={0}>週日</Select.Option>
-                        <Select.Option value={1}>週一</Select.Option>
-                        <Select.Option value={2}>週二</Select.Option>
-                        <Select.Option value={3}>週三</Select.Option>
-                        <Select.Option value={4}>週四</Select.Option>
-                        <Select.Option value={5}>週五</Select.Option>
-                        <Select.Option value={6}>週六</Select.Option>
-                      </Select>
-                    </Form.Item>
-                    <Form.Item {...restField} name={[name, 'price']} rules={[{ required: true }]}>
-                      <InputNumber placeholder="價格" />
-                    </Form.Item>
-                    <Button danger onClick={() => remove(name)}>刪除</Button>
-                  </Space>
-                ))}
-                <Form.Item>
-                  <Button type="dashed" onClick={() => add()}>新增價格</Button>
-                </Form.Item>
-              </>
-            )}
+            {(fields, { add, remove }) => {
+
+
+              const selectedDaysMap = fields.reduce((map, field) => {
+                const fieldValue = roomForm.getFieldValue(['pricing', field.name]);
+                if (fieldValue?.days_of_week) {
+                  fieldValue.days_of_week.forEach((day: number) => {
+                    map[day] = (map[day] || 0) + 1;
+                  });
+                }
+                return map;
+              }, {} as Record<number, number>);
+              return (
+                <>
+                  {fields.map(({ key, name, ...restField }) => {
+                    // 當前這一組的值
+                    const currentValues = roomForm.getFieldValue(['pricing', name])?.days_of_week || [];
+                    const getDisabled = (day: number) => {
+                      return selectedDaysMap[day] && !currentValues.includes(day);
+                    };
+
+                    return (
+                      <Space key={key} align="baseline">
+                        <Form.Item {...restField} name={[name, 'days_of_week']} rules={[{ required: true }]}>
+                          <Select
+                            mode="multiple"
+                            placeholder="選擇星期"
+                            style={{ width: 200 }}
+                            onChange={() => forceUpdate({})}
+                          >
+                            {[0, 1, 2, 3, 4, 5, 6].map((day) => (
+                              <Select.Option
+                                key={day}
+                                value={day}
+                                disabled={getDisabled(day)}
+                              >
+                                {['週日', '週一', '週二', '週三', '週四', '週五', '週六'][day]}
+                              </Select.Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
+                        <Form.Item {...restField} name={[name, 'price']} rules={[{ required: true }]}>
+                          <InputNumber placeholder="價格" />
+                        </Form.Item>
+                        <Button danger onClick={() => remove(name)}>刪除</Button>
+                      </Space>
+                    );
+                  })}
+                  <Form.Item>
+                    <Button type="dashed" onClick={() => add()}>新增價格</Button>
+                  </Form.Item>
+                </>
+              );
+            }}
           </Form.List>
 
           <Form.List name="holidays">
