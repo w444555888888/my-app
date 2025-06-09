@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Space, Button, message, Modal, Form, Input, Checkbox } from 'antd';
+import { Table, Space, Button, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { request } from '../utils/apiService';
+import DynamicFormModal, { FormFieldConfig } from '../component/DynamicFormModal';
 import './users.scss';
 
 interface UserType {
@@ -16,7 +17,6 @@ const Users: React.FC = () => {
   const [users, setUsers] = useState<UserType[]>([]);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [form] = Form.useForm();
 
   const fetchUsers = async () => {
     const res = await request('GET', '/users', {}, setLoading);
@@ -37,20 +37,14 @@ const Users: React.FC = () => {
     }
   };
 
-  // 新增用戶
-  const handleAddUser = async () => {
-    try {
-      const values = await form.validateFields();
-      const res = await request('POST', '/auth/register', values);
-      if (res.success) {
-        message.success('新增用戶成功');
-        setModalVisible(false);
-        form.resetFields();
-        fetchUsers();
-      } else {
-        message.error(res.message || '新增用戶失敗');
-      }
-    } catch (error) {
+  const handleAddUser = async (values: any) => {
+    const res = await request('POST', '/auth/register', values);
+    if (res.success) {
+      message.success('新增用戶成功');
+      setModalVisible(false);
+      fetchUsers();
+    } else {
+      message.error(res.message || '新增用戶失敗');
     }
   };
 
@@ -94,12 +88,19 @@ const Users: React.FC = () => {
     },
   ];
 
+  const userFormFields: FormFieldConfig[] = [
+    { name: 'username', label: '用戶名', type: 'input', required: true },
+    { name: 'email', label: '郵箱', type: 'input', required: true, placeholder: '請輸入有效郵箱' },
+    { name: 'password', label: '密碼', type: 'input', required: true, placeholder: '請輸入密碼' },
+    { name: 'isAdmin', label: '管理員權限', type: 'checkboxGroup', options: [{ label: '是', value: true }] }
+  ];
+
   return (
     <div className="users-container">
       <h2 className="users-title">用戶管理</h2>
       <Button
         type="primary"
-        style={{ marginBottom: 16 }}
+        className="add-user-btn"
         onClick={() => setModalVisible(true)}
       >
         新增用戶
@@ -111,48 +112,13 @@ const Users: React.FC = () => {
         loading={loading}
       />
 
-
-      <Modal
-        title="新增用戶"
+      <DynamicFormModal
         visible={modalVisible}
-        onOk={handleAddUser}
+        title="新增用戶"
+        fields={userFormFields}
         onCancel={() => setModalVisible(false)}
-        okText="提交"
-        cancelText="取消"
-      >
-        <Form form={form} layout="vertical">
-          <Form.Item
-            label="用戶名"
-            name="username"
-            rules={[{ required: true, message: '請輸入用戶名' }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="郵箱"
-            name="email"
-            rules={[
-              { required: true, message: '請輸入郵箱' },
-              { type: 'email', message: '請輸入有效郵箱' },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="密碼"
-            name="password"
-            rules={[{ required: true, message: '請輸入密碼' }]}
-          >
-            <Input.Password />
-          </Form.Item>
-
-          <Form.Item name="isAdmin" valuePropName="checked">
-            <Checkbox>管理員權限</Checkbox>
-          </Form.Item>
-        </Form>
-      </Modal>
+        onSubmit={handleAddUser}
+      />
     </div>
   );
 };
