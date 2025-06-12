@@ -5,12 +5,12 @@ const API_BASE_URL = 'http://localhost:5000/api/v1'
 
 
 export const request = async (method, endpoint, data = {}, setLoading = () => {}) => {
-    if (setLoading) setLoading(true)
+    setLoading(true)
     try {
         const config = {
             method,
             url: `${API_BASE_URL}${endpoint}`,
-            data,
+            ...(method.toUpperCase() === 'GET' ? { params: data } : { data }),
             withCredentials: true
         }
         const response = await axios(config)
@@ -19,6 +19,6 @@ export const request = async (method, endpoint, data = {}, setLoading = () => {}
         const errorMessage = error.response?.data?.message || '請求失敗'
         return { success: false, message: errorMessage }
     } finally {
-        if (setLoading) setLoading(false)
+        setLoading(false)
     }
 }
