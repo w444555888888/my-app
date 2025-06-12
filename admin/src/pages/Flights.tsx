@@ -142,15 +142,15 @@ const Flights: React.FC = () => {
 
   const initialValues = editingFlight
     ? {
-        flightNumber: editingFlight.flightNumber,
-        departureCity: editingFlight.route.departureCity,
-        arrivalCity: editingFlight.route.arrivalCity,
-        flightDuration: editingFlight.route.flightDuration,
-        departureDate: dayjs(editingFlight.schedules[0]?.departureDate),
-        seatsECONOMY: editingFlight.schedules[0]?.availableSeats?.ECONOMY ?? 0,
-        seatsBUSINESS: editingFlight.schedules[0]?.availableSeats?.BUSINESS ?? 0,
-        seatsFIRST: editingFlight.schedules[0]?.availableSeats?.FIRST ?? 0,
-      }
+      flightNumber: editingFlight.flightNumber,
+      departureCity: editingFlight.route.departureCity,
+      arrivalCity: editingFlight.route.arrivalCity,
+      flightDuration: editingFlight.route.flightDuration,
+      departureDate: dayjs(editingFlight.schedules[0]?.departureDate),
+      seatsECONOMY: editingFlight.schedules[0]?.availableSeats?.ECONOMY ?? 0,
+      seatsBUSINESS: editingFlight.schedules[0]?.availableSeats?.BUSINESS ?? 0,
+      seatsFIRST: editingFlight.schedules[0]?.availableSeats?.FIRST ?? 0,
+    }
     : undefined;
 
   useEffect(() => {
@@ -159,7 +159,8 @@ const Flights: React.FC = () => {
 
   return (
     <div className="flights-container">
-      <div className="flights-header" style={{ marginBottom: 16 }}>
+      <div className="flights-header">
+        <div className="flights-title">航班管理</div>
         <Button type="primary" onClick={() => setModalVisible(true)}>新增航班</Button>
       </div>
 

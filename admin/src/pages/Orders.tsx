@@ -109,8 +109,8 @@ const Orders: React.FC = () => {
           status === 'confirmed'
             ? 'green'
             : status === 'cancelled'
-            ? 'red'
-            : 'orange';
+              ? 'red'
+              : 'orange';
         return <Tag color={color}>{status.toUpperCase()}</Tag>;
       },
     },
@@ -135,7 +135,9 @@ const Orders: React.FC = () => {
 
   return (
     <div className="orders-container">
-      <h2 className="orders-title">訂單管理</h2>
+      <div className="orders-header">
+        <div className="orders-title">訂單管理</div>
+      </div>
       <Table
         columns={columns}
         dataSource={orders}

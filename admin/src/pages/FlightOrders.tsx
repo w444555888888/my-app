@@ -44,14 +44,14 @@ const FlightOrders: React.FC = () => {
     const [loading, setLoading] = useState(false);
 
     const fetchOrders = async () => {
-    setLoading(true);
-    const res = await request('GET', '/flight/allOrder');
-    if (res.success) {
-        setOrders(res.data);
-    } else {
-        message.warning(res.message || '獲取訂單失敗');
-    }
-    setLoading(false);
+        setLoading(true);
+        const res = await request('GET', '/flight/allOrder');
+        if (res.success) {
+            setOrders(res.data);
+        } else {
+            message.warning(res.message || '獲取訂單失敗');
+        }
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -143,7 +143,10 @@ const FlightOrders: React.FC = () => {
 
     return (
         <div className="flight-orders-container">
-            <h2>機票訂單</h2>
+            <div className="flight-orders-header">
+                <div className="flight-orders-title">機票訂單</div>
+            </div>
+
             <Table
                 columns={columns}
                 dataSource={orders}

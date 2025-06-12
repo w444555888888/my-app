@@ -97,14 +97,16 @@ const Users: React.FC = () => {
 
   return (
     <div className="users-container">
-      <h2 className="users-title">用戶管理</h2>
-      <Button
-        type="primary"
-        className="add-user-btn"
-        onClick={() => setModalVisible(true)}
-      >
-        新增用戶
-      </Button>
+      <div className="users-header">
+        <div className="users-title">用戶管理</div>
+        <Button
+          type="primary"
+          className="add-user-btn"
+          onClick={() => setModalVisible(true)}
+        >
+          新增用戶
+        </Button>
+      </div>
       <Table
         columns={columns}
         dataSource={users}

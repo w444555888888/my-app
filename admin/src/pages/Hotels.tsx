@@ -7,7 +7,7 @@ import { request } from '../utils/apiService';
 import DynamicFormModal, { FormFieldConfig } from '../component/DynamicFormModal';
 import DynamicFormList from '../component/DynamicFormList';
 import PricingFormList from '../component/PricingFormList';
-
+import './hotels.scss';
 
 const Hotels = () => {
   const [hotels, setHotels] = useState<any[]>([]);
@@ -200,7 +200,7 @@ const Hotels = () => {
     const res = await request('DELETE', `/hotels/${hotelId}`);
     if (res.success) {
       message.success('飯店已刪除');
-      fetchHotels(); 
+      fetchHotels();
     } else {
       message.error(res.message || '刪除失敗');
     }
@@ -253,8 +253,11 @@ const Hotels = () => {
   ];
 
   return (
-    <div className="hotel-page">
-      <Button type="primary" onClick={() => { setEditingHotel(null); setIsModalVisible(true); }}>新增飯店</Button>
+    <div className="hotels-container">
+      <div className="hotels-header">
+        <div className="hotels-title">飯店管理</div>
+        <Button type="primary" onClick={() => { setEditingHotel(null); setIsModalVisible(true); }}>新增飯店</Button>
+      </div>
       <Table columns={columns} dataSource={hotels} rowKey="_id" loading={loading} className="hotel-table" />
 
       <DynamicFormModal

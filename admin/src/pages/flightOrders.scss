@@ -1,10 +1,18 @@
 .flight-orders-container {
   padding: 24px;
+  background-color: #f9f9f9;
 
-  h2 {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 16px;
+  .flight-orders-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .flight-orders-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 16px;
+      color: #333;
+    }
   }
 
   .ant-table {
