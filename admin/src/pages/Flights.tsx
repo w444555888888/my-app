@@ -36,21 +36,17 @@ const Flights: React.FC = () => {
 
   const fetchFlights = async () => {
     setLoading(true);
-    try {
-      const res = await request('GET', '/flight');
-      if (res.success && Array.isArray(res.data)) {
-        setFlights(res.data);
-      } else {
-        message.warning('獲取資料格式錯誤');
-      }
-    } catch {
-      message.error('獲取航班列表失敗');
-    } finally {
-      setLoading(false);
+    const res = await request('GET', '/flight');
+    if (res.success && Array.isArray(res.data)) {
+      setFlights(res.data);
+    } else {
+      message.error(res.message || '獲取航班失敗');
     }
+    setLoading(false);
   };
 
   const handleDelete = async (id: string) => {
+    setLoading(true);
     const res = await request('DELETE', `/flight/${id}`);
     if (res.success) {
       message.success('刪除航班成功');
@@ -58,6 +54,7 @@ const Flights: React.FC = () => {
     } else {
       message.error(res.message || '刪除航班失敗');
     }
+    setLoading(false);
   };
 
   const handleSubmit = async (values: any) => {

@@ -44,19 +44,14 @@ const FlightOrders: React.FC = () => {
     const [loading, setLoading] = useState(false);
 
     const fetchOrders = async () => {
-        setLoading(true);
-        try {
-            const res = await request('GET', '/flight/allOrder');
-            if (res.success) {
-                setOrders(res.data);
-            } else {
-                message.warning(res.message || '獲取訂單失敗');
-            }
-        } catch (error) {
-            message.error('伺服器錯誤');
-        } finally {
-            setLoading(false);
-        }
+    setLoading(true);
+    const res = await request('GET', '/flight/allOrder');
+    if (res.success) {
+        setOrders(res.data);
+    } else {
+        message.warning(res.message || '獲取訂單失敗');
+    }
+    setLoading(false);
     };
 
     useEffect(() => {

@@ -28,26 +28,23 @@ const Orders: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const fetchOrders = async () => {
-    try {
-      setLoading(true);
-      const res = await request('GET', '/order');
-      if (res.success && res.data) {
-        setOrders(res.data.length > 0 ? res.data : []);
-      }
-    } catch (error) {
-      message.error('獲取訂單列表失敗');
-    } finally {
-      setLoading(false);
+    setLoading(true);
+    const res = await request('GET', '/order');
+    if (res.success && Array.isArray(res.data)) {
+      setOrders(res.data.length > 0 ? res.data : []);
+    } else {
+      message.error(res.message || '獲取訂單列表失敗');
     }
+    setLoading(false);
   };
 
   const handleCancel = async (id: string) => {
-    try {
-      await request('DELETE', `/order/${id}`);
+    const res = await request('DELETE', `/order/${id}`);
+    if (res.success) {
       message.success('取消訂單成功');
       fetchOrders();
-    } catch (error) {
-      message.error('取消訂單失敗');
+    } else {
+      message.error(res.message || '取消訂單失敗');
     }
   };
 
