@@ -30,7 +30,7 @@ export const request = async <T = any>(
     const config: AxiosRequestConfig = {
       method,
       url: `${API_BASE_URL}${endpoint}`,
-      data,
+      ...(method.toUpperCase() === 'GET' ? { params: data } : { data }),
       withCredentials: true,
     };
 
