@@ -98,7 +98,7 @@ const FlightOrders: React.FC = () => {
             render: (_, record) => (
                 <div>
                     {record.passengerInfo.map((p, idx) => (
-                        <div key={idx} style={{ marginBottom: 6 }}>
+                        <div key={idx} className="passenger-item">
                             <div><UserOutlined /> 姓名: {p.name}</div>
                             <div><MailOutlined /> Email: {p.email || '-'}</div>
                             <div><IdcardOutlined /> 護照: {p.passportNumber}</div>
@@ -107,7 +107,7 @@ const FlightOrders: React.FC = () => {
                                 {p.gender === 1 ? <ManOutlined /> : <WomanOutlined />} 性別: {p.gender === 1 ? '男' : '女'}
                             </div>
                             {idx < record.passengerInfo.length - 1 && (
-                                <hr style={{ border: '0.5px dashed #ccc', margin: '8px 0' }} />
+                                <hr className="passenger-divider"/>
                             )}
                         </div>
                     ))}

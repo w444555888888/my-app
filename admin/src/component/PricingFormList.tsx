@@ -1,5 +1,7 @@
 import React from 'react';
 import { Form, Select, InputNumber, Button, Space } from 'antd';
+import './pricingFormList.scss';
+
 
 const weekdays = ['週日', '週一', '週二', '週三', '週四', '週五', '週六'];
 
@@ -32,7 +34,7 @@ const PricingFormList = ({ form }: { form: any }) => {
                     <Select
                       mode="multiple"
                       placeholder="選擇星期"
-                      style={{ width: 200 }}
+                      className="weekday-select"
                       onChange={() => forceUpdate({})}
                     >
                       {[0, 1, 2, 3, 4, 5, 6].map(day => (

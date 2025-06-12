@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form, Input, InputNumber, Select, Button, Space, Checkbox } from 'antd';
+import './dynamicFormList.scss'; 
 
 export type ListFieldType = 'input' | 'number' | 'select' | 'checkbox';
 
@@ -25,7 +26,7 @@ const DynamicFormList: React.FC<DynamicFormListProps> = ({ name, label, fields, 
       {(fieldItems, { add, remove }) => (
         <div>
           {fieldItems.map(({ key, name: itemName, ...restField }) => (
-            <Space key={key} align="baseline" style={{ display: 'flex', marginBottom: 8 }}>
+            <Space key={key} align="baseline" className="form-item-row">
               {fields.map((field) => (
                 <Form.Item
                   {...restField}
@@ -35,9 +36,9 @@ const DynamicFormList: React.FC<DynamicFormListProps> = ({ name, label, fields, 
                   key={field.name}
                 >
                   {field.type === 'input' && <Input placeholder={field.placeholder} />}
-                  {field.type === 'number' && <InputNumber placeholder={field.placeholder} style={{ width: 120 }} />}
+                  {field.type === 'number' && <InputNumber placeholder={field.placeholder} className="input-number" />}
                   {field.type === 'select' && (
-                    <Select placeholder={field.placeholder} style={{ width: 160 }}>
+                    <Select placeholder={field.placeholder} className="select-field">
                       {field.options?.map((opt) => (
                         <Select.Option key={opt.value} value={opt.value}>{opt.label}</Select.Option>
                       ))}

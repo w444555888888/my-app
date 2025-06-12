@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { Modal, Form, Input, InputNumber, Checkbox, TimePicker, Select, Button } from "antd";
 import dayjs from "dayjs";
+import './dynamicFormModal.scss';
+
 
 export type FieldType =
   | "input"
@@ -96,11 +98,11 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
             case "input":
               return <Form.Item key={field.label} {...commonProps}><Input placeholder={field.placeholder} /></Form.Item>;
             case "number":
-              return <Form.Item key={field.label} {...commonProps}><InputNumber style={{ width: "100%" }} placeholder={field.placeholder} /></Form.Item>;
+              return <Form.Item key={field.label} {...commonProps}><InputNumber className="full-width" placeholder={field.placeholder} /></Form.Item>;
             case "textarea":
               return <Form.Item key={field.label} {...commonProps}><Input.TextArea placeholder={field.placeholder} /></Form.Item>;
             case "time":
-              return <Form.Item key={field.label} {...commonProps}><TimePicker format="HH:mm" style={{ width: "100%" }} /></Form.Item>;
+              return <Form.Item key={field.label} {...commonProps}><TimePicker format="HH:mm" className="full-width" /></Form.Item>;
             case "select":
               return (
                 <Form.Item key={field.label} {...commonProps}>
