@@ -58,6 +58,12 @@ const FlightOrders: React.FC = () => {
         fetchOrders();
     }, []);
 
+    const CATEGORY_MAP = {
+        ECONOMY: '經濟艙',
+        BUSINESS: '商務艙',
+        FIRST: '頭等艙'
+    };
+
     const columns: ColumnsType<OrderType> = [
         {
             title: '訂單號',
@@ -73,18 +79,7 @@ const FlightOrders: React.FC = () => {
             title: '艙等',
             dataIndex: 'category',
             key: 'category',
-            render: (text) => {
-                switch (text) {
-                    case 'ECONOMY':
-                        return '經濟艙';
-                    case 'BUSINESS':
-                        return '商務艙';
-                    case 'FIRST':
-                        return '頭等艙';
-                    default:
-                        return text;
-                }
-            },
+            render: (text) => CATEGORY_MAP[text as keyof typeof CATEGORY_MAP] || text,
         },
         {
             title: '出發日期',
@@ -107,7 +102,7 @@ const FlightOrders: React.FC = () => {
                                 {p.gender === 1 ? <ManOutlined /> : <WomanOutlined />} 性別: {p.gender === 1 ? '男' : '女'}
                             </div>
                             {idx < record.passengerInfo.length - 1 && (
-                                <hr className="passenger-divider"/>
+                                <hr className="passenger-divider" />
                             )}
                         </div>
                     ))}

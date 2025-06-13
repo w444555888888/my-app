@@ -9,6 +9,7 @@ import {
   FileDoneOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { logout } from '../utils/auth';
 import './dashboard.scss';
 
 const { Header, Sider, Content } = Layout;
@@ -31,7 +32,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <Layout className="dashboard">
-      <Sider width={200} theme="dark">
+      <Sider width={200} theme="dark" collapsible>
         <div className="dashboard__logo">
           <DashboardOutlined className="dashboard__icon" />
           訂房後台
@@ -39,7 +40,7 @@ const Dashboard: React.FC = () => {
         <Menu
           mode="inline"
           theme="dark"
-          selectedKeys={[location.pathname.replace('/', '')]}
+          selectedKeys={[menuItems.find(item => location.pathname.startsWith(item.key))?.key || '']}
           onClick={handleMenuClick}
           items={menuItems}
         />
@@ -47,11 +48,11 @@ const Dashboard: React.FC = () => {
       <Layout>
         <Header className="dashboard__header">
           <div className="dashboard__header-content">
-            <span className="dashboard__welcome"><UserOutlined/>管理員</span>
+            <span className="dashboard__welcome"><UserOutlined />管理員</span>
             <button
               className="dashboard__logout"
               onClick={() => {
-                document.cookie = "JWT_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                logout();
                 navigate('/login');
               }}
             >
