@@ -34,6 +34,7 @@ const RoomSchema = new mongoose.Schema({
     hotelId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true, // 對應的飯店 ID
+        ref: 'Hotel'
     },
     paymentOptions: [
         {

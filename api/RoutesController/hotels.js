@@ -29,104 +29,74 @@ export const getAllHotels = async (req, res, next) => {
 
 // 搜尋飯店資料
 export const getSearchHotels = async (req, res, next) => {
-    const { name, minPrice, maxPrice, startDate, endDate, hotelId } = req.query
-    const minPriceNumber = Number(minPrice)
-    const maxPriceNumber = Number(maxPrice)
+  const { name, minPrice, maxPrice, startDate, endDate, hotelId } = req.query
+  const minPriceNumber = Number(minPrice)
+  const maxPriceNumber = Number(maxPrice)
 
+  try {
+    //單查hotel，不用房型與價格
+    const isSingleQuery = hotelId && !name && !minPrice && !maxPrice && !startDate && !endDate
+    if (isSingleQuery) {
+      const hotel = await Hotel.findById(hotelId)
+      if (!hotel) return next(errorMessage(404, "找不到此飯店"))
+      return sendResponse(res, 200, [hotel])
+    }
 
-    // 只有hotelId，沒有日期 && 不用顯示房型
-    if (hotelId && !name && !minPrice && !maxPrice && !startDate && !endDate) {
-        try {
-            const hotel = await Hotel.findById(hotelId)
-            if (!hotel) {
-                return next(errorMessage(404, "單查詢hotel: no found  this hotel"))
-            }
-            sendResponse(res, 200, [hotel]);
-        } catch (err) {
-            return next(errorMessage(500, "單查詢hotel: Error"))
+    // 查詢條件
+    const query = {}
+    if (name) query.name = new RegExp(name, 'i')
+    if (hotelId) query._id = hotelId
+
+    // 查詢飯店 + 自動帶出 rooms（用 virtual）
+    const hotels = await Hotel.find(query).populate('rooms')
+    if (!hotels.length) return next(errorMessage(404, "找不到符合條件的飯店"))
+
+    // 計算房價
+    const updatedHotels = hotels.map(hotel => {
+      const hotelRooms = hotel.rooms || []
+
+      let cheapestPrice = null
+      let totalHotelPrice = 0
+
+      const updatedRooms = hotelRooms.map(room => {
+        const roomTotalPrice = room.calculateTotalPrice(startDate, endDate)
+
+        if (cheapestPrice === null || roomTotalPrice < cheapestPrice) {
+          cheapestPrice = roomTotalPrice
         }
-    }
 
-    let query = {}
-    if (name) {
-        query.name = new RegExp(name, "i")
-    }
+        totalHotelPrice += roomTotalPrice
 
-    if (hotelId) {
-        query._id = hotelId
-    }
-
-    try {
-        // 查詢所有符合條件的酒店
-        const hotels = await Hotel.find(query)
-        if (hotels.length === 0) {
-            return next(errorMessage(404, "找不到符合條件的酒店"))
+        return {
+          ...room.toObject(),
+          roomTotalPrice
         }
+      })
 
-        const hotelIds = hotels.map(hotel => hotel._id)
-        // 查詢這些酒店對應的所有房型
-        const allRooms = await Room.find({ hotelId: { $in: hotelIds } })
+      return {
+        ...hotel.toObject(),
+        availableRooms: updatedRooms,
+        totalPrice: totalHotelPrice,
+        cheapestPrice
+      }
+    })
 
-        // 按 hotelId 分組房型
-        const roomsByHotel = allRooms.reduce((acc, room) => {
-            acc[room.hotelId] = acc[room.hotelId] || []
-            acc[room.hotelId].push(room)
-            return acc
-        }, {})
-
-
-
-        // 處理每間飯店的價格計算
-        const updatedHotels = hotels.map(hotel => {
-            const hotelRooms = roomsByHotel[String(hotel._id)] || []
-            // console.log(`Hotel ${hotel.name} has ${hotelRooms.length} room(s)`)
-
-            let cheapestPrice = null
-            let totalHotelPrice = 0
-
-            const updatedRooms = hotelRooms.map(room => {
-                const roomTotalPrice = room.calculateTotalPrice(startDate, endDate)
-
-                if (cheapestPrice === null || roomTotalPrice < cheapestPrice) {
-                    cheapestPrice = roomTotalPrice
-                }
-
-                totalHotelPrice += roomTotalPrice
-                
-                return { ...room.toObject(), roomTotalPrice }
-            })
-
-            return {
-                ...hotel.toObject(),
-                availableRooms: updatedRooms,
-                totalPrice: totalHotelPrice,
-                cheapestPrice
-            }
+    // 價格篩選
+    const filteredHotels =
+      (!isNaN(minPriceNumber) || !isNaN(maxPriceNumber))
+        ? updatedHotels.filter(hotel => {
+          const price = hotel.cheapestPrice
+          let isInRange = true
+          if (!isNaN(minPriceNumber)) isInRange = isInRange && price >= minPriceNumber
+          if (!isNaN(maxPriceNumber)) isInRange = isInRange && price <= maxPriceNumber
+          return isInRange
         })
+        : updatedHotels
 
-        // 根據 minPrice 和 maxPrice 過濾飯店
-        const filterPriceHotels =
-            (!isNaN(minPriceNumber) || !isNaN(maxPriceNumber))
-                ? updatedHotels.filter(hotel => {
-                    let isInRange = true;
-
-                    if (!isNaN(minPriceNumber)) {
-                        isInRange = isInRange && hotel.cheapestPrice >= minPriceNumber;
-                    }
-
-                    if (!isNaN(maxPriceNumber)) {
-                        isInRange = isInRange && hotel.cheapestPrice <= maxPriceNumber;
-                    }
-
-                    return isInRange;
-                })
-                : updatedHotels
-
-
-        sendResponse(res, 200, filterPriceHotels);
-    } catch (err) {
-        return next(errorMessage(500, "查詢飯店失敗"))
-    }
+    sendResponse(res, 200, filteredHotels)
+  } catch (err) {
+    return next(errorMessage(500, "查詢飯店失敗"))
+  }
 }
 
 

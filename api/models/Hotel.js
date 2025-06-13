@@ -90,4 +90,16 @@ const HotelSchema = new mongoose.Schema({
         required: true,
     },
 });
+
+HotelSchema.virtual('rooms', {
+  ref: 'Room',
+  localField: '_id',
+  foreignField: 'hotelId',
+  justOne: false
+})
+
+HotelSchema.set('toObject', { virtuals: true })
+HotelSchema.set('toJSON', { virtuals: true })
+
+
 export default mongoose.model("Hotel", HotelSchema)
