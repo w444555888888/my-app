@@ -6,27 +6,27 @@
  * @FilePath: \my-app\api\RoutesController\user.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import { errorMessage } from "../errorMessage.js"
-import { sendResponse } from "../sendResponse.js"
-import User from "../models/User.js"
+import { errorMessage } from "../errorMessage.js";
+import { sendResponse } from "../sendResponse.js";
+import User from "../models/User.js";
 import Order from "../models/Order.js";
 import FightOrder from "../models/FightOrder.js";
-import bcrypt from "bcryptjs" //密碼加密
-
+import bcrypt from "bcryptjs"; //密碼加密
 
 //更新使用者:id
 export const updateUser = async (req, res, next) => {
-  // 檢查是否為本人操作
-  if (req.user.id !== req.params.id) {
+  const id = req.params.id;
+
+  // 檢查是否為本人或管理員
+  if (req.user.id !== id && !req.user.isAdmin) {
     return next(errorMessage(403, "您只能修改自己的資料"));
   }
-
-  const id = req.params.id
-  const { password, address, phoneNumber, realName } = req.body
+  
+  const { password, address, phoneNumber, realName } = req.body;
 
   // 檢查必填字段
   if (!password || !address || !phoneNumber || !realName) {
-    return next(errorMessage(400, "所有欄位都是必填的"))
+    return next(errorMessage(400, "所有欄位都是必填的"));
   }
 
   // 密碼bcrypt加密
@@ -35,54 +35,57 @@ export const updateUser = async (req, res, next) => {
 
   try {
     // 更新用戶資料，只更新這4個參數，其餘照舊
-    const updatedUser = await User.findByIdAndUpdate(id, {
-      $set: { password: hashedPassword, address, phoneNumber, realName }
-    }, { new: true })
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      {
+        $set: { password: hashedPassword, address, phoneNumber, realName },
+      },
+      { new: true }
+    );
 
     sendResponse(res, 200, updatedUser);
   } catch (error) {
-    return next(errorMessage(500, "更改用戶失敗", error))
+    return next(errorMessage(500, "更改用戶失敗", error));
   }
-}
-
+};
 
 //刪除使用者
 export const deletedUser = async (req, res, next) => {
-  // 檢查是否為本人操作
-  if (req.user.id !== req.params.id) {
-    return next(errorMessage(403, "您只能修改自己的資料"));
+  const id = req.params.id;
+
+  // 檢查是否為本人或管理員
+  if (req.user.id !== id && !req.user.isAdmin) {
+    return next(errorMessage(403, "您沒有權限刪除此用戶"));
   }
 
-  const id = req.params.id
   try {
-    await User.findByIdAndDelete(id)
+    await User.findByIdAndDelete(id);
     sendResponse(res, 200, null, { message: "用戶成功刪除" });
   } catch (error) {
-    return next(errorMessage(500, "刪除用戶失敗", error))
+    return next(errorMessage(500, "刪除用戶失敗", error));
   }
-}
-
+};
 
 //讀取使用者資料
 export const getUser = async (req, res, next) => {
-  // 檢查是否為本人操作
-  if (req.user.id !== req.params.id) {
+  const id = req.params.id;
+
+  // 檢查是否為本人或管理員
+  if (req.user.id !== id && !req.user.isAdmin) {
     return next(errorMessage(403, "您只能讀取自己的資料"));
   }
-  const id = req.params.id
   try {
     const user = await User.findById(id);
     if (!user) {
-      return next(errorMessage(404, "用戶未找到"))
+      return next(errorMessage(404, "用戶未找到"));
     }
     const allOrder = await Order.find({ userId: id });
     const allFightOrder = await FightOrder.find({ userId: id });
     sendResponse(res, 200, { ...user.toObject(), allOrder, allFightOrder });
   } catch (error) {
-    return next(errorMessage(500, "讀取用戶失敗", error))
+    return next(errorMessage(500, "讀取用戶失敗", error));
   }
-}
-
+};
 
 //讀取全部使用者資料
 export const getAllUsers = async (req, res, next) => {
@@ -92,9 +95,9 @@ export const getAllUsers = async (req, res, next) => {
   }
 
   try {
-    const getUsers = await User.find()
+    const getUsers = await User.find();
     sendResponse(res, 200, getUsers);
   } catch (error) {
-    return next(errorMessage(500, "讀取全部用戶失敗", error))
+    return next(errorMessage(500, "讀取全部用戶失敗", error));
   }
-}
+};
