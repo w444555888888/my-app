@@ -9,14 +9,25 @@ import {
   FileDoneOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import useLocalStorageState from 'use-local-storage-state'
 import { logout } from '../utils/auth';
 import './dashboard.scss';
 
 const { Header, Sider, Content } = Layout;
 
 const Dashboard: React.FC = () => {
+  interface AdminUser {
+    _id: string;
+    username: string;
+    email: string;
+    isAdmin: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+  }
+
   const navigate = useNavigate();
   const location = useLocation();
+  const [adminUser] = useLocalStorageState<AdminUser | null>('adminUser', { defaultValue: null, });
 
   const menuItems = [
     { key: 'users', icon: <UserOutlined />, label: '用戶管理' },
@@ -48,7 +59,12 @@ const Dashboard: React.FC = () => {
       <Layout>
         <Header className="dashboard__header">
           <div className="dashboard__header-content">
-            <span className="dashboard__welcome"><UserOutlined />管理員</span>
+            <span className="dashboard__welcome">
+              <UserOutlined
+                className={`dashboard__icon ${adminUser?.isAdmin ? 'dashboard__icon--admin' : ''}`}
+              />
+              {adminUser?.username}
+            </span>
             <button
               className="dashboard__logout"
               onClick={() => {

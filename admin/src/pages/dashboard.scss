@@ -1,6 +1,6 @@
 .dashboard {
     min-height: 100vh;
-    
+
     &__logo {
         height: 64px;
         display: flex;
@@ -37,6 +37,14 @@
             font-weight: 500;
             font-size: 14px;
             color: #333;
+        }
+
+        .dashboard__icon {
+            margin-right: 4px;
+
+            &--admin {
+                color: #faad14;
+            }
         }
 
         .dashboard__logout {

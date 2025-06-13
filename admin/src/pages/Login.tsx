@@ -13,7 +13,8 @@ import {
 } from 'antd';
 import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
 import { request } from '../utils/apiService';
-import './login.scss';  
+import useLocalStorageState from 'use-local-storage-state'
+import './login.scss';
 
 const { Title } = Typography;
 
@@ -31,13 +32,19 @@ interface RegisterFormData {
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<LoginFormData>({ account: '', password: '' });
-  const [error, setError] = useState<string>('');
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [registerForm] = Form.useForm();
+  const [user, setUser] = useLocalStorageState('adminUser', {defaultValue: null});
 
   const handleSubmit = async () => {
     const res = await request('POST', '/auth/login', formData);
-    res.success ? navigate('/users') : setError(res.message ?? '');
+    if (res.success) {
+      navigate('/users')
+      setUser(res.data.userDetails)
+    } else {
+      message.error(res.message || '登入失敗');
+    }
+
   };
 
   const handleRegister = async (values: RegisterFormData) => {
@@ -56,9 +63,6 @@ const Login = () => {
       <Card className="login-card">
         <Space direction="vertical" className="login-space">
           <Title level={3} className="login-title">管理員登入</Title>
-
-          {error && <Alert type="error" message={error} showIcon />}
-
           <Form layout="vertical" onFinish={handleSubmit}>
             <Form.Item
               label="電子郵件"
