@@ -182,6 +182,12 @@ const Hotels = () => {
     }
   };
 
+  const handleAddRoom = () => {
+    setEditingRoom(undefined);
+    roomForm.resetFields();
+    setRoomEditModalVisible(true);
+  };
+
 
   const fetchHotels = async () => {
     setLoading(true);
@@ -215,6 +221,11 @@ const Hotels = () => {
     } else {
       message.error(res.message || '刪除失敗');
     }
+  };
+
+  const handleAddHotel = () => {
+    setEditingHotel(undefined);
+    setIsModalVisible(true);
   };
 
   const handleSubmitHotel = async (values: any) => {
@@ -267,7 +278,7 @@ const Hotels = () => {
     <div className="hotels-container">
       <div className="hotels-header">
         <div className="hotels-title">飯店管理</div>
-        <Button type="primary" onClick={() => { setEditingHotel(null); setIsModalVisible(true); }}>新增飯店</Button>
+        <Button type="primary" onClick={() => handleAddHotel()}>新增飯店</Button>
       </div>
       <Table columns={columns} dataSource={hotels} rowKey="_id" loading={loading} className="hotel-table" />
 
@@ -275,7 +286,7 @@ const Hotels = () => {
         visible={isModalVisible}
         title={editingHotel ? '編輯飯店' : '新增飯店'}
         fields={hotelFields}
-        initialValues={editingHotel || undefined}
+        initialValues={editingHotel}
         onCancel={() => setIsModalVisible(false)}
         onSubmit={handleSubmitHotel}
       />
@@ -284,7 +295,7 @@ const Hotels = () => {
         visible={roomEditModalVisible}
         title={editingRoom ? '編輯房型' : '新增房型'}
         fields={roomFields}
-        initialValues={editingRoom || undefined}
+        initialValues={editingRoom}
         onCancel={() => setRoomEditModalVisible(false)}
         onSubmit={handleSubmitRoom}
         form={roomForm} // 傳遞外部 form
@@ -297,7 +308,13 @@ const Hotels = () => {
         footer={null}
         width={1000}
       >
-        <Button type="primary" onClick={() => { setEditingRoom(null); setRoomEditModalVisible(true); }} className="add-room-btn">新增房型</Button>
+        <Button
+          type="primary"
+          onClick={handleAddRoom}
+          className="add-room-btn"
+        >
+          新增房型
+        </Button>
         <Table
           dataSource={roomList}
           rowKey="_id"

@@ -48,19 +48,17 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
   const [internalFormInstance] = Form.useForm();
   const internalForm = form ?? internalFormInstance;
 
-  // 新增模式
-  useEffect(() => {
-    if (visible && !initialValues) {
-      internalForm.resetFields();
-    }
-  }, [visible]);
 
-  // 編輯模式
   useEffect(() => {
+    if (!visible) return;
     if (initialValues) {
       internalForm.setFieldsValue(initialValues);
+    } else {
+      internalForm.resetFields();
     }
-  }, [initialValues]);
+  }, [visible, initialValues]);
+
+
 
   const handleFinish = (values: any) => {
     const transformed = { ...values };
@@ -86,7 +84,6 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
         form={internalForm}
         layout="vertical"
         onFinish={handleFinish}
-        initialValues={initialValues}
       >
         {fields.map(field => {
           const rules = field.required ? [{ required: true, message: `請輸入 ${field.label}` }] : [];
@@ -132,7 +129,11 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
                 </Form.Item>
               );
             case "custom":
-                return field.customRender;
+              return form ? field.customRender : (
+                <Form.Item key={field.label} {...commonProps}>
+                  {field.customRender}
+                </Form.Item>
+              );
             default:
               return null;
           }
