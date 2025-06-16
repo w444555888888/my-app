@@ -27,9 +27,21 @@ export const getAllHotels = async (req, res, next) => {
 }
 
 
+
+// 查詢熱門飯店
+export const getPopularHotels = async (req, res, next) => {
+  try {
+    const hotels = await Hotel.find({ popularHotel: true }).populate('rooms')
+    sendResponse(res, 200, hotels)
+  } catch (err) {
+    return next(errorMessage(500, "查詢熱門飯店失敗"))
+  }
+}
+
+
 // 搜尋飯店資料
 export const getSearchHotels = async (req, res, next) => {
-  const { name, minPrice, maxPrice, startDate, endDate, hotelId } = req.query
+  const { name, minPrice, maxPrice, startDate, endDate, hotelId, popular } = req.query
   const minPriceNumber = Number(minPrice)
   const maxPriceNumber = Number(maxPrice)
 
@@ -46,6 +58,7 @@ export const getSearchHotels = async (req, res, next) => {
     const query = {}
     if (name) query.name = new RegExp(name, 'i')
     if (hotelId) query._id = hotelId
+    if (popular === 'true') query.popularHotel = true
 
     // 查詢飯店 + 自動帶出 rooms（用 virtual）
     const hotels = await Hotel.find(query).populate('rooms')

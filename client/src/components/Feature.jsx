@@ -14,19 +14,27 @@ import { toast } from 'react-toastify'
 import "./feature.scss"
 const Feature = () => {
     const [hotels, setHotels] = useState([])
+    const [popularHotels, setPopularHotels] = useState([])
 
     useEffect(() => {
-        const allHotels = async () => {
+        const fetchHotels = async () => {
             const result = await request('GET', '/hotels', {});
             if (result.success) {
                 setHotels(result.data);
             }else toast.error(`${result.message}`)
         };
 
-        allHotels();
+        const fetchPopularHotels = async () => {
+            const result = await request('GET', '/hotels/popular', {});
+            if (result.success) {
+                setPopularHotels(result.data);
+            }else toast.error(`${result.message}`)
+        };
+
+        fetchHotels();
+        fetchPopularHotels();
     }, []);
 
-    const populatHotels = hotels.filter((e) => { return e.popularHotel === true })
 
     return (
         <div className='feature'>
@@ -42,7 +50,7 @@ const Feature = () => {
                     <span>近期受歡迎飯店</span>
                 </div>
                 <div className="listItems">
-                    <PopularHotels dataArray={populatHotels} />
+                    <PopularHotels dataArray={popularHotels} />
                 </div>
             </div>
         </div>

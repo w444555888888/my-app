@@ -21,6 +21,7 @@ const HotelsList = () => {
     const [name, setName] = useState(searchParams.get('name') || '')
     const [startDate, setStartDate] = useState(searchParams.get('startDate') || format(today, "yyyy-MM-dd"))
     const [endDate, setEndDate] = useState(searchParams.get('endDate') || format(nextWeek, "yyyy-MM-dd"))
+    const [isPopular, setIsPopular] = useState(searchParams.get('popular') === 'true');
     const [dates, setDates] = useState([
         {
             startDate: startDate ? new Date(startDate) : new Date(),
@@ -75,6 +76,7 @@ const HotelsList = () => {
         if (endDate) params.endDate = endDate;
         if (conditions.adult) params.adult = conditions.adult;
         if (conditions.room) params.room = conditions.room;
+        if (isPopular) params.popular = true;
         setSearchParams(params);
     }
 
@@ -133,10 +135,8 @@ const HotelsList = () => {
                                         value={minPrice}
                                         onChange={(e) => setMinPrice(e.target.value)}
                                         required />
-
-
-
                                 </div>
+
                                 <div className="listItemLimitPrice">
                                     <span className="limitTitle">
                                         每晚最高價格
@@ -145,8 +145,19 @@ const HotelsList = () => {
                                         value={maxPrice}
                                         onChange={(e) => setMaxPrice(e.target.value)}
                                         required />
-
                                 </div>
+
+                                <div className="listItem">
+                                    <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={isPopular}
+                                        onChange={e => setIsPopular(e.target.checked)}
+                                    />
+                                    僅顯示受歡迎的飯店
+                                    </label>
+                                </div>
+
                                 <span className="limitTitle">
                                     人數/房間數
                                 </span>
