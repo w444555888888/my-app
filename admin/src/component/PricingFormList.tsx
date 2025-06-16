@@ -29,7 +29,7 @@ const PricingFormList = ({ form }: { form: any }) => {
                 selectedDaysMap[day] && !currentDays.includes(day);
 
               return (
-                <Space key={key} align="baseline">
+                <div key={key} className="pricing-item-row">
                   <Form.Item {...restField} name={[name, 'days_of_week']} rules={[{ required: true }]}>
                     <Select
                       mode="multiple"
@@ -48,10 +48,10 @@ const PricingFormList = ({ form }: { form: any }) => {
                     <InputNumber placeholder="價格" />
                   </Form.Item>
                   <Button danger onClick={() => remove(name)}>刪除</Button>
-                </Space>
+                </div>
               );
             })}
-            <Form.Item><Button type="dashed" onClick={() => add()}>新增價格</Button></Form.Item>
+            <Form.Item><Button type="dashed" onClick={() => add({ days_of_week: [] })}>新增價格</Button></Form.Item>
           </>
         );
       }}

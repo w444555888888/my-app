@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Modal, Form, Input, InputNumber, Checkbox, TimePicker, Select, Button } from "antd";
+import type { FormInstance } from "antd/es/form";
 import dayjs from "dayjs";
 import './dynamicFormModal.scss';
 
@@ -30,6 +31,7 @@ interface DynamicFormModalProps {
   initialValues?: any;
   onCancel: () => void;
   onSubmit: (values: any) => void;
+  form?: FormInstance; // 外部傳入的 form 實例，只用於 custom
 }
 
 
@@ -40,21 +42,23 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
   fields,
   initialValues,
   onCancel,
-  onSubmit
+  onSubmit,
+  form
 }) => {
-  const [form] = Form.useForm();
+  const [internalFormInstance] = Form.useForm();
+  const internalForm = form ?? internalFormInstance;
 
   // 新增模式
   useEffect(() => {
     if (visible && !initialValues) {
-      form.resetFields();
+      internalForm.resetFields();
     }
   }, [visible]);
 
   // 編輯模式
   useEffect(() => {
     if (initialValues) {
-      form.setFieldsValue(initialValues);
+      internalForm.setFieldsValue(initialValues);
     }
   }, [initialValues]);
 
@@ -79,7 +83,7 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
       destroyOnHidden
     >
       <Form
-        form={form}
+        form={internalForm}
         layout="vertical"
         onFinish={handleFinish}
         initialValues={initialValues}
@@ -128,11 +132,7 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
                 </Form.Item>
               );
             case "custom":
-              return (
-                <Form.Item key={field.label} {...commonProps}>
-                  {field.customRender}
-                </Form.Item>
-              );
+                return field.customRender;
             default:
               return null;
           }

@@ -287,6 +287,7 @@ const Hotels = () => {
         initialValues={editingRoom || undefined}
         onCancel={() => setRoomEditModalVisible(false)}
         onSubmit={handleSubmitRoom}
+        form={roomForm} // 傳遞外部 form
       />
 
       <Modal
