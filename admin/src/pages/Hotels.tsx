@@ -25,7 +25,18 @@ const Hotels = () => {
   const hotelFields: FormFieldConfig[] = [
     { name: 'name', label: '飯店名稱', type: 'input', required: true },
     { name: 'city', label: '城市', type: 'input', required: true },
-    { name: 'type', label: '類型', type: 'input', required: true },
+    {
+      name: 'type', label: '類型', type: 'select', required: true, options: [
+        { label: '飯店', value: 'hotel' },
+        { label: '公寓', value: 'apartment' },
+        { label: '民宿', value: 'guesthouse' },
+        { label: 'Villa', value: 'villa' },
+        { label: '背包客棧', value: 'hostel' },
+        { label: '汽車旅館', value: 'motel' },
+        { label: '膠囊旅館', value: 'capsule' },
+        { label: '渡假村', value: 'resort' }
+      ]
+    },
     { name: 'address', label: '地址', type: 'input', required: true },
     { name: 'cheapestPrice', label: '最低價格', type: 'number', required: true },
     { name: 'photos', label: '照片 (逗號分隔)', type: 'input', required: true },

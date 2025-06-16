@@ -15,6 +15,7 @@ const HotelSchema = new mongoose.Schema({
     type: {
         type: String, // 住宿型態，飯店、公寓、民宿等
         required: true,
+        enum: ['hotel', 'apartment', 'guesthouse', 'villa', 'hostel', 'motel', 'capsule', 'resort'],
     },
     city: {
         type: String, // 城市名稱
