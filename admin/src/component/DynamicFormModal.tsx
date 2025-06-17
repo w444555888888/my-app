@@ -31,7 +31,7 @@ interface DynamicFormModalProps {
   initialValues?: any;
   onCancel: () => void;
   onSubmit: (values: any) => void;
-  form?: FormInstance; // 外部傳入的 form 實例，只用於 custom
+  form?: FormInstance; // 外部傳入的 form 實例
 }
 
 
@@ -129,11 +129,24 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
                 </Form.Item>
               );
             case "custom":
-              return form ? field.customRender : (
-                <Form.Item key={field.label} {...commonProps}>
-                  {field.customRender}
-                </Form.Item>
-              );
+              // 若 customRender 未提供，回傳 null 並警告
+              if (!field.customRender) {
+                console.warn(`[DynamicFormModal] customRender 為空：${field.label}`);
+                return null;
+              }
+
+              return form
+                ? field.customRender
+                : (
+                  <Form.Item
+                    key={field.label}
+                    name={field.name}
+                    label={field.label}
+                    rules={rules}
+                  >
+                    {field.customRender}
+                  </Form.Item>
+                );
             default:
               return null;
           }
