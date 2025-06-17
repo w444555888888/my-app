@@ -45,8 +45,8 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
   onSubmit,
   form
 }) => {
-  const [internalFormInstance] = Form.useForm();
-  const internalForm = form ?? internalFormInstance;
+  const [fallbackForm] = Form.useForm();
+  const internalForm = form ?? fallbackForm;
 
 
   useEffect(() => {
@@ -87,26 +87,28 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
       >
         {fields.map(field => {
           const rules = field.required ? [{ required: true, message: `請輸入 ${field.label}` }] : [];
-
           const name = field.name;
+          const label = field.label;
+          const key = Array.isArray(name) ? name.join('.') : name;
+
           const commonProps = {
             name,
-            label: field.label,
+            label,
             rules
           };
 
           switch (field.type) {
             case "input":
-              return <Form.Item key={field.label} {...commonProps}><Input placeholder={field.placeholder} /></Form.Item>;
+              return <Form.Item key={key} {...commonProps}><Input placeholder={field.placeholder} /></Form.Item>;
             case "number":
-              return <Form.Item key={field.label} {...commonProps}><InputNumber className="full-width" placeholder={field.placeholder} /></Form.Item>;
+              return <Form.Item key={key} {...commonProps}><InputNumber className="full-width" placeholder={field.placeholder} /></Form.Item>;
             case "textarea":
-              return <Form.Item key={field.label} {...commonProps}><Input.TextArea placeholder={field.placeholder} /></Form.Item>;
+              return <Form.Item key={key} {...commonProps}><Input.TextArea placeholder={field.placeholder} /></Form.Item>;
             case "time":
-              return <Form.Item key={field.label} {...commonProps}><TimePicker format="HH:mm" className="full-width" /></Form.Item>;
+              return <Form.Item key={key} {...commonProps}><TimePicker format="HH:mm" className="full-width" /></Form.Item>;
             case "select":
               return (
-                <Form.Item key={field.label} {...commonProps}>
+                <Form.Item key={key} {...commonProps}>
                   <Select placeholder={field.placeholder}>
                     {field.options?.map(opt => (
                       <Select.Option key={opt.value} value={opt.value}>
@@ -118,7 +120,7 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
               );
             case "checkboxGroup":
               return (
-                <Form.Item key={field.label} {...commonProps}>
+                <Form.Item key={key} {...commonProps}>
                   <Checkbox.Group>
                     {field.options?.map(opt => (
                       <Checkbox key={opt.value} value={opt.value}>
@@ -129,30 +131,22 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
                 </Form.Item>
               );
             case "custom":
-              // 若 customRender 未提供，回傳 null 並警告
               if (!field.customRender) {
                 console.warn(`[DynamicFormModal] customRender 為空：${field.label}`);
                 return null;
               }
 
-              return form
-                ? field.customRender
-                : (
-                  <Form.Item
-                    key={field.label}
-                    name={field.name}
-                    label={field.label}
-                    rules={rules}
-                  >
-                    {field.customRender}
-                  </Form.Item>
-                );
+              return (
+                <Form.Item key={key}  name={field.name} label={field.label}  rules={rules} noStyle>
+                  {field.customRender}
+                </Form.Item>
+              );
             default:
               return null;
           }
         })}
 
-        <Form.Item>
+        <Form.Item key="submit">
           <Button type="primary" htmlType="submit">
             提交
           </Button>
