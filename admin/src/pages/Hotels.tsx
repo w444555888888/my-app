@@ -82,7 +82,7 @@ const Hotels = () => {
       label: '地圖選擇座標',
       type: 'custom',
       customRender: (
-         <>
+        <>
           <LeafletMapPicker
             value={mapCoord}
             onChange={({ lat, lng }) => {
@@ -92,7 +92,7 @@ const Hotels = () => {
               setMapCoord({ lat, lng });
             }}
           />
-       </>
+        </>
       )
     }
   ];
@@ -115,11 +115,11 @@ const Hotels = () => {
       name: 'service', label: '服務項目', type: 'custom',
       customRender: (
         <>
-            <Checkbox.Group className="vertical-checkbox-group">
-              <Checkbox value="breakfast">含早餐</Checkbox>
-              <Checkbox value="dinner">含晚餐</Checkbox>
-              <Checkbox value="parking">提供停車</Checkbox>
-            </Checkbox.Group>
+          <Checkbox.Group className="vertical-checkbox-group">
+            <Checkbox value="breakfast">含早餐</Checkbox>
+            <Checkbox value="dinner">含晚餐</Checkbox>
+            <Checkbox value="parking">提供停車</Checkbox>
+          </Checkbox.Group>
         </>
       )
     },

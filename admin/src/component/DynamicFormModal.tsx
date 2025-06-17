@@ -137,7 +137,7 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
               }
 
               return (
-                <Form.Item key={key}  name={field.name} label={field.label}  rules={rules} noStyle>
+                <Form.Item key={key} label={field.label}>
                   {field.customRender}
                 </Form.Item>
               );
