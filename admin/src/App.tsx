@@ -10,6 +10,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import zhTW from 'antd/locale/zh_TW';
+import 'leaflet/dist/leaflet.css';
 
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
