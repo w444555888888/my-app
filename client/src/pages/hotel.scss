@@ -191,25 +191,56 @@
         position: relative;
         line-height: 2.5;
 
-        .SearchBarItem {
-          height: 50px;
-          width: 320px;
-          font-size: 16px;
+        .hotelExtraSection {
           display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 10px;
-          color: black;
-          background-color: rgb(246, 246, 246);
-          border-radius: 2px;
-          cursor: pointer;
+          flex-direction: column;
+          gap: 24px;
+          margin: 30px 0;
 
-          .calendar {
-            position: absolute;
-            top: 400px;
-            border: 1px lightgray solid;
-            box-shadow: 0px 0px 15px lightgray;
-            z-index: 999;
+          .hotelLeft,
+          .hotelRight {
+            flex: 1;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+            h2 {
+              margin-bottom: 16px;
+              font-size: 18px;
+              color: #333;
+              padding-bottom: 8px;
+            }
+          }
+
+          .SearchBarItem {
+            width: 100%;
+            padding: 10px;
+            background-color: #eee;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 16px;
+          }
+
+          .searchbtn {
+            width: 100%;
+            background-color: #666;
+            color: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+          }
+
+          .leaflet-container {
+            height: 300px;
+            width: 100%;
+            border-radius: 6px;
           }
         }
       }
@@ -265,7 +296,6 @@
 
           tbody {
             tr {
-
               td {
                 border: 3px solid rgba(169, 169, 169, 0.5);
                 vertical-align: middle;
@@ -323,7 +353,6 @@
                   .service-item {
                     font-size: 18px;
                   }
-
                 }
 
                 ul {
@@ -465,6 +494,14 @@
     padding: 10px;
   }
 
+  .hotelExtraSection {
+    flex-direction: column;
+    .hotelLeft,
+    .hotelRight {
+      padding: 16px;
+    }
+  }
+
   .hotelTitle {
     flex-direction: column;
     align-items: flex-start;
@@ -604,7 +641,6 @@
               }
 
               .service {
-
                 .service-item {
                   font-size: 16px;
                 }

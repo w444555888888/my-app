@@ -10,12 +10,15 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 import { ToastContainer } from 'react-toastify';
+import { Provider } from 'react-redux'
+import { store } from './redux/store'
+
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 import 'react-date-range/dist/styles.css' 
 import 'react-date-range/dist/theme/default.css' 
-import { Provider } from 'react-redux'
-import { store } from './redux/store'
+import 'leaflet/dist/leaflet.css';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
