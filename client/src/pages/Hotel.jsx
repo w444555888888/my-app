@@ -14,107 +14,107 @@ import {
   faUserLarge,
   faCalendar,
   faCheck,
-} from "@fortawesome/free-solid-svg-icons";
-import { IoBed } from "react-icons/io5";
+} from "@fortawesome/free-solid-svg-icons"
+import { IoBed } from "react-icons/io5"
 import {
   MdFreeBreakfast,
   MdRestaurantMenu,
   MdLocalParking,
-} from "react-icons/md";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useRef, useState, useEffect } from "react";
-import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
-import { request } from "../utils/apiService";
-import { gsap } from "gsap";
-import "./hotel.scss";
+} from "react-icons/md"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import React, { useRef, useState, useEffect } from "react"
+import Footer from "../components/Footer"
+import Navbar from "../components/Navbar"
+import { request } from "../utils/apiService"
+import { gsap } from "gsap"
+import "./hotel.scss"
 import {
   useLocation,
   useParams,
   useSearchParams,
   useNavigate,
-} from "react-router-dom";
-import { DateRange } from "react-date-range";
-import { differenceInDays, format } from "date-fns";
-import { useDispatch, useSelector } from "react-redux";
+} from "react-router-dom"
+import { DateRange } from "react-date-range"
+import { differenceInDays, format } from "date-fns"
+import { useDispatch, useSelector } from "react-redux"
 import {
   fetchHotelData,
   setCurrentHotel,
   setAvailableRooms,
-} from "../redux/hotelSlice";
-import EmptyState from "../subcomponents/EmptyState";
-import LeafletMapPicker from "../components/LeafletMapPicker";
-import { toast } from "react-toastify";
+} from "../redux/hotelSlice"
+import EmptyState from "../subcomponents/EmptyState"
+import LeafletMapPicker from "../components/LeafletMapPicker"
+import { toast } from "react-toastify"
 
 const Hotel = () => {
-  const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const dispatch = useDispatch();
+  const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const dispatch = useDispatch()
   const { currentHotel, availableRooms, loading, error } = useSelector(
     (state) => state.hotel
-  );
-  const [openSlider, setOpenSlider] = useState(false);
-  const [sliderIndex, setSiderIndex] = useState(0);
-  const [night, setNight] = useState("");
-  const comments = useRef(null);
+  )
+  const [openSlider, setOpenSlider] = useState(false)
+  const [sliderIndex, setSiderIndex] = useState(0)
+  const [night, setNight] = useState("")
+  const comments = useRef(null)
 
   // 預設日期為今天和一周後
-  const today = new Date();
-  const nextWeek = new Date();
-  nextWeek.setDate(today.getDate() + 7);
+  const today = new Date()
+  const nextWeek = new Date()
+  nextWeek.setDate(today.getDate() + 7)
 
   // 從 URL 獲取參數
-  const hotelId = searchParams.get("hotelId");
-  const startDateParam = searchParams.get("startDate");
-  const endDateParam = searchParams.get("endDate");
+  const hotelId = searchParams.get("hotelId")
+  const startDateParam = searchParams.get("startDate")
+  const endDateParam = searchParams.get("endDate")
 
   // 路由傳遞數據
-  const [openCalendar, setOpenCalendar] = useState(false);
+  const [openCalendar, setOpenCalendar] = useState(false)
   const [startDate, setStartDate] = useState(
     startDateParam || format(today, "yyyy-MM-dd")
-  );
+  )
   const [endDate, setEndDate] = useState(
     endDateParam || format(nextWeek, "yyyy-MM-dd")
-  );
+  )
   const [dates, setDates] = useState([
     {
       startDate: startDate ? new Date(startDate) : new Date(),
       endDate: endDate ? new Date(endDate) : new Date(),
       key: "selection",
     },
-  ]);
+  ])
 
   // 獲取酒店數據
   useEffect(() => {
-    dispatch(fetchHotelData(searchParams));
-  }, [searchParams, dispatch]);
+    dispatch(fetchHotelData(searchParams))
+  }, [searchParams, dispatch])
 
   // 晚數
   useEffect(() => {
-    setNight(differenceInDays(dates[0].endDate, dates[0].startDate));
-  }, [dates]);
+    setNight(differenceInDays(dates[0].endDate, dates[0].startDate))
+  }, [dates])
 
   const handleDateChange = (item) => {
-    setDates([item.selection]);
-    setStartDate(format(item.selection.startDate, "yyyy-MM-dd"));
-    setEndDate(format(item.selection.endDate, "yyyy-MM-dd"));
+    setDates([item.selection])
+    setStartDate(format(item.selection.startDate, "yyyy-MM-dd"))
+    setEndDate(format(item.selection.endDate, "yyyy-MM-dd"))
     if (
       item.selection.startDate &&
       item.selection.endDate &&
       format(item.selection.startDate, "yyyy-MM-dd") !==
-        format(item.selection.endDate, "yyyy-MM-dd")
+      format(item.selection.endDate, "yyyy-MM-dd")
     ) {
-      setOpenCalendar(false);
+      setOpenCalendar(false)
     }
-  };
+  }
 
   const handleSearchHotels = () => {
-    const params = {};
-    if (hotelId) params.hotelId = hotelId;
-    if (startDate) params.startDate = startDate;
-    if (endDate) params.endDate = endDate;
-    setSearchParams(params);
-  };
+    const params = {}
+    if (hotelId) params.hotelId = hotelId
+    if (startDate) params.startDate = startDate
+    if (endDate) params.endDate = endDate
+    setSearchParams(params)
+  }
 
   const handleHover = () => {
     gsap.to(comments.current, {
@@ -123,8 +123,8 @@ const Hotel = () => {
         opacity: 1,
       },
       ease: "strong.inOut",
-    });
-  };
+    })
+  }
 
   const handleHoverExit = () => {
     gsap.to(comments.current, {
@@ -133,33 +133,33 @@ const Hotel = () => {
         opacity: 0,
       },
       ease: "strong.inOut",
-    });
-  };
+    })
+  }
 
   const clickSlider = (index) => {
-    setOpenSlider(true);
-    setSiderIndex(index);
-  };
+    setOpenSlider(true)
+    setSiderIndex(index)
+  }
 
   const slideDirection = (direction) => {
-    let newSliderIndex;
-    let lastPicutre = currentHotel.photos.length - 1;
+    let newSliderIndex
+    let lastPicutre = currentHotel.photos.length - 1
     if (direction === "left") {
       sliderIndex === 0
         ? (newSliderIndex = lastPicutre)
-        : (newSliderIndex = sliderIndex - 1);
-      setSiderIndex(newSliderIndex);
+        : (newSliderIndex = sliderIndex - 1)
+      setSiderIndex(newSliderIndex)
     } else {
       sliderIndex === lastPicutre
         ? (newSliderIndex = 0)
-        : (newSliderIndex = sliderIndex + 1);
-      setSiderIndex(newSliderIndex);
+        : (newSliderIndex = sliderIndex + 1)
+      setSiderIndex(newSliderIndex)
     }
-  };
+  }
 
   const handleNavigateToOrder = async (roomId) => {
-    navigate(`/order/${startDate}/${endDate}/${hotelId}/${roomId}`);
-  };
+    navigate(`/order/${startDate}/${endDate}/${hotelId}/${roomId}`)
+  }
 
   const facilitiesList = [
     { key: "bar", icon: faGlassMartiniAlt, label: "酒吧" },
@@ -169,7 +169,7 @@ const Hotel = () => {
     { key: "restaurant", icon: faUtensils, label: "餐廳" },
     { key: "spa", icon: faSpa, label: "水療" },
     { key: "wifi", icon: faWifi, label: "免費無線網路" },
-  ];
+  ]
 
   if (!currentHotel)
     return (
@@ -179,7 +179,7 @@ const Hotel = () => {
           description="很抱歉，我們無法找到相關的酒店資訊"
         />
       </div>
-    );
+    )
 
   return (
     <div className="hotel">
@@ -188,8 +188,8 @@ const Hotel = () => {
         <div className="slider">
           <div className="sliderWrapper">
             <div className="wrapperTitle">
-              <div className="TitleName">{currentHotel.name}</div>
-              <span className="CloseSign" onClick={() => setOpenSlider(false)}>
+              <div className="titleName">{currentHotel.name}</div>
+              <span className="closeSign" onClick={() => setOpenSlider(false)}>
                 關閉
                 <FontAwesomeIcon icon={faXmark} />
               </span>
@@ -210,9 +210,9 @@ const Hotel = () => {
           </div>
         </div>
       )}
-      <div className="HotelContainer">
-        <div className="HotelWrapper">
-          <div className="HotelHeaderBtn">
+      <div className="hotelContainer">
+        <div className="hotelWrapper">
+          <div className="hotelHeaderBtn">
             <button>資訊 & 房價</button>
             <button>設施</button>
             <button>訂房須知</button>
@@ -284,13 +284,13 @@ const Hotel = () => {
               <div className="hotelExtraSection">
                 <div className="hotelLeft">
                   <h2>空房情況</h2>
-                  <div className="SearchBarItem">
+                  <div className="hotelLeft-searchBarItem">
                     <FontAwesomeIcon
                       icon={faCalendar}
                       onClick={() => setOpenCalendar(!openCalendar)}
                     />
                     <span
-                      className="SearchText"
+                      className="searchText"
                       onClick={() => setOpenCalendar(!openCalendar)}
                     >
                       {format(dates[0].startDate, "MM/dd/yyyy")} -{" "}
@@ -307,7 +307,7 @@ const Hotel = () => {
                       />
                     )}
                   </div>
-                  <div className="listItem">
+                  <div className="hotelLeft-listItem">
                     <button className="searchbtn" onClick={handleSearchHotels}>
                       搜尋
                     </button>
@@ -321,7 +321,7 @@ const Hotel = () => {
                       lng: currentHotel?.coordinates?.longitude || 103.984,
                     }}
                     onChange={({ lat, lng }) => {
-                      console.log("使用者選擇的座標:", lat, lng);
+                      console.log("使用者選擇的座標:", lat, lng)
                     }}
                   />
                 </div>
@@ -442,7 +442,7 @@ const Hotel = () => {
       </div>
       <Footer />
     </div>
-  );
-};
+  )
+}
 
-export default Hotel;
+export default Hotel
