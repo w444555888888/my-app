@@ -103,7 +103,7 @@
 
 
 
-.GlobalBanner {
+.globalBanner {
     margin-top: 20px;
     display: flex;
     align-items: center;
@@ -119,7 +119,7 @@
         width: 180px;
     }
 
-    .BannerInfoDes {
+    .bannerInfoDes {
         display: flex;
         flex-direction: column;
         gap: 20px;
@@ -147,17 +147,17 @@
 
 
 @media screen and (max-width: 768px) {
-    .GlobalBanner {
+    .globalBanner {
         flex-direction: column;
         background-position: center;
     }
 
-    .GlobalBanner img {
+    .globalBanner img {
         width: 150px;
         margin-bottom: 10px;
     }
 
-    .GlobalBanner .BannerInfoDes {
+    .globalBanner .bannerInfoDes {
         align-items: center;
         gap: 10px;
     }
@@ -168,17 +168,17 @@
 
 
 @media screen and (max-width: 480px) {
-    .GlobalBanner {
+    .globalBanner {
         flex-direction: column;
         background-position: center;
     }
 
-    .GlobalBanner img {
+    .globalBanner img {
         width: 120px;
         margin-bottom: 8px;
     }
 
-    .GlobalBanner .BannerInfoDes {
+    .globalBanner .bannerInfoDes {
         align-items: center;
         gap: 8px;
     }

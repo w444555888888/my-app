@@ -54,12 +54,12 @@ const Announcement = ({ type }) => {
           </>
         ) : (
           // false
-          <div className="GlobalBanner">
+          <div className="globalBanner">
             <img
               src="https://cf.bstatic.com/static/img/contact/cs/cs-globe/981cf108eeecda859688c0e51d4ea87595d70912.png"
               alt=""
             />
-            <div className="BannerInfoDes">
+            <div className="bannerInfoDes">
               <h2>加入會員，解鎖專屬優惠</h2>
               <span>
                 成為會員即可享有專屬折扣、累積點數、快速查詢訂單等貼心服務

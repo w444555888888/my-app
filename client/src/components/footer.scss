@@ -49,6 +49,11 @@
                 border-radius: 2px;
                 font-size: 20px;
                 background-color: var(--primary-color);
+                cursor: pointer;
+            }
+
+            button:hover {
+                background-color: var(--hover-color);
             }
         }
         .checktext {
@@ -56,6 +61,17 @@
             input {
                 margin-right: 5px;
             }
+        }
+
+        .sub-success {
+            padding: 20px 50px;
+            color: var(--primary-color);
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 6px;
+            margin-bottom: 10px;
         }
     }
 

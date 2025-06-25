@@ -5,15 +5,19 @@
 
 //主題
 $themes: (
-  light: (primary-color: #4a90e2,
+  light: (
+    primary-color: #4a90e2,
     background-color: white,
     text-color: black,
-    hover-color: rgba(200, 200, 200, 0.2)),
+    hover-color: rgba(74, 122, 226, 0.6)
+    ),
    
-  dark: (primary-color: #6aa2e2,
+  dark: (
+    primary-color: #6aa2e2,
     background-color: black,
     text-color: white,
-    hover-color: rgba(100, 100, 100, 0.2)),
+    hover-color: rgba(106, 162, 226, 0.6)
+    ),
 );
 
 // 主題函數

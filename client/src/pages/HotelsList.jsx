@@ -179,11 +179,11 @@ const HotelsList = () => {
                                     人數/房間數
                                 </span>
                                 <div className="listItmConditions">
-                                    <span className="SearchText" onClick={() => setOpenConditions(!openConditions)}>
+                                    <span className="searchText" onClick={() => setOpenConditions(!openConditions)}>
                                         {`${conditions.adult} 位成人 · ${conditions.room} 間房`}
                                     </span>
                                     {openConditions &&
-                                        <div className="ConditionsContainer">
+                                        <div className="conditionsContainer">
                                             <div className="condition">
                                                 成人
                                                 <div className="conditionCounter">
