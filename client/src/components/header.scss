@@ -67,14 +67,14 @@
 
     .searchInputWrapper {
       position: relative;
-      width: 100%;
+      width: 80%;
     }
 
     .suggestionList {
       position: absolute;
+      width: 95%;
       top: 100%;
       left: 0;
-      width: 100%;
       z-index: 999;
       background: #fff;
       border: 1px solid #ccc;
@@ -101,15 +101,6 @@
         &:active {
           background-color: #e0e0e0;
         }
-      }
-    }
-
-    .SuggestionList.no-result {
-      li {
-        color: #999;
-        font-style: italic;
-        cursor: default;
-        pointer-events: none;
       }
     }
 

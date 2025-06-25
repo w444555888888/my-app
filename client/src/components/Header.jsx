@@ -134,12 +134,6 @@ const Header = () => {
                                     ))}
                                 </ul>
                             )}
-
-                            {!loadingSuggestions && name.trim() !== '' && suggestions.length === 0 && !manuallySelected.current && (
-                                <ul className="SuggestionList no-result">
-                                    <li>找不到符合的飯店名稱</li>
-                                </ul>
-                            )}
                         </div>
                     </div>
 
