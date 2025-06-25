@@ -18,6 +18,8 @@ const Header = () => {
     const [suggestions, setSuggestions] = useState([])
     const [loadingSuggestions, setLoadingSuggestions] = useState(false)
     const debounceRef = useRef(null)
+    const manuallySelected = useRef(false)
+
 
     const [searchParams, setSearchParams] = useSearchParams();
     const [openConditions, setOpenConditions] = useState(false)
@@ -67,7 +69,20 @@ const Header = () => {
         navigate(`/hotelsList?${searchParams.toString()}`);
     }
 
+
+    const handleSuggestionSelect = (selectedName) => {
+        setName(selectedName)
+        setSuggestions([])
+        manuallySelected.current = true
+    }
+
+
     useEffect(() => {
+        if (manuallySelected.current) {
+            manuallySelected.current = false
+            return
+        }
+
         if (debounceRef.current) clearTimeout(debounceRef.current)
 
         debounceRef.current = setTimeout(async () => {
@@ -113,18 +128,15 @@ const Header = () => {
                             {suggestions.length > 0 && (
                                 <ul className="suggestionList">
                                     {suggestions.map((item) => (
-                                        <li key={item._id} onClick={() => {
-                                            setName(item.name)
-                                            setSuggestions([])
-                                        }}>
+                                        <li key={item._id} onClick={() => handleSuggestionSelect(item.name)}>
                                             {item.name}
                                         </li>
                                     ))}
                                 </ul>
                             )}
 
-                            {!loadingSuggestions && name.trim() !== '' && suggestions.length === 0 && (
-                                <ul className="suggestionList no-result">
+                            {!loadingSuggestions && name.trim() !== '' && suggestions.length === 0 && !manuallySelected.current && (
+                                <ul className="SuggestionList no-result">
                                     <li>找不到符合的飯店名稱</li>
                                 </ul>
                             )}
