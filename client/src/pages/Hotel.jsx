@@ -43,8 +43,8 @@ import {
   setAvailableRooms,
 } from "../redux/hotelStore"
 import EmptyState from "../subcomponents/EmptyState"
-import LeafletMapPicker from "../components/LeafletMapPicker"
-import { toast } from "react-toastify"
+import LeafletMapPicker from "../utils/LeafletMapPicker"
+
 
 const Hotel = () => {
   const navigate = useNavigate()
