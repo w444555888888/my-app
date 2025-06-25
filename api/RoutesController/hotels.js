@@ -13,7 +13,25 @@ import { errorMessage } from "../errorMessage.js"
 import { sendResponse } from "../sendResponse.js"
 
 
+// 模糊搜尋飯店名稱
+export const getHotelNameSuggestions = async (req, res, next) => {
+  const { name } = req.query;
 
+  if (!name || name.trim() === '') {
+    return next(errorMessage(400, "請輸入搜尋名稱"));
+  }
+
+  try {
+    const hotels = await Hotel.find(
+      { name: { $regex: name, $options: 'i' } }, // 模糊比對，忽略大小寫
+      { _id: 1, name: 1 } // 僅回傳 id 與 name 欄位
+    ).limit(10);
+
+    sendResponse(res, 200, hotels);
+  } catch (err) {
+    return next(errorMessage(500, "搜尋飯店名稱失敗", err));
+  }
+};
 
 // 獲取所有飯店資料（不帶任何過濾條件）
 export const getAllHotels = async (req, res, next) => {

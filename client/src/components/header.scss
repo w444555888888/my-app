@@ -53,7 +53,7 @@
     text-overflow: ellipsis;
   }
 
-  .SearchBarItem {
+  .searchBarItem {
     height: 50px;
     width: calc(34% - 20px);
     margin-left: 2px;
@@ -65,6 +65,54 @@
     border-radius: 2px;
     cursor: pointer;
 
+    .searchInputWrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .suggestionList {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      z-index: 999;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-top: none;
+      border-radius: 0 0 6px 6px;
+      max-height: 200px;
+      overflow-y: auto;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      list-style: none;
+      margin: 0;
+      padding: 4px 0;
+
+      li {
+        padding: 10px 16px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background 0.2s;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #f5f5f5;
+        }
+
+        &:active {
+          background-color: #e0e0e0;
+        }
+      }
+    }
+
+    .SuggestionList.no-result {
+      li {
+        color: #999;
+        font-style: italic;
+        cursor: default;
+        pointer-events: none;
+      }
+    }
+
     .calendar {
       position: absolute;
       top: 56px;
@@ -73,7 +121,7 @@
     }
   }
 
-  .SearchBarBtn {
+  .searchBarBtn {
     border: none;
     margin: 0px 2px 0px 2px;
     width: 60px;
@@ -85,7 +133,7 @@
   }
 }
 
-.ConditionsContainer {
+.conditionsContainer {
   position: absolute; //一樣絕對定位
   top: 60px;
   right: 0;
@@ -94,7 +142,7 @@
   box-shadow: 0px 0px 15px lightgray;
   border-radius: 5px;
   padding: 10px 40px;
-  cursor: default; 
+  cursor: default;
 
   .condition {
     display: flex;
@@ -135,7 +183,6 @@
   }
 }
 
-
 @media screen and (max-width: 1024px) {
   .header {
     .headerContainer {
@@ -151,7 +198,7 @@
   .headerSearchBar {
     width: 90%;
 
-    .SearchBarItem {
+    .searchBarItem {
       width: calc(33% - 15px);
     }
   }
@@ -180,7 +227,7 @@
     padding: 5px;
     bottom: -60px;
 
-    .SearchBarItem {
+    .searchBarItem {
       width: 100%;
       margin: 2px 0;
 
@@ -189,13 +236,13 @@
       }
     }
 
-    .SearchBarBtn {
+    .searchBarBtn {
       width: 100%;
       margin-top: 5px;
     }
   }
 
-  .ConditionsContainer {
+  .conditionsContainer {
     width: 90%;
     right: 5%;
     padding: 10px 20px;
@@ -236,7 +283,7 @@
     }
   }
 
-  .ConditionsContainer {
+  .conditionsContainer {
     padding: 5px 15px;
 
     .condition {

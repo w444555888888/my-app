@@ -1,9 +1,10 @@
 import { faBed, faCalendar, faPeopleGroup } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { DateRange } from 'react-date-range'
 import format from 'date-fns/format'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { request } from '../utils/apiService';
 import "./header.scss"
 const Header = () => {
     // 導航
@@ -14,6 +15,9 @@ const Header = () => {
     const nextWeek = new Date();
     nextWeek.setDate(today.getDate() + 7);
 
+    const [suggestions, setSuggestions] = useState([])
+    const [loadingSuggestions, setLoadingSuggestions] = useState(false)
+    const debounceRef = useRef(null)
 
     const [searchParams, setSearchParams] = useSearchParams();
     const [openConditions, setOpenConditions] = useState(false)
@@ -50,7 +54,7 @@ const Header = () => {
         setEndDate(format(item.selection.endDate, "yyyy-MM-dd"))
     }
 
-    
+
     const handleSearchClick = async () => {
         const params = {
             name,
@@ -62,6 +66,25 @@ const Header = () => {
         setSearchParams(params);
         navigate(`/hotelsList?${searchParams.toString()}`);
     }
+
+    useEffect(() => {
+        if (debounceRef.current) clearTimeout(debounceRef.current)
+
+        debounceRef.current = setTimeout(async () => {
+            if (!name.trim()) {
+                setSuggestions([])
+                return
+            }
+
+            const res = await request('GET', '/hotels/suggestions', { name: name.trim() }, setLoadingSuggestions)
+
+            if (res.success) {
+                setSuggestions(res.data)
+            } else {
+                setSuggestions([])
+            }
+        }, 300)
+    }, [name])
 
 
 
@@ -75,14 +98,40 @@ const Header = () => {
                 <p className="headerDes">搜尋飯店、民宿及其他住宿類型的優惠…
                     <br />MIKE.Booking.com</p>
 
-
                 <div className="headerSearchBar">
-                    <div className="SearchBarItem">
+                    <div className="searchBarItem">
                         <FontAwesomeIcon icon={faBed} />
-                        <input type="text" placeholder='你要去哪裡？' className='SearchInput' value={name}
-                            onChange={e => setName(e.target.value)} />
+                        <div className="searchInputWrapper">
+                            <input
+                                type="text"
+                                placeholder="你要去哪裡？"
+                                className="searchInput"
+                                value={name}
+                                onChange={e => setName(e.target.value)}
+                            />
+
+                            {suggestions.length > 0 && (
+                                <ul className="suggestionList">
+                                    {suggestions.map((item) => (
+                                        <li key={item._id} onClick={() => {
+                                            setName(item.name)
+                                            setSuggestions([])
+                                        }}>
+                                            {item.name}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+
+                            {!loadingSuggestions && name.trim() !== '' && suggestions.length === 0 && (
+                                <ul className="suggestionList no-result">
+                                    <li>找不到符合的飯店名稱</li>
+                                </ul>
+                            )}
+                        </div>
                     </div>
-                    <div className="SearchBarItem">
+
+                    <div className="searchBarItem">
                         <FontAwesomeIcon icon={faCalendar} onClick={() => setOpenCalendar(!openCalendar)} />
                         <span className="SearchText" onClick={() => setOpenCalendar(!openCalendar)} >
                             {format(dates[0].startDate, "MM/dd/yyyy")} - {format(dates[0].endDate, "MM/dd/yyyy")}
@@ -96,11 +145,11 @@ const Header = () => {
                             minDate={new Date()}
                         />}
                     </div>
-                    <div className="SearchBarItem">
+                    <div className="searchBarItem">
                         <FontAwesomeIcon icon={faPeopleGroup} onClick={() => setOpenConditions(!openConditions)} />
                         <span className="SearchText" onClick={() => setOpenConditions(!openConditions)}  >{conditions.adult}位成人 · {conditions.room} 間房</span>
                         {openConditions &&
-                            <div className="ConditionsContainer">
+                            <div className="conditionsContainer">
                                 <div className="condition">
                                     成人
                                     <div className="conditionCounter">
@@ -132,7 +181,7 @@ const Header = () => {
                             </div>
                         }
                     </div>
-                    <button className='SearchBarBtn' onClick={handleSearchClick}>搜尋</button>
+                    <button className='searchBarBtn' onClick={handleSearchClick}>搜尋</button>
                 </div>
             </div>
 
