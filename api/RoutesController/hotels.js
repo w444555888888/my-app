@@ -74,7 +74,7 @@ export const getSearchHotels = async (req, res, next) => {
 
     // 查詢條件
     const query = {}
-    if (name) query.name = new RegExp(name, 'i')
+    if (name) query.name = { $regex: name, $options: 'i' };
     if (hotelId) query._id = hotelId
     if (popular === 'true') query.popularHotel = true
 

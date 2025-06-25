@@ -18,17 +18,41 @@ const HotelsList = () => {
     const nextWeek = new Date()
     nextWeek.setDate(today.getDate() + 7)
 
-    const [name, setName] = useState(searchParams.get('name') || '')
-    const [startDate, setStartDate] = useState(searchParams.get('startDate') || format(today, "yyyy-MM-dd"))
-    const [endDate, setEndDate] = useState(searchParams.get('endDate') || format(nextWeek, "yyyy-MM-dd"))
-    const [isPopular, setIsPopular] = useState(searchParams.get('popular') === 'true');
+    const [name, setName] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [conditions, setConditions] = useState({ adult: 1, room: 1 });
+    const [isPopular, setIsPopular] = useState(false);
     const [dates, setDates] = useState([
         {
-            startDate: startDate ? new Date(startDate) : new Date(),
-            endDate: endDate ? new Date(endDate) : new Date(),
+            startDate: today,
+            endDate: nextWeek,
             key: 'selection',
         }
-    ])
+    ]);
+
+    useEffect(() => {
+        const nameParam = searchParams.get('name') || '';
+        const start = searchParams.get('startDate') || format(new Date(), 'yyyy-MM-dd');
+        const end = searchParams.get('endDate') || format(new Date(Date.now() + 7 * 86400000), 'yyyy-MM-dd');
+        const adult = parseInt(searchParams.get('adult')) || 1;
+        const room = parseInt(searchParams.get('room')) || 1;
+        const popular = searchParams.get('popular') === 'true';
+
+        setName(nameParam);
+        setStartDate(start);
+        setEndDate(end);
+        setIsPopular(popular);
+        setConditions({ adult, room });
+
+        setDates([
+            {
+                startDate: new Date(start),
+                endDate: new Date(end),
+                key: 'selection',
+            }
+        ]);
+    }, [searchParams]);
 
     const handleCounter = (name, sign) => {
         setConditions(prev => {
@@ -39,10 +63,7 @@ const HotelsList = () => {
         })
     }
 
-    const [conditions, setConditions] = useState({
-        adult: parseInt(searchParams.get('adult')) || 1,
-        room: parseInt(searchParams.get('room')) || 1,
-    })
+
 
     // 開關狀態
     const [openConditions, setOpenConditions] = useState(false)
@@ -149,12 +170,12 @@ const HotelsList = () => {
 
                                 <div className="listItem">
                                     <label>
-                                    <input
-                                        type="checkbox"
-                                        checked={isPopular}
-                                        onChange={e => setIsPopular(e.target.checked)}
-                                    />
-                                    僅顯示受歡迎的飯店
+                                        <input
+                                            type="checkbox"
+                                            checked={isPopular}
+                                            onChange={e => setIsPopular(e.target.checked)}
+                                        />
+                                        僅顯示受歡迎的飯店
                                     </label>
                                 </div>
 

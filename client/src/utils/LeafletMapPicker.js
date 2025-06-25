@@ -32,7 +32,7 @@ const LocationMarker = ({ position, setPosition }) => {
   return position ? <Marker position={position} /> : null;
 };
 
-const LeafletMapPicker = ({ value, onChange }) => {
+const LeafletMapPicker = ({ value,  onChange = () => {}}) => {
   const [position, setPosition] = useState(value);
 
   useEffect(() => {
