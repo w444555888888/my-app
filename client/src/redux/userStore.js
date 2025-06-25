@@ -14,7 +14,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
  * 登入狀態 : login
  * 主題 : theme
 */
-const userSlice = createSlice({
+const userStore = createSlice({
   name: 'user',
   initialState: {
     login: !!localStorage.getItem('username'),
@@ -37,6 +37,5 @@ const userSlice = createSlice({
   }
 })
 
-export const { logIn, logOut, toggleTheme } = userSlice.actions
-
-export default userSlice.reducer
+export const { logIn, logOut, toggleTheme } = userStore.actions
+export default userStore.reducer

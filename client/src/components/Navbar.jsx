@@ -13,7 +13,7 @@ import { faSun, faMoon, faBed, faPlane, faShuttleVan, faUtensils, faMapMarkerAlt
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
-import { toggleTheme } from '../redux/userSlice'
+import { toggleTheme } from '../redux/userStore'
 const Navbar = () => {
     const [activeItem, setActiveItem] = useState('住宿')
 

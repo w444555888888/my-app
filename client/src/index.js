@@ -11,7 +11,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import { ToastContainer } from 'react-toastify';
 import { Provider } from 'react-redux'
-import { store } from './redux/store'
+import store from './redux/storeConfig'
 
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-loading-skeleton/dist/skeleton.css';

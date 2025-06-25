@@ -38,10 +38,10 @@ import { DateRange } from "react-date-range"
 import { differenceInDays, format } from "date-fns"
 import { useDispatch, useSelector } from "react-redux"
 import {
-  fetchHotelData,
+  fetchSingleHotel,
   setCurrentHotel,
   setAvailableRooms,
-} from "../redux/hotelSlice"
+} from "../redux/hotelStore"
 import EmptyState from "../subcomponents/EmptyState"
 import LeafletMapPicker from "../components/LeafletMapPicker"
 import { toast } from "react-toastify"
@@ -86,7 +86,7 @@ const Hotel = () => {
 
   // 獲取酒店數據
   useEffect(() => {
-    dispatch(fetchHotelData(searchParams))
+    dispatch(fetchSingleHotel(searchParams))
   }, [searchParams, dispatch])
 
   // 晚數

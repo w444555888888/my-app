@@ -3,8 +3,8 @@ import { request } from '../utils/apiService';
 import { toast } from 'react-toastify';
 
 
-export const fetchHotelData = createAsyncThunk(
-  'hotel/fetchHotelData',
+export const fetchSingleHotel = createAsyncThunk(
+  'hotel/fetchSingleHotel',
   async (searchParams, { rejectWithValue }) => {
     const result = await request('GET', `/hotels/search?${searchParams.toString()}`)
     return result.success ? result.data[0] : rejectWithValue(result.message);
@@ -12,7 +12,7 @@ export const fetchHotelData = createAsyncThunk(
 )
 
 
-const hotelSlice = createSlice({
+const hotelStore = createSlice({
   name: 'hotel',
   initialState: {
     currentHotel: null,
@@ -30,17 +30,17 @@ const hotelSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchHotelData.pending, (state) => {
+      .addCase(fetchSingleHotel.pending, (state) => {
         state.loading = true
         state.error = null
       })
-      .addCase(fetchHotelData.fulfilled, (state, action) => {
+      .addCase(fetchSingleHotel.fulfilled, (state, action) => {
         state.loading = false
         state.currentHotel = action.payload
         state.availableRooms = action.payload.availableRooms
         toast.success('成功獲取飯店資料')
       })
-      .addCase(fetchHotelData.rejected, (state, action) => {
+      .addCase(fetchSingleHotel.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload || '獲取飯店資料失敗'
         toast.error(action.payload || '獲取飯店資料失敗')
@@ -49,5 +49,5 @@ const hotelSlice = createSlice({
 })
 
 
-export const { setCurrentHotel, setAvailableRooms } = hotelSlice.actions;
-export default hotelSlice.reducer;
+export const { setCurrentHotel, setAvailableRooms } = hotelStore.actions;
+export default hotelStore.reducer;

@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleRight } from '@fortawesome/free-solid-svg-icons'
 import { format } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux'
-import { logOut } from '../redux/userSlice'
+import { logOut } from '../redux/userStore'
 import { request } from '../utils/apiService'
 import { toast } from 'react-toastify'
 import EmptyState from '../subcomponents/EmptyState'
