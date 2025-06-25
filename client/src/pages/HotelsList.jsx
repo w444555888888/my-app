@@ -39,6 +39,7 @@ const HotelsList = () => {
         const room = parseInt(searchParams.get('room')) || 1;
         const popular = searchParams.get('popular') === 'true';
 
+        //回填首頁搜尋資料
         setName(nameParam);
         setStartDate(start);
         setEndDate(end);
@@ -52,7 +53,18 @@ const HotelsList = () => {
                 key: 'selection',
             }
         ]);
+
+        //發送搜尋請求
+        const axiosHotels = async () => {
+            const result = await request('GET', `/hotels/search?${searchParams.toString()}`, {}, setLoading);
+            if (result.success) {
+                setHotels(result.data);
+            } else toast.error(`${result.message}`)
+        }
+
+        axiosHotels()
     }, [searchParams]);
+
 
     const handleCounter = (name, sign) => {
         setConditions(prev => {
@@ -62,8 +74,6 @@ const HotelsList = () => {
             }
         })
     }
-
-
 
     // 開關狀態
     const [openConditions, setOpenConditions] = useState(false)
@@ -100,20 +110,6 @@ const HotelsList = () => {
         if (isPopular) params.popular = true;
         setSearchParams(params);
     }
-
-
-    // 副作用監聽的路由網址，發送請求
-    useEffect(() => {
-        const axiosHotels = async () => {
-            const result = await request('GET', `/hotels/search?${searchParams.toString()}`, {}, setLoading);
-            if (result.success) {
-                setHotels(result.data);
-            } else toast.error(`${result.message}`)
-        }
-
-        axiosHotels()
-    }, [searchParams])
-
 
     return (
         <>

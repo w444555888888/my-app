@@ -390,16 +390,16 @@ const Hotel = () => {
                         <td>
                           <ul>
                             {e.paymentOptions.map((policy, index) => (
-                              <li key={index}>
-                                <strong>{policy.type}</strong>:
+                              <li key={index} className="policy">
+                                <span>{policy.type}</span>:
                                 <span>{policy.description}</span>
-                                <strong>
+                                <span>
                                   (
                                   {policy.refundable === true
                                     ? "可退款"
                                     : "不可退款"}
                                   )
-                                </strong>
+                                </span>
                               </li>
                             ))}
                             <div className="service">
