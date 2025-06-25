@@ -37,7 +37,7 @@ const Footer = () => {
                 <span>立即訂閱，我們將寄送最佳訂房優惠給您。</span>
             </div>
 
-            <div className="emailcontainer">
+            <div className="email-container">
                 {subscribed ? (
                     <div className="sub-success">您已成功訂閱，感謝！</div>
                 ) : (
@@ -66,7 +66,7 @@ const Footer = () => {
                 </div>
             </div>
 
-            <div className="subcontainer">
+            <div className="sub-container">
                 Copyright © 2025 Trip.com Travel Singapore Pte. Ltd. All rights reserved
                 <br />
                 Site Operator: Trip.com Travel Singapore Pte. Ltd.
