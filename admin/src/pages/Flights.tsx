@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Space, Button, message, Empty } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import dayjs from 'dayjs';
 import { request } from '../utils/apiService';
 import DynamicFormModal, { FormFieldConfig } from '../component/DynamicFormModal';
+import dayjs from '../utils/dayjs-config';
+import { getTimeZoneByCity } from '../utils/getTimeZoneByCity';
 import './flights.scss';
 
 interface FlightSchedule {
@@ -105,10 +106,20 @@ const Flights: React.FC = () => {
       title: '飛行時間', key: 'flightDuration', render: (_, record) => `${record.route.flightDuration} 分鐘`,
     },
     {
-      title: '出發時間', key: 'departureDate', render: (_, record) => record.schedules[0] ? dayjs(record.schedules[0].departureDate).format('YYYY-MM-DD HH:mm') : '-',
+      title: '出發時間', key: 'departureDate', render: (_, record) => {
+        const tz = getTimeZoneByCity(record.route.departureCity);
+        return record.schedules[0]
+          ? dayjs.utc(record.schedules[0].departureDate).tz(tz).format('YYYY-MM-DD HH:mm')
+          : '-';
+      },
     },
     {
-      title: '到達時間', key: 'arrivalDate', render: (_, record) => record.schedules[0] ? dayjs(record.schedules[0].arrivalDate).format('YYYY-MM-DD HH:mm') : '-',
+      title: '到達時間', key: 'arrivalDate', render: (_, record) => {
+        const tz = getTimeZoneByCity(record.route.arrivalCity);
+        return record.schedules[0]
+          ? dayjs.utc(record.schedules[0].arrivalDate).tz(tz).format('YYYY-MM-DD HH:mm')
+          : '-';
+      },
     },
     {
       title: '經濟艙', key: 'economy', render: (_, record) => record.schedules[0]?.availableSeats?.ECONOMY ?? '-',
@@ -133,7 +144,7 @@ const Flights: React.FC = () => {
     { name: 'flightNumber', label: '航班號', type: 'input', required: true },
     { name: 'departureCity', label: '出發城市', type: 'input', required: true },
     { name: 'arrivalCity', label: '到達城市', type: 'input', required: true },
-    { name: 'flightDuration', label: '飛行時間（分鐘）', type: 'number', required: true, readOnly: true, placeholder: '自動計算(不填寫)' },
+    { name: 'flightDuration', label: '飛行時間（分鐘）', type: 'number', readOnly: true, placeholder: '自動計算(不填寫)' },
     { name: 'departureDate', label: '出發時間', type: 'time', required: true },
     { name: 'seatsECONOMY', label: '經濟艙座位', type: 'number', required: true },
     { name: 'seatsBUSINESS', label: '商務艙座位', type: 'number' },
