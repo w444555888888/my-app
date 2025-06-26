@@ -3,10 +3,11 @@ import { useParams, useSearchParams } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import './bookingFlight.scss'
 import { zhTW } from 'date-fns/locale'
-import { toZonedTime, formatInTimeZone } from 'date-fns-tz';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlane } from '@fortawesome/free-solid-svg-icons'
 import { request } from '../utils/apiService';
+import { getTimeZoneByCity } from '../utils/getTimeZoneByCity';
+import dayjs from '../utils/dayjs-config';
 import { toast } from 'react-toastify'
 import Skeleton from 'react-loading-skeleton';
 
@@ -43,52 +44,6 @@ const BookingFlight = () => {
         }
     };
 
-    const cityTimeZoneMap = {
-        'Taipei': 'Asia/Taipei',
-        'Tokyo': 'Asia/Tokyo',
-        'Seoul': 'Asia/Seoul',
-        'Beijing': 'Asia/Shanghai',
-        'Singapore': 'Asia/Singapore',
-        'Hong Kong': 'Asia/Hong_Kong',
-        'Bangkok': 'Asia/Bangkok',
-        'Sydney': 'Australia/Sydney',
-        'Melbourne': 'Australia/Melbourne',
-        'Dubai': 'Asia/Dubai',
-        'London': 'Europe/London',
-        'Paris': 'Europe/Paris',
-        'New York': 'America/New_York',
-        'Los Angeles': 'America/Los_Angeles',
-        'Vancouver': 'America/Vancouver',
-        'Toronto': 'America/Toronto',
-        'Manila': 'Asia/Manila',
-        'Kuala Lumpur': 'Asia/Kuala_Lumpur',
-        'Ho Chi Minh': 'Asia/Ho_Chi_Minh'
-    };
-
-    const cityGMTMap = {
-        'Taipei': '+8',
-        'Tokyo': '+9',
-        'Seoul': '+9',
-        'Beijing': '+8',
-        'Singapore': '+8',
-        'Hong Kong': '+8',
-        'Bangkok': '+7',
-        'Sydney': '+10',
-        'Melbourne': '+10',
-        'Dubai': '+4',
-        'London': '+0',
-        'Paris': '+1',
-        'New York': '-5',
-        'Los Angeles': '-8',
-        'Vancouver': '-8',
-        'Toronto': '-5',
-        'Manila': '+8',
-        'Kuala Lumpur': '+8',
-        'Ho Chi Minh': '+7'
-    };
-
-
-
 
     const getCabinClasses = (availableSeats, prices) => {
         if (!availableSeats || !prices) return [];
@@ -119,19 +74,19 @@ const BookingFlight = () => {
             toast.error('請選擇艙等與預設航班日期');
             return;
         }
-    
+
         if (passengers.some(p => !p.name || !p.gender || !p.birthDate || !p.passportNumber || !p.email)) {
             toast.error('請填寫完整的乘客信息');
             return;
         }
-    
+
         const result = await request('POST', '/flight/order', {
             flightId: id,
             category: selectedClass,
-            departureDate: formatInTimeZone(new Date(selectedDate), 'UTC', 'yyyy-MM-dd'),
+            departureDate: dayjs.utc(selectedDate).format('YYYY-MM-DD'),
             passengerInfo: passengers
         }, setLoading);
-    
+
         if (result.success) {
             toast.success('訂票成功！');
         } else toast.error(result.message);
@@ -146,8 +101,9 @@ const BookingFlight = () => {
                 if (result.data.schedules.length > 0) {
                     setSelectedDate(result.data.schedules[0].departureDate);
                     // 計算是否為隔天（以 UTC 日期為準）
-                    const arrivalDateStr = formatInTimeZone(result.data.schedules[0].arrivalDate, 'UTC', 'yyyy-MM-dd');
-                    const departureDateStr = formatInTimeZone(result.data.schedules[0].departureDate, 'UTC', 'yyyy-MM-dd');
+                    const arrivalDateStr = dayjs.utc(result.data.schedules[0].arrivalDate).format('YYYY-MM-DD');
+                    const departureDateStr = dayjs.utc(result.data.schedules[0].departureDate).format('YYYY-MM-DD');
+
                     setIsNextDay(arrivalDateStr !== departureDateStr);
                 }
             } else toast.error(result.message);
@@ -228,7 +184,7 @@ const BookingFlight = () => {
                         <div className="flightDate">
                             {selectedDate && (
                                 <div>
-                                    {formatInTimeZone(new Date(selectedDate), cityTimeZoneMap[flightData.route.departureCity], 'yyyy年MM月dd日 EEEE', { locale: zhTW })}
+                                    {dayjs.utc(selectedDate).tz(getTimeZoneByCity(flightData.route.departureCity)).format('YYYY年MM月DD日 dddd')}
                                 </div>
                             )}
                         </div>
@@ -238,13 +194,13 @@ const BookingFlight = () => {
                         <div className="departure">
                             <div className="city">{flightData.route.departureCity}</div>
                             <div className="time">
-                                {formatInTimeZone(
-                                    new Date(flightData.schedules[0].departureDate),
-                                    cityTimeZoneMap[flightData.route.departureCity],
-                                    'HH:mm'
-                                )}
+                                {dayjs.utc(flightData.schedules[0].departureDate)
+                                    .tz(getTimeZoneByCity(flightData.route.departureCity))
+                                    .format('HH:mm')}
                                 <div className="timezone">
-                                    <span>(GMT{cityGMTMap[flightData.route.departureCity]})</span>
+                                    <span>
+                                        (GMT{dayjs().tz(getTimeZoneByCity(flightData.route.departureCity)).format('Z')})
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -257,15 +213,14 @@ const BookingFlight = () => {
                         <div className="arrival">
                             <div className="city">{flightData.route.arrivalCity}</div>
                             <div className="time">
-                                {formatInTimeZone(
-                                    new Date(flightData.schedules[0].arrivalDate),
-                                    cityTimeZoneMap[flightData.route.arrivalCity],
-                                    'HH:mm'
-                                )}
+                                {dayjs.utc(flightData.schedules[0].arrivalDate)
+                                    .tz(getTimeZoneByCity(flightData.route.arrivalCity))
+                                    .format('HH:mm')}
+
                                 {isNextDay && <span className="nextDay">+1</span>}
 
                                 <div className="timezone">
-                                    <span>(GMT{cityGMTMap[flightData.route.arrivalCity]})</span>
+                                    <span> (GMT{dayjs().tz(getTimeZoneByCity(flightData.route.arrivalCity)).format('Z')})</span>
                                 </div>
                             </div>
                         </div>

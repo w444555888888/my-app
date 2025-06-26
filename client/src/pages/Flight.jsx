@@ -5,12 +5,15 @@ import { faPlane, faCalendarDays } from '@fortawesome/free-solid-svg-icons'
 import { DateRange } from 'react-date-range'
 import Navbar from '../components/Navbar'
 import { format, parse, addMinutes } from 'date-fns'
-import { toZonedTime, formatInTimeZone } from 'date-fns-tz';
 import zhTW from 'date-fns/locale/zh-TW'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { request } from '../utils/apiService';
+import { getTimeZoneByCity } from '../utils/getTimeZoneByCity';
+import dayjs from '../utils/dayjs-config';
 import { toast } from 'react-toastify'
 import EmptyState from '../subcomponents/EmptyState'
+
+
 
 const Flight = () => {
     const navigate = useNavigate()
@@ -27,28 +30,6 @@ const Flight = () => {
         }
     ])
 
-
-    const cityTimeZoneMap = {
-        'Taipei': 'Asia/Taipei',
-        'Tokyo': 'Asia/Tokyo',
-        'Seoul': 'Asia/Seoul',
-        'Beijing': 'Asia/Shanghai',
-        'Singapore': 'Asia/Singapore',
-        'Hong Kong': 'Asia/Hong_Kong',
-        'Bangkok': 'Asia/Bangkok',
-        'Sydney': 'Australia/Sydney',
-        'Melbourne': 'Australia/Melbourne',
-        'Dubai': 'Asia/Dubai',
-        'London': 'Europe/London',
-        'Paris': 'Europe/Paris',
-        'New York': 'America/New_York',
-        'Los Angeles': 'America/Los_Angeles',
-        'Vancouver': 'America/Vancouver',
-        'Toronto': 'America/Toronto',
-        'Manila': 'Asia/Manila',
-        'Kuala Lumpur': 'Asia/Kuala_Lumpur',
-        'Ho Chi Minh': 'Asia/Ho_Chi_Minh'
-    };
 
 
     useEffect(() => {
@@ -152,29 +133,29 @@ const Flight = () => {
                     {flights.length > 0 ? (
                         flights.map((flight) =>
                             flight.schedules.map((schedule, index) => {
-                                const departureTimeZone = cityTimeZoneMap[flight.route.departureCity] || 'UTC';
-                                const arrivalTimeZone = cityTimeZoneMap[flight.route.arrivalCity] || 'UTC';
+                                const departureTZ = getTimeZoneByCity(flight.route.departureCity);
+                                const arrivalTZ = getTimeZoneByCity(flight.route.arrivalCity);
 
                                 return (
                                     <div className="flightItem" key={`${flight._id}-${index}`}>
                                         <div className="flightInfo">
                                             <div className="airline">航班號：{flight.flightNumber}</div>
                                             <div className="date">
-                                                出發日期：{formatInTimeZone(schedule.departureDate, departureTimeZone, 'yyyy-MM-dd')}
+                                                出發日期：{dayjs.utc(schedule.departureDate).tz(departureTZ).format('YYYY-MM-DD')}
                                             </div>
                                         </div>
                                         <div className="routeInfo">
                                             <div className="departure">
                                                 <div className="city">{flight.route.departureCity}</div>
                                                 <div className="time">
-                                                    {formatInTimeZone(schedule.departureDate, departureTimeZone, 'HH:mm')}
+                                                    {dayjs.utc(schedule.departureDate).tz(departureTZ).format('HH:mm')}
                                                 </div>
                                             </div>
                                             <div className="arrow">→</div>
                                             <div className="arrival">
                                                 <div className="city">{flight.route.arrivalCity}</div>
                                                 <div className="time">
-                                                    {formatInTimeZone(schedule.arrivalDate, arrivalTimeZone, 'HH:mm')}
+                                                    {dayjs.utc(schedule.arrivalDate).tz(arrivalTZ).format('HH:mm')}
                                                 </div>
                                             </div>
                                         </div>
