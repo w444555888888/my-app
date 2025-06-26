@@ -150,6 +150,7 @@ export const updateFlight = async (req, res, next) => {
   }
 };
 
+
 // 獲取所有航班列表 || (日期開始 && 日期結束 && 起飛城市 && 目的城市)
 export const getAllFlights = async (req, res, next) => {
   try {

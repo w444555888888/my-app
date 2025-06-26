@@ -7,15 +7,12 @@ const FlightSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-
-    // 固定航線資訊（由航空公司設定）
     route: {
-        departureCity: { type: String, required: true }, //起飛城市
-        arrivalCity: { type: String, required: true }, //到達城市
-        flightDuration: { type: Number, required: true }, // 飛行時間（分鐘）
+        departureCity: { type: String, required: true }, //起飛城市(後台設定)
+        arrivalCity: { type: String, required: true }, //到達城市後台設定)
+        flightDuration: { type: Number, required: true }, // 飛行時間(自動計算)
     },
-
-    // 艙等和價格設定（由航空公司在後台管理）
+    // 艙等和價格設定（後台設定）
     cabinClasses: [{
         category: {
             type: String,
@@ -27,7 +24,7 @@ const FlightSchema = new mongoose.Schema({
         bookedSeats: { type: Number, default: 0 } //已預訂座位的數量
     }],
 
-    // 價格調整規則（由系統管理員設定）
+    // 票價規則（後台設定）
     priceRules: {
         peakSeasonDates: [{ // 旺季日期範圍
             start: { type: Date },

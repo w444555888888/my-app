@@ -58,6 +58,7 @@ const Flights: React.FC = () => {
     setLoading(false);
   };
 
+  
   const handleSubmit = async (values: any) => {
     const body = {
       flightNumber: values.flightNumber,
@@ -92,10 +93,12 @@ const Flights: React.FC = () => {
     }
   };
 
+
   const handleEdit = (flight: FlightType) => {
     setEditingFlight(flight);
     setModalVisible(true);
   };
+
 
   const columns: ColumnsType<FlightType> = [
     { title: '航班號', dataIndex: 'flightNumber', key: 'flightNumber' },
@@ -145,7 +148,7 @@ const Flights: React.FC = () => {
     { name: 'departureCity', label: '出發城市', type: 'input', required: true },
     { name: 'arrivalCity', label: '到達城市', type: 'input', required: true },
     { name: 'flightDuration', label: '飛行時間（分鐘）', type: 'number', readOnly: true, placeholder: '自動計算(不填寫)' },
-    { name: 'departureDate', label: '出發時間', type: 'time', required: true },
+    { name: 'departureDate', label: '出發時間', type: 'time', timeFormat: 'datetime', required: true },
     { name: 'seatsECONOMY', label: '經濟艙座位', type: 'number', required: true },
     { name: 'seatsBUSINESS', label: '商務艙座位', type: 'number' },
     { name: 'seatsFIRST', label: '頭等艙座位', type: 'number' },
