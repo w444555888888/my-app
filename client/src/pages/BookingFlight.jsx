@@ -80,10 +80,14 @@ const BookingFlight = () => {
             return;
         }
 
+        // selectedDate從前端獲取的是當地時間UTC，需轉換為出發地的當地時間
+        const departureTz = getTimeZoneByCity(flightData.route.departureCity);
+        const localDepartureDate = dayjs(selectedDate).tz(departureTz).format('YYYY-MM-DD');
+
         const result = await request('POST', '/flight/order', {
             flightId: id,
             category: selectedClass,
-            departureDate: dayjs.utc(selectedDate).format('YYYY-MM-DD'),
+            departureDate: localDepartureDate, //出發地日期
             passengerInfo: passengers
         }, setLoading);
 
