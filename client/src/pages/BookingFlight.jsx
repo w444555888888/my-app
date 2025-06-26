@@ -5,26 +5,26 @@ import './bookingFlight.scss'
 import { zhTW } from 'date-fns/locale'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlane } from '@fortawesome/free-solid-svg-icons'
-import { request } from '../utils/apiService';
-import { getTimeZoneByCity } from '../utils/getTimeZoneByCity';
-import dayjs from '../utils/dayjs-config';
+import { request } from '../utils/apiService'
+import { getTimeZoneByCity } from '../utils/getTimeZoneByCity'
+import dayjs from '../utils/dayjs-config'
 import { toast } from 'react-toastify'
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from 'react-loading-skeleton'
 
 const BookingFlight = () => {
-    const { id } = useParams();
-    const [searchParams] = useSearchParams();
-    const [loading, setLoading] = useState(false);
-    const [selectedClass, setSelectedClass] = useState(null);
-    const [selectedDate, setSelectedDate] = useState(null);
-    const [flightData, setFlightData] = useState(null);
-    const [passengers, setPassengers] = useState([{ name: '', gender: '', birthDate: '', passportNumber: '', email: '' }]);
-    const [isNextDay, setIsNextDay] = useState(false);
+    const { id } = useParams()
+    const [searchParams] = useSearchParams()
+    const [loading, setLoading] = useState(false)
+    const [selectedClass, setSelectedClass] = useState(null)
+    const [selectedDate, setSelectedDate] = useState(null)
+    const [flightData, setFlightData] = useState(null)
+    const [passengers, setPassengers] = useState([{ name: '', gender: '', birthDate: '', passportNumber: '', email: '' }])
+    const [isNextDay, setIsNextDay] = useState(false)
     const cabinTypeMap = {
         'FIRST': '頭等艙',
         'BUSINESS': '商務艙',
         'ECONOMY': '經濟艙'
-    };
+    }
 
     const cabinDescriptionMap = {
         'FIRST': {
@@ -42,76 +42,73 @@ const BookingFlight = () => {
             baggage: '20公斤',
             meal: '經濟艙餐點',
         }
-    };
+    }
 
 
     const getCabinClasses = (availableSeats, prices) => {
-        if (!availableSeats || !prices) return [];
+        if (!availableSeats || !prices) return []
         return Object.entries(availableSeats).map(([category, seats]) => ({
             category,
             availableSeats: seats,
             basePrice: prices[category]
-        }));
-    };
+        }))
+    }
 
     const handleAddPassenger = () => {
-        setPassengers([...passengers, { name: '', gender: '', birthDate: '', passportNumber: '', email: '' }]);
-    };
+        setPassengers([...passengers, { name: '', gender: '', birthDate: '', passportNumber: '', email: '' }])
+    }
 
     const handleRemovePassenger = (index) => {
-        const newPassengers = passengers.filter((_, i) => i !== index);
-        setPassengers(newPassengers);
-    };
+        const newPassengers = passengers.filter((_, i) => i !== index)
+        setPassengers(newPassengers)
+    }
 
     const handlePassengerChange = (index, field, value) => {
-        const newPassengers = [...passengers];
-        newPassengers[index][field] = value;
-        setPassengers(newPassengers);
-    };
+        const newPassengers = [...passengers]
+        newPassengers[index][field] = value
+        setPassengers(newPassengers)
+    }
 
     const handleSubmit = async () => {
         if (!selectedClass || !selectedDate) {
-            toast.error('請選擇艙等與預設航班日期');
-            return;
+            toast.error('請選擇艙等與預設航班日期')
+            return
         }
 
         if (passengers.some(p => !p.name || !p.gender || !p.birthDate || !p.passportNumber || !p.email)) {
-            toast.error('請填寫完整的乘客信息');
-            return;
+            toast.error('請填寫完整的乘客信息')
+            return
         }
 
-        // selectedDate從前端獲取的是當地時間UTC，需轉換為出發地的當地時間
-        const departureTz = getTimeZoneByCity(flightData.route.departureCity);
-        const localDepartureDate = dayjs(selectedDate).tz(departureTz).format('YYYY-MM-DD');
-
+        // 再把原本api的utc回傳回去，後端也存一樣的utc
         const result = await request('POST', '/flight/order', {
             flightId: id,
             category: selectedClass,
-            departureDate: localDepartureDate, //出發地日期
+            departureDate: selectedDate,
             passengerInfo: passengers
-        }, setLoading);
+        }, setLoading)
 
         if (result.success) {
-            toast.success('訂票成功！');
-        } else toast.error(result.message);
-    };
+            toast.success('訂票成功！')
+        } else toast.error(result.message)
+    }
 
 
     useEffect(() => {
         const handleBookingFlight = async () => {
-            const result = await request('GET', `/flight/${id}?${searchParams.toString()}`, {}, setLoading);
+            const result = await request('GET', `/flight/${id}?${searchParams.toString()}`, {}, setLoading)
             if (result.success) {
-                setFlightData(result.data);
+                setFlightData(result.data)
                 if (result.data.schedules.length > 0) {
-                    setSelectedDate(result.data.schedules[0].departureDate);
+                    setSelectedDate(result.data.schedules[0].departureDate)
                     // 計算是否為隔天（以 UTC 日期為準）
-                    const arrivalDateStr = dayjs.utc(result.data.schedules[0].arrivalDate).format('YYYY-MM-DD');
-                    const departureDateStr = dayjs.utc(result.data.schedules[0].departureDate).format('YYYY-MM-DD');
+                    const arrivalDateStr = dayjs.utc(result.data.schedules[0].arrivalDate).format('YYYY-MM-DD')
+                    const departureDateStr = dayjs.utc(result.data.schedules[0].departureDate).format('YYYY-MM-DD')
 
-                    setIsNextDay(arrivalDateStr !== departureDateStr);
+                    setIsNextDay(arrivalDateStr !== departureDateStr)
                 }
-            } else toast.error(result.message);
-        };
+            } else toast.error(result.message)
+        }
 
         handleBookingFlight()
     }, [id, searchParams])
@@ -155,7 +152,7 @@ const BookingFlight = () => {
                     </div>
                 </div>
             </div>
-        );
+        )
     }
 
     return (
