@@ -109,7 +109,7 @@ const Flights: React.FC = () => {
       title: '出發時間', key: 'departureDate', render: (_, record) => {
         const tz = getTimeZoneByCity(record.route.departureCity);
         return record.schedules[0]
-          ? dayjs.utc(record.schedules[0].departureDate).tz(tz).format('YYYY-MM-DD HH:mm')
+          ? dayjs.utc(record.schedules[0].departureDate).tz(tz).format('YYYY-MM-DD HH:mm(z)')
           : '-';
       },
     },
@@ -117,7 +117,7 @@ const Flights: React.FC = () => {
       title: '到達時間', key: 'arrivalDate', render: (_, record) => {
         const tz = getTimeZoneByCity(record.route.arrivalCity);
         return record.schedules[0]
-          ? dayjs.utc(record.schedules[0].arrivalDate).tz(tz).format('YYYY-MM-DD HH:mm')
+          ? dayjs.utc(record.schedules[0].arrivalDate).tz(tz).format('YYYY-MM-DD HH:mm(z)')
           : '-';
       },
     },
