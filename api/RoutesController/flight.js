@@ -3,9 +3,11 @@ import { sendResponse } from "../sendResponse.js";
 import { v4 as uuidv4 } from "uuid";
 import { DateTime } from "luxon";
 import Flight from "../models/Flight.js";
-import City from "../models/City.js";
 import FlightOrder from "../models/FightOrder.js";
-import { calculateArrivalDate } from "../utils/flightTimeUtil.js";
+import { getTimeZoneByCity } from "../utils/getTimeZoneByCity.js";
+import { calculateFlightDuration } from '../utils/calculateFlightDuration.js';
+
+
 // 創建新航班
 export const createFlight = async (req, res, next) => {
   try {
@@ -24,12 +26,17 @@ export const createFlight = async (req, res, next) => {
     }
 
     // 出發城市的時區
-    const city = await City.findOne({ name: departureCity });
-    if (!city) {
+    const timeZone = getTimeZoneByCity(departureCity);
+    if (!timeZone) {
       return next(errorMessage(404, `找不到城市時區資訊：${departureCity}`));
     }
 
-    const timeZone = city.timeZone; // IANA 時區字串
+    // 自動計算飛行時間
+    const autoDuration = calculateFlightDuration(route.departureCity, route.arrivalCity);
+    if (!autoDuration) {
+      return next(errorMessage(400, "無法自動推算 flightDuration，請確認城市名稱是否正確"));
+    }
+    route.flightDuration = autoDuration;
 
     // 自動產生每筆 schedule 的 availableSeats 和 departureDate（轉成 UTC）
     const fixedSchedules = schedules.map((schedule) => {
@@ -76,14 +83,12 @@ export const updateFlight = async (req, res, next) => {
     }
 
     // 1. 取得時區
-    let cityTimeZone;
     if (updateData.route && updateData.route.departureCity) {
       const departureCity = updateData.route.departureCity;
-      const city = await City.findOne({ name: departureCity });
-      if (!city) {
+      const timeZone = getTimeZoneByCity(departureCity);
+      if (!timeZone) {
         return next(errorMessage(400, `找不到城市時區資訊：${departureCity}`));
       }
-      cityTimeZone = city.timeZone;
       flight.route.departureCity = departureCity;
     }
 
@@ -92,19 +97,27 @@ export const updateFlight = async (req, res, next) => {
       flight.cabinClasses = updateData.cabinClasses;
     }
 
-    // 3. 處理 schedules.departureDate
+    // 若同時提供了 arrivalCity，重新計算 flightDuration
+    if (updateData.route?.departureCity && updateData.route?.arrivalCity) {
+      const autoDuration = calculateFlightDuration(updateData.route.departureCity, updateData.route.arrivalCity);
+      if (!autoDuration) {
+        return next(errorMessage(400, "無法自動推算 flightDuration，請確認城市名稱是否正確"));
+      }
+      flight.route.flightDuration = autoDuration;
+      flight.route.arrivalCity = updateData.route.arrivalCity;
+      console.log(`[更新航班] 自動推算 ${updateData.route.departureCity} → ${updateData.route.arrivalCity} 時間為 ${autoDuration} 分鐘`);
+    }
+
     if (
       updateData.schedules &&
       updateData.schedules.length > 0 &&
       flight.route?.departureCity
     ) {
-      const city = await City.findOne({ name: flight.route.departureCity });
-      if (!city) {
-        return next(
-          errorMessage(400, `找不到城市時區資訊：${flight.route.departureCity}`)
-        );
+
+      const depTZ = getTimeZoneByCity(flight.route.departureCity);
+      if (!depTZ) {
+        return next(errorMessage(400, `找不到城市時區資訊：${flight.route.departureCity}`));
       }
-      const depTZ = city.timeZone;
 
       const updatedSchedules = updateData.schedules.map((schedule) => {
         const localDateTime = DateTime.fromISO(schedule.departureDate, {
@@ -167,11 +180,10 @@ export const getAllFlights = async (req, res, next) => {
     // 如果是搜尋模式，先獲取城市時區
     let cityTimeZone;
     if (isSearchMode) {
-      const city = await City.findOne({ name: departureCity });
-      if (!city) {
+      const timeZone = getTimeZoneByCity(departureCity);
+      if (!timeZone) {
         return next(errorMessage(400, `找不到城市時區資訊：${departureCity}`));
       }
-      cityTimeZone = city.timeZone;
     }
 
     let filteredFlights = flights
@@ -346,13 +358,10 @@ export const createFlightOrder = async (req, res) => {
     }
 
     // timeZone
-    const city = await City.findOne({ name: flight.route.departureCity });
-    if (!city) {
-      return next(
-        errorMessage(404, `找不到城市時區資訊：${flight.route.departureCity}`)
-      );
+    const timeZone = getTimeZoneByCity(flight.route.departureCity);
+    if (!timeZone) {
+      return next(errorMessage(404, `找不到城市時區資訊：${flight.route.departureCity}`));
     }
-    const timeZone = city.timeZone; // IANA 時區字串（例如 "Asia/Taipei"）
 
     // 檢查航班起飛地
     // 這裡要轉換傳入的 departureDate 為 UTC

@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import City from '../models/City.js';
+import { getTimeZoneByCity } from '../utils/getTimeZoneByCity.js';
 
 
 
@@ -14,15 +14,13 @@ import City from '../models/City.js';
 
 export async function calculateArrivalDate(departureDate, flightDurationMinutes, departureCity, arrivalCity) {
     // 查詢出發地與目的地的時區
-    const depCity = await City.findOne({ name: departureCity });
-    const arrCity = await City.findOne({ name: arrivalCity });
+    const depTZ = getTimeZoneByCity(departureCity);
+    const arrTZ = getTimeZoneByCity(arrivalCity);
 
-    if (!depCity || !arrCity) {
+    if (!depTZ || !arrTZ) {
         console.error("找不到城市資訊：", { departureCity, arrivalCity, depCity, arrCity });
     }
 
-    const depTZ = depCity.timeZone;
-    const arrTZ = arrCity.timeZone;
 
     // 將出發地當地時間轉成 UTC
     const departureInUTC = DateTime.fromJSDate(departureDate, { zone: depTZ }).toUTC();

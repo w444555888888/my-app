@@ -22,6 +22,7 @@ export interface FormFieldConfig {
   options?: { label: string; value: any }[]; // for select / checkboxGroup
   customRender?: React.ReactNode;
   placeholder?: string;
+  readOnly?: boolean;
 }
 
 interface DynamicFormModalProps {
@@ -101,7 +102,7 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
             case "input":
               return <Form.Item key={key} {...commonProps}><Input placeholder={field.placeholder} /></Form.Item>;
             case "number":
-              return <Form.Item key={key} {...commonProps}><InputNumber className="full-width" placeholder={field.placeholder} /></Form.Item>;
+              return <Form.Item key={key} {...commonProps}><InputNumber className="full-width" placeholder={field.placeholder}  readOnly={field.readOnly}/></Form.Item>;
             case "textarea":
               return <Form.Item key={key} {...commonProps}><Input.TextArea placeholder={field.placeholder} /></Form.Item>;
             case "time":
