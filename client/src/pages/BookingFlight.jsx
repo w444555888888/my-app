@@ -14,13 +14,14 @@ import Skeleton from 'react-loading-skeleton'
 const BookingFlight = () => {
     const { id } = useParams()
     const [searchParams] = useSearchParams()
-    const [loading, setLoading] = useState(false)
-    const [selectedClass, setSelectedClass] = useState(null)
+    const [loading, setLoading] = useState(false);
+    const [bookingSuccess, setBookingSuccess] = useState(false);
+    const [selectedClass, setSelectedClass] = useState(null);
     const [selectedScheduleId, setSelectedScheduleId] = useState(null);
-    const [selectedDate, setSelectedDate] = useState(null)
-    const [flightData, setFlightData] = useState(null)
-    const [passengers, setPassengers] = useState([{ name: '', gender: '', birthDate: '', passportNumber: '', email: '' }])
-    const [isNextDay, setIsNextDay] = useState(false)
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [flightData, setFlightData] = useState(null);
+    const [passengers, setPassengers] = useState([{ name: '', gender: '', birthDate: '', passportNumber: '', email: '' }]);
+    const [isNextDay, setIsNextDay] = useState(false);
     const cabinTypeMap = {
         'FIRST': '頭等艙',
         'BUSINESS': '商務艙',
@@ -80,7 +81,7 @@ const BookingFlight = () => {
             toast.error('請填寫完整的乘客信息')
             return
         }
-       
+
         const result = await request('POST', '/flight/order', {
             flightId: id,
             category: selectedClass,
@@ -90,6 +91,7 @@ const BookingFlight = () => {
 
         if (result.success) {
             toast.success('訂票成功！')
+            setBookingSuccess(true)
         } else toast.error(result.message)
     }
 
@@ -156,6 +158,21 @@ const BookingFlight = () => {
         )
     }
 
+    if (bookingSuccess) {
+        return (
+            <div className="bookingFlight">
+                <Navbar />
+                <div className="bookingContainer successContainer">
+                    <h2>🎉 訂票成功！</h2>
+                    <p>感謝您的預訂，我們已收到您的航班資訊。</p>
+                    <p>請至「我的帳戶」查看詳細資料。</p>
+                    <button className="backHomeBtn" onClick={() => window.location.href = '/personal'}>
+                        我的帳戶
+                    </button>
+                </div>
+            </div>
+        )
+    }
     return (
         <div className="bookingFlight">
             <Navbar />
@@ -351,7 +368,7 @@ const BookingFlight = () => {
 
                     <button
                         className="bookButton"
-                        disabled={!selectedClass || loading }
+                        disabled={!selectedClass || loading}
                         onClick={handleSubmit}
                     >
                         {loading ? '訂票中...' : '確認訂票'}

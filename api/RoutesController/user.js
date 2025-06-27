@@ -10,7 +10,7 @@ import { errorMessage } from "../errorMessage.js";
 import { sendResponse } from "../sendResponse.js";
 import User from "../models/User.js";
 import Order from "../models/Order.js";
-import FightOrder from "../models/FightOrder.js";
+import FlightOrder from "../models/FlightOrder.js";
 import bcrypt from "bcryptjs"; //密碼加密
 
 //更新使用者:id
@@ -21,7 +21,7 @@ export const updateUser = async (req, res, next) => {
   if (req.user.id !== id && !req.user.isAdmin) {
     return next(errorMessage(403, "您只能修改自己的資料"));
   }
-  
+
   const { password, address, phoneNumber, realName } = req.body;
 
   // 檢查必填字段
@@ -70,18 +70,35 @@ export const deletedUser = async (req, res, next) => {
 export const getUser = async (req, res, next) => {
   const id = req.params.id;
 
-  // 檢查是否為本人或管理員
   if (req.user.id !== id && !req.user.isAdmin) {
     return next(errorMessage(403, "您只能讀取自己的資料"));
   }
+
   try {
     const user = await User.findById(id);
     if (!user) {
       return next(errorMessage(404, "用戶未找到"));
     }
+
     const allOrder = await Order.find({ userId: id });
-    const allFightOrder = await FightOrder.find({ userId: id });
-    sendResponse(res, 200, { ...user.toObject(), allOrder, allFightOrder });
+
+    // populate flightId 拿到航班資料
+    const rawFightOrders = await FlightOrder.find({ userId: id }).populate("flightId").sort({ createdAt: -1 });
+    const allFightOrder = rawFightOrders.map(order => {
+      const flight = order.flightId;
+      return {
+        ...order.toObject(),
+        route: flight?.route || null,
+      };
+    });
+
+    // 3. 回傳整合後資料
+    sendResponse(res, 200, {
+      ...user.toObject(),
+      allOrder,
+      allFightOrder
+    });
+
   } catch (error) {
     return next(errorMessage(500, "讀取用戶失敗", error));
   }

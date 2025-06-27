@@ -3,7 +3,7 @@ import { sendResponse } from "../sendResponse.js"
 import { v4 as uuidv4 } from "uuid"
 import { DateTime } from "luxon"
 import Flight from "../models/Flight.js"
-import FlightOrder from "../models/FightOrder.js"
+import FlightOrder from "../models/FlightOrder.js"
 import { getTimeZoneByCity } from "../utils/getTimeZoneByCity.js"
 import { calculateFlightDuration } from '../utils/calculateFlightDuration.js'
 
@@ -365,10 +365,21 @@ export const createFlightOrder = async (req, res, next) => {
       return next(errorMessage(404, `找不到城市時區資訊：${flight.route.departureCity}`))
     }
 
-   
+
     const schedule = flight.schedules.id(scheduleId);
     if (!schedule) {
       return next(errorMessage(404, "找不到該航班班次"));
+    }
+
+    // 有訂單未處理返回
+    const existingOrder = await FlightOrder.findOne({
+      userId,
+      flightId,
+      scheduleId,
+      status: "PENDING"
+    })
+    if (existingOrder) {
+      return next(errorMessage(409, "您已經有一筆相同航班的訂單尚未處理"))
     }
 
     // 檢查座位可用性
@@ -398,7 +409,7 @@ export const createFlightOrder = async (req, res, next) => {
         basePrice,
         tax,
         totalPrice,
-      },
+      }
     })
 
     const savedOrder = await newOrder.save()
@@ -476,15 +487,10 @@ export const cancelOrder = async (req, res, next) => {
       return next(errorMessage(404, "找不到相關航班信息"))
     }
 
-    // 直接比較 UTC 時間
-    const schedule = flight.schedules.find(
-      (s) =>
-        s.departureDate.toISOString().split("T")[0] ===
-        order.departureDate.toISOString().split("T")[0]
-    )
-
+    // scheduleId 找出班次
+    const schedule = flight.schedules.id(order.scheduleId);
     if (!schedule) {
-      return next(errorMessage(404, "找不到對應航班班次"))
+      return next(errorMessage(404, "找不到對應航班班次"));
     }
 
     // 更新訂單狀態
