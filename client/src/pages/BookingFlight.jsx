@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import './bookingFlight.scss'
@@ -8,6 +8,7 @@ import { faPlane } from '@fortawesome/free-solid-svg-icons'
 import { request } from '../utils/apiService'
 import { getTimeZoneByCity } from '../utils/getTimeZoneByCity'
 import dayjs from '../utils/dayjs-config'
+import gsap from 'gsap';
 import { toast } from 'react-toastify'
 import Skeleton from 'react-loading-skeleton'
 
@@ -22,6 +23,11 @@ const BookingFlight = () => {
     const [flightData, setFlightData] = useState(null);
     const [passengers, setPassengers] = useState([{ name: '', gender: '', birthDate: '', passportNumber: '', email: '' }]);
     const [isNextDay, setIsNextDay] = useState(false);
+    const successRef = useRef();
+    const titleRef = useRef();
+    const textRef = useRef();
+    const btnRef = useRef();
+
     const cabinTypeMap = {
         'FIRST': '頭等艙',
         'BUSINESS': '商務艙',
@@ -117,6 +123,18 @@ const BookingFlight = () => {
     }, [id, searchParams])
 
 
+    // GSAP 動畫效果
+    useEffect(() => {
+        if (bookingSuccess) {
+            const tl = gsap.timeline({ defaults: { ease: 'power2.out', duration: 0.6 } });
+            tl.from(successRef.current, { opacity: 0 })
+                .from(titleRef.current, { y: -30, opacity: 0 }, '-=0.3')
+                .from(textRef.current?.children || [], { y: 20, opacity: 0, stagger: 0.2 }, '-=0.4')
+                .from(btnRef.current, { scale: 0.8, opacity: 0 }, '-=0.4');
+        }
+    }, [bookingSuccess]);
+
+
 
 
     if (!flightData) {
@@ -162,16 +180,24 @@ const BookingFlight = () => {
         return (
             <div className="bookingFlight">
                 <Navbar />
-                <div className="bookingContainer successContainer">
-                    <h2>🎉 訂票成功！</h2>
-                    <p>感謝您的預訂，我們已收到您的航班資訊。</p>
-                    <p>請至「我的帳戶」查看詳細資料。</p>
-                    <button className="backHomeBtn" onClick={() => window.location.href = '/personal'}>
+                <div className="bookingContainer successContainer" ref={successRef} >
+                    <h2 ref={titleRef} style={{ fontSize: 28, color: '#4caf50' }}>
+                        🎉 訂票成功！
+                    </h2>
+                    <div ref={textRef}>
+                        <p>感謝您的預訂，我們已收到您的航班資訊。</p>
+                        <p>請至「我的帳戶」查看詳細資料。</p>
+                    </div>
+                    <button
+                        ref={btnRef}
+                        className="backHomeBtn"
+                        onClick={() => (window.location.href = '/personal')}
+                    >
                         我的帳戶
                     </button>
                 </div>
             </div>
-        )
+        );
     }
     return (
         <div className="bookingFlight">
