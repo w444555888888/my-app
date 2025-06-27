@@ -47,9 +47,17 @@ app.use(express.json())//讓上傳的req.body可以視為json
 app.use(cookieParser())//cookie驗證
 
 //跨域
+const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001'];
 const corsOptions = {
-    origin: 'http://localhost:3000',
-    credentials: true, // 允許發送Cookie
+    origin: function (origin, callback) {
+        // 如果 origin 為 undefined（例如 Postman 或直接伺服器呼叫）也允許
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
 };
 app.use(cors(corsOptions))
 

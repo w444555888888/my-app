@@ -246,6 +246,7 @@ export const getFlight = async (req, res, next) => {
       })
 
       return {
+        _id: schedule._id,
         departureDate: departureDate.toISOString(),
         arrivalDate: arrivalDate.toISOString(),
         availableSeats: schedule.availableSeats,
@@ -300,10 +301,10 @@ export const getAllFlightOrders = async (req, res, next) => {
 // 創建航班訂單
 export const createFlightOrder = async (req, res, next) => {
   try {
-    const { flightId, category, departureDate, passengerInfo } = req.body
+    const { flightId, category, scheduleId, passengerInfo } = req.body
 
     // 基本數據驗證
-    if (!flightId || !category || !departureDate || !passengerInfo) {
+    if (!flightId || !category || !scheduleId || !passengerInfo) {
       return next(errorMessage(400, "缺少必要的訂單信息"))
     }
 
@@ -364,16 +365,10 @@ export const createFlightOrder = async (req, res, next) => {
       return next(errorMessage(404, `找不到城市時區資訊：${flight.route.departureCity}`))
     }
 
-    // 檢查航班起飛地
-    const departureDateUTC = new Date(departureDate) // 傳進來已經是UTC
-
-    const schedule = flight.schedules.find((s) => {
-      const scheduleDate = new Date(s.departureDate)
-      return scheduleDate.toISOString() === departureDateUTC.toISOString()
-    })
-
+   
+    const schedule = flight.schedules.id(scheduleId);
     if (!schedule) {
-      return next(errorMessage(404, "該日期的航班不存在"))
+      return next(errorMessage(404, "找不到該航班班次"));
     }
 
     // 檢查座位可用性
@@ -383,7 +378,7 @@ export const createFlightOrder = async (req, res, next) => {
 
     // 計算票價
     const basePrice = Math.round(
-      flight.calculateFinalPrice(category, new Date(departureDate))
+      flight.calculateFinalPrice(category, new Date(schedule.departureDate))
     )
     const tax = Math.round(basePrice * 0.1) // 假設稅率10%
     const totalPrice = Math.round((basePrice + tax) * passengerInfo.length)
@@ -398,7 +393,7 @@ export const createFlightOrder = async (req, res, next) => {
       orderNumber,
       passengerInfo,
       category,
-      departureDate: departureDateUTC,
+      scheduleId: schedule._id,
       price: {
         basePrice,
         tax,

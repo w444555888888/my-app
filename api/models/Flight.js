@@ -1,6 +1,22 @@
 import mongoose from 'mongoose'
 import { calculateArrivalDate } from '../utils/flightTimeUtil.js';
 
+
+const ScheduleSchema = new mongoose.Schema({
+    departureDate: { type: Date, required: true },
+    arrivalDate: { type: Date },
+    availableSeats: {
+        ECONOMY: { type: Number },
+        BUSINESS: { type: Number },
+        FIRST: { type: Number }
+    },
+    prices: {
+        ECONOMY: Number,
+        BUSINESS: Number,
+        FIRST: Number
+    }
+}, { _id: true }) 
+
 const FlightSchema = new mongoose.Schema({
     flightNumber: {
         type: String,
@@ -8,48 +24,34 @@ const FlightSchema = new mongoose.Schema({
         unique: true
     },
     route: {
-        departureCity: { type: String, required: true }, //起飛城市(後台設定)
-        arrivalCity: { type: String, required: true }, //到達城市後台設定)
-        flightDuration: { type: Number, required: true }, // 飛行時間(自動計算)
+        departureCity: { type: String, required: true },
+        arrivalCity: { type: String, required: true },
+        flightDuration: { type: Number, required: true }
     },
-    // 艙等和價格設定（後台設定）
     cabinClasses: [{
         category: {
             type: String,
-            enum: ['ECONOMY', 'BUSINESS', 'FIRST'], // 艙等只能是這三種
+            enum: ['ECONOMY', 'BUSINESS', 'FIRST'],
             required: true
         },
-        basePrice: { type: Number, required: true },  //艙等的基本價格
-        totalSeats: { type: Number, required: true }, //該艙等的總座位數
-        bookedSeats: { type: Number, default: 0 } //已預訂座位的數量
+        basePrice: { type: Number, required: true },
+        totalSeats: { type: Number, required: true },
+        bookedSeats: { type: Number, default: 0 }
     }],
-
-    // 票價規則（後台設定）
     priceRules: {
-        peakSeasonDates: [{ // 旺季日期範圍
+        peakSeasonDates: [{
             start: { type: Date },
             end: { type: Date },
-            multiplier: { type: Number, default: 1.2 } // 旺季漲價20%
+            multiplier: { type: Number, default: 1.2 }
         }],
-        holidayMultiplier: { type: Number, default: 1.1 }, // 假日漲價10%
-        earlyBirdDiscount: { // 早鳥優惠
-            daysInAdvance: { type: Number, default: 30 }, //提前幾天預訂可享受折扣，預設為 30 天
-            discount: { type: Number, default: 0.9 } // 提前30天訂票9折
+        holidayMultiplier: { type: Number, default: 1.1 },
+        earlyBirdDiscount: {
+            daysInAdvance: { type: Number, default: 30 },
+            discount: { type: Number, default: 0.9 }
         }
     },
-
-    // 航班排程  =>  只有實際起飛日期時間要自己設定(資料庫日期都是UTC）  
-    schedules: [{
-        departureDate: { type: Date, required: true },// 實際起飛日期時間
-        arrivalDate: { type: Date }, // 預計抵達日期時間
-        // 系統根據 departureDate 實際起飛日期時間 + flightDuration 飛行時間（分鐘） 自動計算 =  arrivalDate 抵達時間
-        availableSeats: {
-            ECONOMY: { type: Number }, // 經濟艙剩餘座位
-            BUSINESS: { type: Number },// 商務艙剩餘座位
-            FIRST: { type: Number }// 頭等艙剩餘座位
-        }
-    }]
-});
+    schedules: [ScheduleSchema]
+})
 
 
 /*

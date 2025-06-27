@@ -16,6 +16,7 @@ const BookingFlight = () => {
     const [searchParams] = useSearchParams()
     const [loading, setLoading] = useState(false)
     const [selectedClass, setSelectedClass] = useState(null)
+    const [selectedScheduleId, setSelectedScheduleId] = useState(null);
     const [selectedDate, setSelectedDate] = useState(null)
     const [flightData, setFlightData] = useState(null)
     const [passengers, setPassengers] = useState([{ name: '', gender: '', birthDate: '', passportNumber: '', email: '' }])
@@ -70,8 +71,8 @@ const BookingFlight = () => {
     }
 
     const handleSubmit = async () => {
-        if (!selectedClass || !selectedDate) {
-            toast.error('請選擇艙等與預設航班日期')
+        if (!selectedClass) {
+            toast.error('請選擇艙等')
             return
         }
 
@@ -79,12 +80,11 @@ const BookingFlight = () => {
             toast.error('請填寫完整的乘客信息')
             return
         }
-
-        // 再把原本api的utc回傳回去，後端也存一樣的utc
+       
         const result = await request('POST', '/flight/order', {
             flightId: id,
             category: selectedClass,
-            departureDate: selectedDate,
+            scheduleId: selectedScheduleId,
             passengerInfo: passengers
         }, setLoading)
 
@@ -101,6 +101,7 @@ const BookingFlight = () => {
                 setFlightData(result.data)
                 if (result.data.schedules.length > 0) {
                     setSelectedDate(result.data.schedules[0].departureDate)
+                    setSelectedScheduleId(result.data.schedules[0]._id)
                     // 計算是否為隔天（以 UTC 日期為準）
                     const arrivalDateStr = dayjs.utc(result.data.schedules[0].arrivalDate).format('YYYY-MM-DD')
                     const departureDateStr = dayjs.utc(result.data.schedules[0].departureDate).format('YYYY-MM-DD')
@@ -350,7 +351,7 @@ const BookingFlight = () => {
 
                     <button
                         className="bookButton"
-                        disabled={!selectedClass || !selectedDate || loading}
+                        disabled={!selectedClass || loading }
                         onClick={handleSubmit}
                     >
                         {loading ? '訂票中...' : '確認訂票'}

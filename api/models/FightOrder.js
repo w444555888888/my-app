@@ -29,8 +29,8 @@ const FlightOrderSchema = new mongoose.Schema({
         enum: ['ECONOMY', 'BUSINESS', 'FIRST'],
         required: true
     },
-    departureDate: {
-        type: Date,
+    scheduleId: {
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     },
     price: {
