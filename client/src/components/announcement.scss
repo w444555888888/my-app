@@ -11,14 +11,14 @@
 
         .infoDes {
             margin-top: 50px;
-    border: 1px solid lightgrey;
-    height: auto;
-    display: flex;
-    align-items: center;
-    padding: 15px 20px;
-    font-size: 16px;
-    background-color: #f9f9f9;
-    border-radius: 5px;
+            border: 1px solid lightgrey;
+            height: auto;
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            font-size: 16px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
 
             svg {
                 flex-shrink: 0;
@@ -75,7 +75,6 @@
     }
 }
 
-
 @media screen and (max-width: 768px) {
     .announcement .infoDes {
         flex-direction: column;
@@ -101,8 +100,6 @@
     }
 }
 
-
-
 .globalBanner {
     margin-top: 20px;
     display: flex;
@@ -124,27 +121,24 @@
         flex-direction: column;
         gap: 20px;
 
+        button {
+            border: none;
+            padding: 8px 15px;
+            border-radius: 2px;
+            color: var(--primary-color);
+            background-color: white;
+            cursor: pointer;
 
-            button {
-                border: none;
-                padding: 8px 15px;
-                border-radius: 2px;
-                color: var(--primary-color);
-                background-color: white;
-                cursor: pointer;
-
-                &:hover {
-                    background-color: rgba(119, 119, 119, 0.1);
-                }
+            &:hover {
+                background-color: rgba(119, 119, 119, 0.1);
             }
+        }
 
-            .buttonActive {
-                border: 2px var(--primary-color) solid;
-            }
-    
+        .buttonActive {
+            border: 2px var(--primary-color) solid;
+        }
     }
 }
-
 
 @media screen and (max-width: 768px) {
     .globalBanner {
@@ -161,11 +155,7 @@
         align-items: center;
         gap: 10px;
     }
-
-
-  
 }
-
 
 @media screen and (max-width: 480px) {
     .globalBanner {
@@ -182,5 +172,4 @@
         align-items: center;
         gap: 8px;
     }
-
 }

@@ -7,46 +7,46 @@ import { format } from 'date-fns'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import ConditionSelector from '../components/ConditionSelector'
 import DateRangePicker from '../components/DateRangePicker'
-import { request } from '../utils/apiService';
+import { request } from '../utils/apiService'
 import EmptyState from '../subcomponents/EmptyState'
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from 'react-loading-skeleton'
 import { toast } from 'react-toastify'
 const HotelsList = () => {
     // 路由
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams()
 
     // 預設日期為今天和一周後
     const today = new Date()
     const nextWeek = new Date()
     nextWeek.setDate(today.getDate() + 7)
 
-    const [name, setName] = useState('');
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
-    const [conditions, setConditions] = useState({ adult: 1, room: 1 });
-    const [isPopular, setIsPopular] = useState(false);
+    const [name, setName] = useState('')
+    const [startDate, setStartDate] = useState('')
+    const [endDate, setEndDate] = useState('')
+    const [conditions, setConditions] = useState({ adult: 1, room: 1 })
+    const [isPopular, setIsPopular] = useState(false)
     const [dates, setDates] = useState([
         {
             startDate: today,
             endDate: nextWeek,
             key: 'selection',
         }
-    ]);
+    ])
 
     useEffect(() => {
-        const nameParam = searchParams.get('name') || '';
-        const start = searchParams.get('startDate') || format(new Date(), 'yyyy-MM-dd');
-        const end = searchParams.get('endDate') || format(new Date(Date.now() + 7 * 86400000), 'yyyy-MM-dd');
-        const adult = parseInt(searchParams.get('adult')) || 1;
-        const room = parseInt(searchParams.get('room')) || 1;
-        const popular = searchParams.get('popular') === 'true';
+        const nameParam = searchParams.get('name') || ''
+        const start = searchParams.get('startDate') || format(new Date(), 'yyyy-MM-dd')
+        const end = searchParams.get('endDate') || format(new Date(Date.now() + 7 * 86400000), 'yyyy-MM-dd')
+        const adult = parseInt(searchParams.get('adult')) || 1
+        const room = parseInt(searchParams.get('room')) || 1
+        const popular = searchParams.get('popular') === 'true'
 
         //回填首頁搜尋資料
-        setName(nameParam);
-        setStartDate(start);
-        setEndDate(end);
-        setIsPopular(popular);
-        setConditions({ adult, room });
+        setName(nameParam)
+        setStartDate(start)
+        setEndDate(end)
+        setIsPopular(popular)
+        setConditions({ adult, room })
 
         setDates([
             {
@@ -54,18 +54,18 @@ const HotelsList = () => {
                 endDate: new Date(end),
                 key: 'selection',
             }
-        ]);
+        ])
 
         //發送搜尋請求
         const axiosHotels = async () => {
-            const result = await request('GET', `/hotels/search?${searchParams.toString()}`, {}, setLoading);
+            const result = await request('GET', `/hotels/search?${searchParams.toString()}`, {}, setLoading)
             if (result.success) {
-                setHotels(result.data);
+                setHotels(result.data)
             } else toast.error(`${result.message}`)
         }
 
         axiosHotels()
-    }, [searchParams]);
+    }, [searchParams])
 
 
     const handleCounter = (name, sign) => {
@@ -86,7 +86,7 @@ const HotelsList = () => {
     const [hotels, setHotels] = useState([])
     const [minPrice, setMinPrice] = useState('')
     const [maxPrice, setMaxPrice] = useState('')
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false)
 
     const handleDateChange = (item) => {
         setDates([item.selection])
@@ -94,23 +94,23 @@ const HotelsList = () => {
         setEndDate(format(item.selection.endDate, "yyyy-MM-dd"))
         if (item.selection.startDate && item.selection.endDate &&
             format(item.selection.startDate, "yyyy-MM-dd") !== format(item.selection.endDate, "yyyy-MM-dd")) {
-            setOpenCalendar(false);
+            setOpenCalendar(false)
         }
     }
 
 
     // 搜尋飯店條件
     const handleSearchHotelsPrice = () => {
-        const params = {};
-        if (name) params.name = name;
-        if (minPrice) params.minPrice = minPrice;
-        if (maxPrice) params.maxPrice = maxPrice;
-        if (startDate) params.startDate = startDate;
-        if (endDate) params.endDate = endDate;
-        if (conditions.adult) params.adult = conditions.adult;
-        if (conditions.room) params.room = conditions.room;
-        if (isPopular) params.popular = true;
-        setSearchParams(params);
+        const params = {}
+        if (name) params.name = name
+        if (minPrice) params.minPrice = minPrice
+        if (maxPrice) params.maxPrice = maxPrice
+        if (startDate) params.startDate = startDate
+        if (endDate) params.endDate = endDate
+        if (conditions.adult) params.adult = conditions.adult
+        if (conditions.room) params.room = conditions.room
+        if (isPopular) params.popular = true
+        setSearchParams(params)
     }
 
     return (
@@ -166,18 +166,7 @@ const HotelsList = () => {
                                         onChange={(e) => setMaxPrice(e.target.value)}
                                         required />
                                 </div>
-
-                                <div className="listItem">
-                                    <label>
-                                        <input
-                                            type="checkbox"
-                                            checked={isPopular}
-                                            onChange={e => setIsPopular(e.target.checked)}
-                                        />
-                                        僅顯示受歡迎的飯店
-                                    </label>
-                                </div>
-
+                                
                                 <span className="limitTitle">
                                     人數/房間數
                                 </span>
@@ -191,6 +180,17 @@ const HotelsList = () => {
                                             setConditions={setConditions}
                                         />
                                     )}
+                                </div>
+
+                                <div className="listItem">
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            checked={isPopular}
+                                            onChange={e => setIsPopular(e.target.checked)}
+                                        />
+                                        僅顯示受歡迎的飯店
+                                    </label>
                                 </div>
                             </div>
                             <div className="listItem">

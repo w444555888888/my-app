@@ -1,69 +1,68 @@
-import React, { useState, useEffect } from 'react';
-import './header.scss';
-import { format } from 'date-fns';
-import { useNavigate } from 'react-router-dom';
-import DateRangePicker from './DateRangePicker';
-import ConditionSelector from './ConditionSelector';
-import { request } from '../utils/apiService';
+import React, { useState, useEffect } from 'react'
+import './header.scss'
+import { format } from 'date-fns'
+import { useNavigate } from 'react-router-dom'
+import DateRangePicker from './DateRangePicker'
+import ConditionSelector from './ConditionSelector'
+import { request } from '../utils/apiService'
 
 const Header = () => {
-  const [destination, setDestination] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [destination, setDestination] = useState('')
+  const [suggestions, setSuggestions] = useState([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
 
-  const [openDate, setOpenDate] = useState(false);
-  const [openOptions, setOpenOptions] = useState(false);
+  const [openDate, setOpenDate] = useState(false)
+  const [openOptions, setOpenOptions] = useState(false)
   const [dates, setDates] = useState([
     {
       startDate: new Date(),
       endDate: new Date(Date.now() + 86400000 * 7),
       key: 'selection',
     },
-  ]);
-  const [startDate, setStartDate] = useState(format(new Date(), 'yyyy-MM-dd'));
-  const [endDate, setEndDate] = useState(format(new Date(Date.now() + 86400000 * 7), 'yyyy-MM-dd'));
-  const [conditions, setConditions] = useState({ adult: 1, room: 1 });
+  ])
+  const [startDate, setStartDate] = useState(format(new Date(), 'yyyy-MM-dd'))
+  const [endDate, setEndDate] = useState(format(new Date(Date.now() + 86400000 * 7), 'yyyy-MM-dd'))
+  const [conditions, setConditions] = useState({ adult: 1, room: 1 })
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const handleSearch = () => {
-    setShowSuggestions(false);
+    setShowSuggestions(false)
     navigate(
       `/hotelsList?name=${destination}&startDate=${startDate}&endDate=${endDate}&adult=${conditions.adult}&room=${conditions.room}`
-    );
-  };
+    )
+  }
 
   useEffect(() => {
     const delayDebounce = setTimeout(async () => {
       if (destination.trim() === '') {
-        setSuggestions([]);
-        setShowSuggestions(false);
-        return;
+        setSuggestions([])
+        setShowSuggestions(false)
+        return
       }
 
-      const res = await request('GET', '/hotels/suggestions', { name: destination });
+      const res = await request('GET', '/hotels/suggestions', { name: destination })
       if (res.success) {
-        setSuggestions(res.data);
-        setShowSuggestions(true);
+        setSuggestions(res.data)
+        setShowSuggestions(true)
       } else {
-        setSuggestions([]);
-        setShowSuggestions(false);
+        setSuggestions([])
+        setShowSuggestions(false)
       }
-    }, 300);
+    }, 300)
 
-    return () => clearTimeout(delayDebounce);
-  }, [destination]);
+    return () => clearTimeout(delayDebounce)
+  }, [destination])
 
   const handleSuggestionClick = (suggestionName) => {
-    setDestination(suggestionName);
-    setShowSuggestions(false);
-  };
+    setDestination(suggestionName)
+    setShowSuggestions(false)
+  }
 
   return (
     <div className="header">
       <div className="headerContainer">
         <div className="headerList">
-          <h1 className="headerTitle">快速搜尋飯店</h1>
           <div className="headerSearch">
             <div className="headerSearchItem suggestion-wrapper">
               <input
@@ -73,7 +72,7 @@ const Header = () => {
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
                 onFocus={() => {
-                  if (suggestions.length > 0) setShowSuggestions(true);
+                  if (suggestions.length > 0) setShowSuggestions(true)
                 }}
               />
               {showSuggestions && suggestions.length > 0 && (
@@ -123,7 +122,7 @@ const Header = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header

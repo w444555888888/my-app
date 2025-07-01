@@ -2,7 +2,8 @@
   position: absolute;
   top: 100%;
   right: 0;
-  min-width: 300px;
+  width: 100%;
+  box-sizing: border-box; //包含padding和border在内的宽度计算
   background-color: white;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
