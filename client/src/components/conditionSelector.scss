@@ -1,0 +1,48 @@
+.conditionsContainer {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  min-width: 300px;
+  background-color: white;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: default;
+  z-index: 999;
+  margin-top: 5px;
+}
+
+.condition {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 60px;
+  padding: 0 10px;
+  color: var(--primary-color);
+}
+
+.conditionCounter {
+  display: flex;
+  width: 100px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.conditionCounterButton {
+  width: 30px;
+  height: 30px;
+  border-radius: 2px;
+  color: var(--primary-color);
+  background-color: white;
+  border: 1px solid var(--primary-color);
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(53, 164, 127, 0.1);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}

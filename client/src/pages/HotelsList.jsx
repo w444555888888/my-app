@@ -5,6 +5,8 @@ import "./hotelsList.scss"
 import { DateRange } from 'react-date-range'
 import { format } from 'date-fns'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import ConditionSelector from '../components/ConditionSelector'
+import DateRangePicker from '../components/DateRangePicker'
 import { request } from '../utils/apiService';
 import EmptyState from '../subcomponents/EmptyState'
 import Skeleton from 'react-loading-skeleton';
@@ -132,14 +134,15 @@ const HotelsList = () => {
                                     <div className="searchInput" onClick={() => setOpenCalendar(!openCalendar)} >
                                         {format(dates[0].startDate, "MM/dd/yyyy")} - {format(dates[0].endDate, "MM/dd/yyyy")}
                                     </div>
-                                    {openCalendar && <DateRange
-                                        editableDateInputs={true}
-                                        onChange={handleDateChange}
-                                        moveRangeOnFirstSelection={false}
-                                        ranges={dates}
-                                        className="date"
-                                        minDate={new Date()}
-                                    />}
+                                    {openCalendar && (
+                                        <DateRangePicker
+                                            dates={dates}
+                                            setDates={setDates}
+                                            setStartDate={setStartDate}
+                                            setEndDate={setEndDate}
+                                            onClose={() => setOpenCalendar(false)}
+                                        />
+                                    )}
                                 </span>
                             </div>
 
@@ -182,38 +185,12 @@ const HotelsList = () => {
                                     <span className="searchText" onClick={() => setOpenConditions(!openConditions)}>
                                         {`${conditions.adult} 位成人 · ${conditions.room} 間房`}
                                     </span>
-                                    {openConditions &&
-                                        <div className="conditionsContainer">
-                                            <div className="condition">
-                                                成人
-                                                <div className="conditionCounter">
-                                                    <button className="conditionCounterButton" disabled={conditions.adult <= 1}
-                                                        onClick={() => handleCounter("adult", "decrease")} >
-                                                        -
-                                                    </button>
-                                                    <span className="number">{conditions.adult}</span>
-                                                    <button className="conditionCounterButton" onClick={() => handleCounter("adult", "increase")}>
-                                                        +
-                                                    </button>
-                                                </div>
-                                            </div>
-
-
-                                            <div className="condition">
-                                                房間
-                                                <div className="conditionCounter">
-                                                    <button className="conditionCounterButton" disabled={conditions.room <= 1}
-                                                        onClick={() => handleCounter("room", "decrease")}>
-                                                        -
-                                                    </button>
-                                                    <span className="number"> {conditions.room}</span>
-                                                    <button className="conditionCounterButton" onClick={() => handleCounter("room", "increase")}>
-                                                        +
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
+                                    {openConditions && (
+                                        <ConditionSelector
+                                            conditions={conditions}
+                                            setConditions={setConditions}
+                                        />
+                                    )}
                                 </div>
                             </div>
                             <div className="listItem">

@@ -1,297 +1,163 @@
 .header {
-  background-color: var(--primary-color);
+  background-color: var(--primary-bg);
   display: flex;
   justify-content: center;
-  padding: 0px 20px;
-  position: relative; //是為了配合headerSearchBar的absolute
-
-  .headerContainer {
-    color: white;
-    width: 100%;
-    max-width: 1024px;
-    // background-color: rgb(104, 104, 248);
-    //container 不包括df 要讓 title des 自由往下排列
-    margin: 20px 0px 100px 0px; //margin 四個為上 左 下 右
-
-    .headerTitle {
-      font-size: 45px;
-    }
-
-    .headerDes {
-      margin-top: 10px;
-    }
-
-    .headerSearchBar {
-      display: flex;
-    }
-  }
+  position: relative;
 }
 
-.headerSearchBar {
-  position: absolute;
-  bottom: -30px;
-  height: 55px;
-  width: 95%;
-  max-width: 1024px;
-  display: flex;
-  align-items: center;
-  background-color: rgb(97, 97, 97);
-  border: none;
-  border-radius: 5px;
+.headerContainer {
+  width: 100%;
+  max-width: var();
+  margin: 20px 0px 100px 0px;
 
-  svg {
-    color: lightgray;
-    font-size: 24px;
-    margin-left: 10px;
-  }
-
-  input {
-    border: none;
-    outline: none;
-    width: 100%;
-    font-size: 16px;
-    text-overflow: ellipsis;
-  }
-
-  .searchBarItem {
-    height: 50px;
-    width: calc(34% - 20px);
-    margin-left: 2px;
+  .headerList {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    color: black;
-    background-color: #fff;
-    border-radius: 2px;
-    cursor: pointer;
+    gap: 40px;
+    margin-bottom: 20px;
 
-    .searchInputWrapper {
-      position: relative;
-      width: 80%;
+    .headerListItem {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
     }
 
-    .suggestionList {
-      position: absolute;
-      width: 95%;
-      top: 100%;
-      left: 0;
-      z-index: 999;
-      background: #fff;
-      border: 1px solid #ccc;
-      border-top: none;
-      border-radius: 0 0 6px 6px;
-      max-height: 200px;
-      overflow-y: auto;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      list-style: none;
-      margin: 0;
-      padding: 4px 0;
-
-      li {
-        padding: 10px 16px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: background 0.2s;
-        cursor: pointer;
-
-        &:hover {
-          background-color: #f5f5f5;
-        }
-
-        &:active {
-          background-color: #e0e0e0;
-        }
-      }
-    }
-
-    .calendar {
-      position: absolute;
-      top: 56px;
-      border: 1px lightgray solid;
-      box-shadow: 0px 0px 15px lightgray;
+    .active {
+      border: 1px solid white;
+      padding: 10px;
+      border-radius: 20px;
     }
   }
 
-  .searchBarBtn {
-    border: none;
-    margin: 0px 2px 0px 2px;
-    width: 60px;
-    height: 50px;
-    border-radius: 2px;
+  .headerTitle {
+    color: text-colorwhite;
+  }
+
+  .headerDesc {
+    margin: 20px 0px;
+    color: white;
+  }
+
+  .headerBtn {
     background-color: var(--primary-color);
     color: white;
+    font-weight: 500;
+    border: none;
+    padding: 10px;
     cursor: pointer;
   }
-}
 
-.conditionsContainer {
-  position: absolute; //一樣絕對定位
-  top: 60px;
-  right: 0;
-  width: auto;
-  background-color: white;
-  box-shadow: 0px 0px 15px lightgray;
-  border-radius: 5px;
-  padding: 10px 40px;
-  cursor: default;
-
-  .condition {
+  .headerSearch {
+    height: auto;;
+    background-color: white;
+    font-size: 14px;
+    border: 3px solid var(--primary-color);
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 400px;
-    height: 60px;
+    justify-content: space-around;
+    padding: 30px 10px;
+    border-radius: 5px;
+    position: absolute;
+    bottom: -25px;
+    width: 100%;
+    max-width: var(--container-width);
+    flex-wrap: wrap;
+    gap: 10px;
 
-    p {
-      font-size: 14px;
-      color: gray;
+    .headerIcon {
+      color: lightgray;
     }
 
-    .conditionCounter {
+    .headerSearchItem {
       display: flex;
-      width: 100px;
-      justify-content: space-between;
       align-items: center;
+      gap: 10px;
+      position: relative;
+    }
 
-      .conditionCounterButton {
-        width: 30px;
-        height: 30px;
-        border-radius: 2px;
-        color: var(--primary-color);
-        background-color: white;
-        border: 1px solid var(--primary-color);
-        cursor: pointer;
+    .headerSearchInput {
+      color: var(--primary-color);
+      border: none;
+      outline: none;
+      padding: 8px;
+      width: 200px;
+    }
 
-        &:hover {
-          background-color: rgba(53, 164, 127, 0.1);
-        }
+    .headerSearchText {
+      color: var(--primary-color);
+      cursor: pointer;
+      white-space: nowrap;
+    }
 
-        &:disabled {
-          cursor: not-allowed;
-        }
-      }
+    .headerBtn {
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: 500;
+      border: none;
+      padding: 10px 16px;
+      cursor: pointer;
     }
   }
 }
 
-@media screen and (max-width: 1024px) {
-  .header {
-    .headerContainer {
-      width: 95%;
-      margin: 15px 0px 90px 0px;
 
-      .headerTitle {
-        font-size: 40px;
-      }
-    }
-  }
+.suggestion-wrapper {
+  position: relative;
+}
 
-  .headerSearchBar {
-    width: 90%;
+.suggestion-list {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  color: var(--primary-color);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 
-    .searchBarItem {
-      width: calc(33% - 15px);
+  li {
+    padding: 8px 12px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #f0f0f0;
     }
   }
 }
 
 @media screen and (max-width: 768px) {
-  .header {
-    padding: 0px 10px;
+  .headerContainer {
+    margin-bottom: 60px;
 
-    .headerContainer {
-      margin: 15px 0px 120px 0px;
+    .headerSearch {
+      flex-direction: column;
+      align-items: stretch;
 
-      .headerTitle {
-        font-size: 32px;
-      }
+      .headerSearchItem {
+        width: 100%;
+        justify-content: center;
 
-      .headerDes {
-        font-size: 14px;
-      }
-    }
-  }
-
-  .headerSearchBar {
-    flex-direction: column;
-    height: auto;
-    padding: 5px;
-    bottom: -60px;
-
-    .searchBarItem {
-      width: 100%;
-      margin: 2px 0;
-
-      .calendar {
-        top: 110px;
-      }
-    }
-
-    .searchBarBtn {
-      width: 100%;
-      margin-top: 5px;
-    }
-  }
-
-  .conditionsContainer {
-    width: 90%;
-    right: 5%;
-    padding: 10px 20px;
-    top: 165px;
-    left: 5px;
-    .condition {
-      width: 100%;
-    }
-  }
-}
-
-@media screen and (max-width: 480px) {
-  .header {
-    padding: 0px 5px;
-
-    .headerContainer {
-      margin: 10px 0px 140px 0px;
-
-      .headerTitle {
-        font-size: 28px;
-      }
-
-      .headerDes {
-        font-size: 13px;
-      }
-    }
-  }
-
-  .headerSearchBar {
-    bottom: -80px;
-
-    svg {
-      font-size: 20px;
-    }
-
-    input {
-      font-size: 14px;
-    }
-  }
-
-  .conditionsContainer {
-    padding: 5px 15px;
-
-    .condition {
-      height: 50px;
-
-      p {
-        font-size: 12px;
-      }
-
-      .conditionCounter {
-        width: 90px;
-
-        .conditionCounterButton {
-          width: 25px;
-          height: 25px;
+        .headerSearchInput {
+          width: 100%;
         }
       }
+
+      .headerBtn {
+        width: 100%;
+      }
     }
+  }
+
+  .suggestion-list {
+    top: 100%;
+    max-height: 150px;
+    font-size: 14px;
   }
 }
