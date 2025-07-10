@@ -15,6 +15,9 @@ const store = configureStore({
     user: userReducer,
     hotel: hotelReducer,
   },
+  devTools: process.env.NODE_ENV !== 'production', 
+
+  // 瀏覽器安裝Redux DevTools(查看狀態管理)
 })
 
 export default store
