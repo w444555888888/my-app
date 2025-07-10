@@ -30,12 +30,10 @@ const userStore = createSlice({
     // 登入成功
     setUserInfo: (state, action) => {
       state.userInfo = action.payload;
-      localStorage.setItem("username", JSON.stringify(action.payload));
     },
     logOut: (state) => {
       state.login = false;
       state.userInfo = null;
-      localStorage.removeItem("username");
     },
     toggleTheme: (state) => {
       state.theme = state.theme === "light" ? "dark" : "light";

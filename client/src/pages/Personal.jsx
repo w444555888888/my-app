@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleRight } from '@fortawesome/free-solid-svg-icons'
 import { format } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux'
-import { logOut } from '../redux/userStore'
+import { logOut, setUserInfo } from '../redux/userStore'
 import { request } from '../utils/apiService'
 import dayjs from '../utils/dayjs-config'
 import { getTimeZoneByCity } from '../utils/getTimeZoneByCity'
@@ -21,21 +21,18 @@ import { toast } from 'react-toastify'
 import EmptyState from '../subcomponents/EmptyState'
 const Personal = () => {
   const dispatch = useDispatch()
-  const userInfo = useSelector((state) => state.user.userInfo)
   const navigate = useNavigate()
-  // localStroge
-  const userName = localStorage.getItem('username')
-  const userDetails = JSON.parse(userName)
-  const username = userDetails.username
-  const email = userDetails.email
+  const { userInfo } = useSelector(state => state.user);
+  const username = userInfo?.username || '';
+  const email = userInfo?.email || '';
 
   // useState
   const [orders, setOrders] = useState([])
   const [flightOrders, setFlightOrders] = useState([])
   const [password, setPassword] = useState('')
-  const [realName, setRealName] = useState(userDetails.realName || '')
-  const [phoneNumber, setPhoneNumber] = useState(userDetails.phoneNumber || '')
-  const [address, setAddress] = useState(userDetails.address || '')
+  const [realName, setRealName] = useState(userInfo?.realName || '')
+  const [phoneNumber, setPhoneNumber] = useState(userInfo?.phoneNumber || '')
+  const [address, setAddress] = useState(userInfo?.address || '')
   const [loading, setLoading] = useState('')
 
 
@@ -46,10 +43,10 @@ const Personal = () => {
   // 編輯帳戶
   const handleEdit = async (e) => {
     e.preventDefault()
-    const result = await request('PUT', `/users/${userDetails._id}`, { password: password, realName: realName, phoneNumber: phoneNumber, address: address }, setLoading)
+    const result = await request('PUT', `/users/${userInfo._id}`, { password: password, realName: realName, phoneNumber: phoneNumber, address: address }, setLoading)
     if (result.success) {
       const data = result.data;
-      localStorage.setItem('username', JSON.stringify(data));
+      dispatch(setUserInfo(data));
       toast.success('編輯帳戶成功！');
     } else toast.error(`${result.message}`)
   }
@@ -68,7 +65,7 @@ const Personal = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const result = await request('GET', `/users/${userDetails._id}`);
+      const result = await request('GET', `/users/${userInfo._id}`);
       if (result.success) {
         const data = result.data;
         setOrders(data.allOrder || []);
@@ -76,7 +73,7 @@ const Personal = () => {
       } else toast.error(`${result.message}`)
     };
     fetchUserData();
-  }, [dispatch])
+  }, [userInfo?._id])
 
   return (
     <div className="personalWrapper">

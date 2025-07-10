@@ -17,7 +17,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { logIn } from '../redux/userStore'
+import { logIn, setUserInfo } from '../redux/userStore'
 import { request } from '../utils/apiService';
 import "./logIn.scss"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

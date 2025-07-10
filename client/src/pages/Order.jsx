@@ -11,6 +11,7 @@ import { request } from '../utils/apiService'
 const Order = () => {
   const { startDate, endDate, hotelId, roomId } = useParams()
   const { currentHotel, availableRooms } = useSelector(state => state.hotel)
+  const { userInfo } = useSelector(state => state.user);
   const [selectedRoom, setSelectedRoom] = useState(null)
   // 付款方式
   const [selectedPaymentType, setSelectedPaymentType] = useState(null)
@@ -134,7 +135,6 @@ const Order = () => {
               <div className="customer-info">
                 <h3>訂房人資訊</h3>
                 {(() => {
-                  const userInfo = JSON.parse(localStorage.getItem('username'))
                   return (
                     <div className="customer-details">
                       <div className="info-item">

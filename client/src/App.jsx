@@ -6,7 +6,7 @@ import { routeConfig } from './routes/routes'
 import { ProtectedRoute } from './routes/ProtectedRoute'
 import axios from 'axios'
 import { logIn, logOut } from './redux/userStore';
-import { request } from '../utils/apiService';
+import { request } from '../src/utils/apiService';
 
 function App() {
   axios.defaults.withCredentials = true
