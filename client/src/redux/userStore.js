@@ -6,36 +6,42 @@
  * @FilePath: \my-app\src\redux\userSlice.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-
-
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 /**
  * 登入狀態 : login
  * 主題 : theme
-*/
+ */
 const userStore = createSlice({
-  name: 'user',
+  name: "user",
   initialState: {
-    login: !!localStorage.getItem('username'),
+    login: false,
+    userInfo: null,
     Hotels: [],
-    theme: 'light',
+    theme: "light",
     loading: false,
     error: null,
   },
   reducers: {
+    // 驗證 cookie 時用
     logIn: (state) => {
-      state.login = true
+      state.login = true;
+    },
+    // 登入成功
+    setUserInfo: (state, action) => {
+      state.userInfo = action.payload;
+      localStorage.setItem("username", JSON.stringify(action.payload));
     },
     logOut: (state) => {
-      state.login = false
-      localStorage.removeItem('username')
+      state.login = false;
+      state.userInfo = null;
+      localStorage.removeItem("username");
     },
     toggleTheme: (state) => {
-      state.theme = state.theme === 'light' ? 'dark' : 'light'
-    }
-  }
-})
+      state.theme = state.theme === "light" ? "dark" : "light";
+    },
+  },
+});
 
-export const { logIn, logOut, toggleTheme } = userStore.actions
-export default userStore.reducer
+export const { logIn, setUserInfo, logOut, toggleTheme } = userStore.actions;
+export default userStore.reducer;

@@ -57,8 +57,9 @@ const Personal = () => {
 
 
   // 登出
-  const handleClicklogOut = () => {
+  const handleClicklogOut = async () => {
     if (window.confirm('確定登出?')) {
+      await request('POST', '/auth/logout')
       dispatch(logOut())
       navigate('/login')
     }

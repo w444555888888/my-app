@@ -6,11 +6,14 @@
  * @FilePath: \my-app\admin\src\App.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, Spin } from 'antd';
 import zhTW from 'antd/locale/zh_TW';
+import './App.css';
 import 'leaflet/dist/leaflet.css';
+
+import { checkLogin } from './utils/auth';
 
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -21,15 +24,31 @@ import Flights from './pages/Flights';
 import FlightOrders from './pages/FlightOrders';
 
 
-const getCookie = (name: string) => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop()?.split(';').shift();
-};
+
+
 
 const AdminRoute = ({ children }: { children: React.ReactNode }) => {
-  const token = getCookie('JWT_token');
-  return token ? <>{children}</> : <Navigate to="/login" replace />;
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
+
+  useEffect(() => {
+    const verify = async () => {
+      const user = await checkLogin();
+      setIsLogin(!!user);
+      setIsLoading(false);
+    };
+    verify();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="fullscreen-center">
+        <Spin size="large" />
+      </div>
+    );
+  }
+
+  return isLogin ? <>{children}</> : <Navigate to="/login" replace />;
 };
 
 function App() {

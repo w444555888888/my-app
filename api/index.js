@@ -20,7 +20,7 @@ const connect = async () => {
             serverSelectionTimeoutMS: 5000,
             retryWrites: true,
             maxPoolSize: 10
-        });
+        }); 
         console.log("Connected to mongoDB");
     } catch (error) {
         console.error("MongoDB connection error:", error);

@@ -50,9 +50,9 @@ const LogIn = () => {
         if (result.success) {
             const { userDetails } = result.data;
             toast.success('登入成功！')
-            localStorage.setItem('username', JSON.stringify(userDetails)); // 儲存用戶資料
-            dispatch(logIn());  // 登入動作
-            navigate('/'); // 跳轉到首頁
+            dispatch(setUserInfo(userDetails));  //儲存用戶資料
+            dispatch(logIn());  // 標記為登入狀態
+            navigate('/'); 
         } else toast.error(`${result.message}`) 
     }
 

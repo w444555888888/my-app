@@ -69,10 +69,10 @@ export const login = async (req, res, next) => {
       return next(errorMessage(500, "伺服器錯誤，JWT 未定義"))
     }
 
-    const token = jwt.sign({ id: userData._id, isAdmin: userData.isAdmin }, process.env.JWT)
+    const token = jwt.sign({ id: userData._id, isAdmin: userData.isAdmin }, process.env.JWT, { expiresIn: '7d' })
     // console.log("生成的 JWT:", token)
 
-    // 排除密碼和 isAdmin，回傳其餘用戶資訊
+    // 排除密碼，回傳其餘用戶資訊
     const { password, ...userDetails } = userData._doc
     // console.log("回傳的使用者資訊:", userDetails)
 
@@ -80,6 +80,7 @@ export const login = async (req, res, next) => {
       httpOnly: false,
       secure: false,
       path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000
     })
     sendResponse(res, 200, { userDetails })
 
@@ -177,6 +178,29 @@ export const resetPassword = async (req, res, next) => {
     next(errorMessage(500, "重置密碼處理失敗", error))
   }
 }
+
+
+// 驗證cookie狀態
+export const me = (req, res) => {
+  try {
+    sendResponse(res, 200, req.user);
+  } catch (err) {
+    return next(errorMessage(500, "cookie驗證失敗", err));
+  }
+};
+
+
+// 登出
+export const logout = async (req, res, next) => {
+  try {
+    res.clearCookie("JWT_token", {
+      path: "/",
+    });
+    return sendResponse(res, 200, null, { message: "已登出" });
+  } catch (err) {
+    return next(errorMessage(500, "登出失敗", err));
+  }
+};
 
 
 // 驗證用戶身份
