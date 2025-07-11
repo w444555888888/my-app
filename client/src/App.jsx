@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
+import axios from 'axios'
+import Div100vh from 'react-div-100vh';
 import "./app.scss"
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
 import { routeConfig } from './routes/routes'
 import { ProtectedRoute } from './routes/ProtectedRoute'
-import axios from 'axios'
 import { logIn, logOut } from './redux/userStore';
 import { request } from '../src/utils/apiService';
 
@@ -26,7 +27,7 @@ function App() {
   }, [dispatch]);
 
   return (
-    <div className="App">
+    <Div100vh className="App">
       <Router>
         <Routes>
           {routeConfig.map(({ path, element: Element, requireAuth }) => (
@@ -43,7 +44,7 @@ function App() {
           ))}
         </Routes>
       </Router>
-    </div>
+    </Div100vh>
   )
 }
 
