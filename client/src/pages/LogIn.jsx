@@ -6,14 +6,6 @@
  * @FilePath: \my-app\client\src\pages\LogIn.jsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-/*
- * @Author: w444555888 w444555888@yahoo.com.tw
- * @Date: 2024-07-18 20:24:17
- * @LastEditors: w444555888 w444555888@yahoo.com.tw
- * @LastEditTime: 2024-08-04 18:21:22
- * @FilePath: \my-app\client\src\pages\LogIn.jsx
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- */
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
