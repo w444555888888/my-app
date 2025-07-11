@@ -76,9 +76,12 @@ export const login = async (req, res, next) => {
     const { password, ...userDetails } = userData._doc
     // console.log("回傳的使用者資訊:", userDetails)
 
+    const isProduction = process.env.NODE_ENV === 'production';
+
     res.cookie("JWT_token", token, {
       httpOnly: false,
-      secure: false,
+      secure: isProduction,
+      sameSite: isProduction ? 'strict' : 'lax',
       path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000
     })
@@ -193,7 +196,11 @@ export const me = (req, res) => {
 // 登出
 export const logout = async (req, res, next) => {
   try {
+    const isProduction = process.env.NODE_ENV === 'production';
     res.clearCookie("JWT_token", {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? 'strict' : 'lax',
       path: "/",
     });
     return sendResponse(res, 200, null, { message: "已登出" });

@@ -13,3 +13,9 @@ JWT=W444555888
 # 預設發送gmail帳號 密碼使用:應用專用密碼
 EMAIL=w444555888w@gmail.com
 EMAIL_PASSWORD=Gujs naqz mzjg zsev
+
+# 本地開發
+NODE_ENV=development
+
+# 正式部署改為
+# NODE_ENV=production
