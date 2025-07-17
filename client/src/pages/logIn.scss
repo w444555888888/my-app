@@ -40,11 +40,6 @@
       background-color: gray;
     }
 
-    .item {
-      margin: 0 10px;
-      cursor: pointer;
-    }
-
     h2 {
       text-align: center;
       margin-bottom: 20px;
@@ -65,6 +60,17 @@
         border-radius: 4px;
         box-sizing: border-box;
       }
+    }
+
+    .captchaSliderWrapper {
+      margin: 20px 0;
+      padding: 15px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     button[type='submit'] {
@@ -144,6 +150,10 @@
     padding: 10px;
   }
 
+  .captchaSliderWrapper {
+    padding: 10px;
+  }
+
   button[type='submit'] {
     font-size: 14px;
   }
@@ -156,14 +166,15 @@
   .buttonGroup {
     flex-direction: column;
     align-items: center;
-  }
 
-  .buttonGroup .forgotBtn,
-  .buttonGroup .signUpBtn {
-    width: 100%;
-    margin-top: 10px;
+    .forgotBtn,
+    .signUpBtn {
+      width: 100%;
+      margin-top: 10px;
+    }
   }
 }
+
 
 @media (max-width: 768px) {
   .logInWrapper {
@@ -178,31 +189,8 @@
     font-size: 18px;
   }
 
-  .navButton {
-    font-size: 12px;
-  }
-
-  button[type='submit'] {
-    font-size: 14px;
-    padding: 12px;
-  }
-
-  .forgotBtn,
-  .signUpBtn {
-    width: 45%;
-  }
-
-  .buttonGroup {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .buttonGroup .forgotBtn,
-  .buttonGroup .signUpBtn {
-    width: 100%;
-    margin-top: 10px;
-  }
 }
+
 
 @media (max-width: 480px) {
   .logInWrapper {
@@ -218,10 +206,6 @@
     font-size: 16px;
   }
 
-  .navButton {
-    font-size: 12px;
-  }
-
   .formGroup input {
     padding: 12px;
   }
@@ -229,6 +213,10 @@
   button[type='submit'] {
     font-size: 14px;
     padding: 15px;
+  }
+
+  .captchaSliderWrapper {
+    padding: 8px;
   }
 
   .forgotBtn,
@@ -239,11 +227,11 @@
   .buttonGroup {
     flex-direction: column;
     align-items: center;
-  }
 
-  .buttonGroup .forgotBtn,
-  .buttonGroup .signUpBtn {
-    width: 100%;
-    margin-top: 10px;
+    .forgotBtn,
+    .signUpBtn {
+      width: 100%;
+      margin-top: 10px;
+    }
   }
 }

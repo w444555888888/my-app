@@ -1,0 +1,39 @@
+.captcha-slider {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  height: 150px;
+  margin: 0 auto;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: #f4f4f4;
+  overflow: hidden;
+  user-select: none;
+  touch-action: none;
+
+  .captcha-bg {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+
+  .slider-piece {
+    position: absolute;
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    cursor: grab;
+    z-index: 10;
+    transition: left 0.05s linear;
+  }
+}
+
+@media (max-width: 480px) {
+  .captcha-slider {
+    max-width: 100%;
+  }
+}

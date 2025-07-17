@@ -1,9 +1,9 @@
 import express from "express";
-import { init, verify } from "../RoutesController/captcha.js";
+import { initCaptcha, verifyCaptcha } from "../RoutesController/captcha.js";
 
 const router = express.Router();
 
-router.get("/init", init);
-router.post("/verify", verify);
+router.get("/initCaptcha", initCaptcha);
+router.post("/verifyCaptcha", verifyCaptcha);
 
 export default router;
