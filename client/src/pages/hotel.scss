@@ -526,11 +526,14 @@
  .hotelExtraSection {
     flex-direction: column;
     gap: 16px;
+    width: 80%;
+    max-width: 600px; 
+    margin: 0 auto;
+    padding: 0 16px;
 
     .hotelLeft,
     .hotelRight {
       width: 100%;
-      padding: 16px;
     }
 
     .hotelLeft-searchBarItem {

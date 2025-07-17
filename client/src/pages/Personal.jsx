@@ -14,6 +14,7 @@ import { faCircleRight } from '@fortawesome/free-solid-svg-icons'
 import { format } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux'
 import { logOut, setUserInfo } from '../redux/userStore'
+import { persistor } from '../redux/storeConfig'
 import { request } from '../utils/apiService'
 import dayjs from '../utils/dayjs-config'
 import { getTimeZoneByCity } from '../utils/getTimeZoneByCity'
@@ -55,13 +56,12 @@ const Personal = () => {
 
   // 登出
   const handleClicklogOut = async () => {
-    if (window.confirm('確定登出?')) {
-      await request('POST', '/auth/logout')
-      dispatch(logOut())
-      navigate('/login')
-    }
+    await request('POST', '/auth/logout')
+    dispatch(logOut())
+    persistor.purge()
+    toast.success('已成功登出')
+    navigate('/login')
   }
-
 
   useEffect(() => {
     const fetchUserData = async () => {
