@@ -7,6 +7,7 @@ import usersApiRoute from "./ApiRoutes/users.js"
 import authApiRoute from "./ApiRoutes/auth.js"
 import orderApiRoute from "./ApiRoutes/order.js"
 import flightApiRoute from "./ApiRoutes/flight.js"
+import captchaApiRoute from "./ApiRoutes/captcha.js"
 import cookieParser from "cookie-parser"
 import cors from "cors"
 
@@ -69,6 +70,7 @@ app.use("/api/v1/users", usersApiRoute)
 app.use("/api/v1/auth", authApiRoute)
 app.use("/api/v1/order", orderApiRoute)
 app.use("/api/v1/flight", flightApiRoute)
+app.use("/api/v1/captcha", captchaApiRoute)
 
 
 //共同管理error狀態
