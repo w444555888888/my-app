@@ -3,7 +3,7 @@ import SliderCaptcha from "rc-slider-captcha";
 import { request } from "../utils/apiService";
 import { toast } from "react-toastify";
 
-const CaptchaSlider = ({ onPass }) => {
+const CaptchaSlider = ({ onPass, onFail }) => {
   const [captchaToken, setCaptchaToken] = useState("");
   const [bgImgUrl, setBgImgUrl] = useState("");
   const [puzzleImgUrl, setPuzzleImgUrl] = useState("");
@@ -19,12 +19,13 @@ const CaptchaSlider = ({ onPass }) => {
         const randomBg = imgs[Math.floor(Math.random() * imgs.length)];
 
         setCaptchaToken(res.data.token);
-        const { puzzleBase64, bgWithHole } = await createPuzzleFromBg(randomBg, res.data.targetX);
-      
-        console.log(puzzleBase64,'puzzleBase64');
-     
-        setBgImgUrl(bgWithHole);       // 有缺口的背景圖
-      setPuzzleImgUrl(puzzleBase64); // 拼圖塊
+        const { puzzleBase64, bgWithHole } = await createPuzzleFromBg(
+          randomBg,
+          res.data.targetX
+        );
+
+        setBgImgUrl(bgWithHole); // 有缺口的背景圖
+        setPuzzleImgUrl(puzzleBase64); // 拼圖塊
         setReady(true);
       } else {
         toast.error("驗證初始化失敗");
@@ -34,7 +35,12 @@ const CaptchaSlider = ({ onPass }) => {
     initCaptcha();
   }, []);
 
-  // 滑塊驗證處理
+  /**
+   * @滑塊驗證處理 data
+   * x: 用戶拖曳後的滑塊實際 X 位置
+   * y: y: 用戶拖曳後的 Y（
+   * sliderOffsetX: 滑塊元素本身的偏移量
+   */
   const handleVerify = async (data) => {
     const { x } = data; // data = { x: number, y: number, sliderOffsetX: number }
     const res = await request("POST", "/captcha/verifyCaptcha", {
@@ -48,63 +54,61 @@ const CaptchaSlider = ({ onPass }) => {
       return Promise.resolve();
     } else {
       toast.error("驗證失敗，請重試");
+      onFail?.();
       return Promise.reject();
     }
   };
 
+  const createPuzzleFromBg = (bgUrl, targetX) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = "Anonymous";
+      img.src = bgUrl;
 
+      img.onload = () => {
+        const bgWidth = 400; // 你的背景寬度
+        const bgHeight = 200; // 你的背景高度
+        const puzzleWidth = 50; // 拼圖塊寬度（滑塊寬度）
+        const puzzleHeight = bgHeight; // 高度延伸到底
 
-const createPuzzleFromBg = (bgUrl, targetX) => {
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.crossOrigin = "Anonymous";
-    img.src = bgUrl;
+        // 1. 裁剪拼圖塊（長條形）
+        const puzzleCanvas = document.createElement("canvas");
+        puzzleCanvas.width = puzzleWidth;
+        puzzleCanvas.height = puzzleHeight;
+        const puzzleCtx = puzzleCanvas.getContext("2d");
 
-    img.onload = () => {
-      const bgWidth = 400;    // 你的背景寬度
-      const bgHeight = 200;   // 你的背景高度
-      const puzzleWidth = 50; // 拼圖塊寬度（滑塊寬度）
-      const puzzleHeight = bgHeight; // 高度延伸到底
+        // 直接裁剪整個高度的長條形區域
+        puzzleCtx.drawImage(
+          img,
+          targetX * (img.width / bgWidth), // 換算成原圖座標
+          0,
+          puzzleWidth * (img.width / bgWidth),
+          img.height,
+          0,
+          0,
+          puzzleWidth,
+          puzzleHeight
+        );
 
-      // 1. 裁剪拼圖塊（長條形）
-      const puzzleCanvas = document.createElement("canvas");
-      puzzleCanvas.width = puzzleWidth;
-      puzzleCanvas.height = puzzleHeight;
-      const puzzleCtx = puzzleCanvas.getContext("2d");
+        const puzzleBase64 = puzzleCanvas.toDataURL("image/png");
 
-      // 直接裁剪整個高度的長條形區域
-      puzzleCtx.drawImage(
-        img,
-        targetX * (img.width / bgWidth),   // 換算成原圖座標
-        0,
-        puzzleWidth * (img.width / bgWidth),
-        img.height,
-        0,
-        0,
-        puzzleWidth,
-        puzzleHeight
-      );
+        // 2. 在背景圖上挖缺口（長條形透明區域）
+        const bgCanvas = document.createElement("canvas");
+        bgCanvas.width = bgWidth;
+        bgCanvas.height = bgHeight;
+        const bgCtx = bgCanvas.getContext("2d");
 
-      const puzzleBase64 = puzzleCanvas.toDataURL("image/png");
+        bgCtx.drawImage(img, 0, 0, bgWidth, bgHeight);
 
-      // 2. 在背景圖上挖缺口（長條形透明區域）
-      const bgCanvas = document.createElement("canvas");
-      bgCanvas.width = bgWidth;
-      bgCanvas.height = bgHeight;
-      const bgCtx = bgCanvas.getContext("2d");
+        // 挖缺口：整個高，從 targetX 開始，寬 puzzleWidth
+        bgCtx.clearRect(targetX, 0, puzzleWidth, puzzleHeight);
 
-      bgCtx.drawImage(img, 0, 0, bgWidth, bgHeight);
+        const bgWithHole = bgCanvas.toDataURL("image/png");
 
-      // 挖缺口：整個高，從 targetX 開始，寬 puzzleWidth
-      bgCtx.clearRect(targetX, 0, puzzleWidth, puzzleHeight);
-
-      const bgWithHole = bgCanvas.toDataURL("image/png");
-
-      resolve({ puzzleBase64, bgWithHole });
-    };
-  });
-};
-
+        resolve({ puzzleBase64, bgWithHole });
+      };
+    });
+  };
 
   return (
     <div style={{ width: 400, margin: "0 auto" }}>

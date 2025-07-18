@@ -15,15 +15,16 @@ const LogIn = () => {
     const [loading, setLoading] = useState(false);
     const [captchaPassed, setCaptchaPassed] = useState(false);
 
-
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
-
 
     const handleLogIn = async (e) => {
         e.preventDefault();
 
+        if (!captchaPassed) {
+            toast.error("請先完成滑塊驗證");
+            return;
+        }
 
         const result = await request(
             "POST",
@@ -85,7 +86,10 @@ const LogIn = () => {
                         />
                     </div>
                     <div className="captchaSliderWrapper">
-                        <CaptchaSlider onPass={() => setCaptchaPassed(true)} />
+                        <CaptchaSlider
+                            onPass={() => setCaptchaPassed(true)}
+                            onFail={() => setCaptchaPassed(false)}
+                        />
                     </div>
                     <button type="submit" disabled={loading}>
                         {loading ? "Loading..." : "LogIn"}
