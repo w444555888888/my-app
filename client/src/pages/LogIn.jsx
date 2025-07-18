@@ -54,11 +54,6 @@ const LogIn = () => {
                     <div className="left">
                         <span className="logo">MIKE.BOOKING</span>
                     </div>
-                    <div className="right">
-                        <div className="navButton" onClick={() => navigate("/")}>
-                            <FontAwesomeIcon icon={faCircleRight} />
-                        </div>
-                    </div>
                 </div>
             </div>
 

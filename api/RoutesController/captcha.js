@@ -6,7 +6,7 @@ import { errorMessage } from "../errorMessage.js";
 export const initCaptcha = (req, res, next) => {
   try {
     const x = Math.floor(Math.random() * 80 + 100);
-    const token = jwt.sign({ x }, process.env.JWT, { expiresIn: "1m" });
+    const token = jwt.sign({ x }, process.env.JWT, { expiresIn: "5m" });
 
     sendResponse(res, 200, { token, targetX: x }, "滑塊驗證初始化");
   } catch (err) {
