@@ -28,7 +28,7 @@ const CaptchaSlider = ({ onPass, onFail }) => {
         setPuzzleImgUrl(puzzleBase64); // 拼圖塊
         setReady(true);
       } else {
-        toast.error("驗證初始化失敗");
+        toast.error(res.message || "驗證初始化失敗");
       }
     };
 
@@ -53,7 +53,7 @@ const CaptchaSlider = ({ onPass, onFail }) => {
       onPass?.();
       return Promise.resolve();
     } else {
-      toast.error("驗證失敗，請重試");
+      toast.error(res.message || "驗證失敗，請重試");
       onFail?.();
       return Promise.reject();
     }
