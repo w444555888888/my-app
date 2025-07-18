@@ -20,8 +20,9 @@ export const verifyCaptcha = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT);
     const correctX = decoded.x;
-    const pieceSize = 40; 
-    const isPassed = Math.abs(userX - (correctX + pieceSize / 2)) < 6;
+    const pieceSize = 50;  // 前端拼圖寬度一致
+    const tolerance = 6;   // 允許誤差範圍
+      const isPassed = Math.abs(userX - correctX) < tolerance;
     
     if (!isPassed) {
       return next(errorMessage(400, "滑塊驗證未通過"));

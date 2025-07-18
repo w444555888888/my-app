@@ -1,152 +1,131 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
+import SliderCaptcha from "rc-slider-captcha";
 import { request } from "../utils/apiService";
 import { toast } from "react-toastify";
-import "./captchaSlider.scss";
 
 const CaptchaSlider = ({ onPass }) => {
-    const canvasRef = useRef(null);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [bgImgUrl, setBgImgUrl] = useState("");
+  const [puzzleImgUrl, setPuzzleImgUrl] = useState("");
+  const [ready, setReady] = useState(false);
 
-    /**
-     *  canvas 寬度
-     *  canvas 高度 
-     *  滑塊尺寸
-     *  缺口與滑塊在 Y 軸上的位置
-     */
-    const canvasWidth = 400;
-    const canvasHeight = 200;
-    const pieceSize = 40;
-    const pieceTop = 55; 
-
-    const [bgImgUrl] = useState(() => {
+  // 初始化驗證資訊
+  useEffect(() => {
+    const initCaptcha = async () => {
+      const res = await request("GET", "/captcha/initCaptcha");
+      if (res.success) {
+        // 隨機選圖片
         const imgs = ["/captchaSlider1.jpg", "/captchaSlider2.jpg"];
-        return imgs[Math.floor(Math.random() * imgs.length)];
-    });
-    const [captchaToken, setCaptchaToken] = useState("");
-    const [targetX, setTargetX] = useState(0); 
-    const [dragX, setDragX] = useState(pieceSize / 2);
-    const [isDragging, setIsDragging] = useState(false);
-    const [startX, setStartX] = useState(0);
+        const randomBg = imgs[Math.floor(Math.random() * imgs.length)];
 
-    // 初始化 Captcha
-    useEffect(() => {
-        const initCaptcha = async () => {
-            const res = await request("GET", "/captcha/initCaptcha");
-            if (res.success) {
-                setCaptchaToken(res.data.token);
-                setTargetX(res.data.targetX);
-                setDragX(pieceSize / 2); 
-            } else {
-                toast.error("驗證初始化失敗");
-            }
-        };
-        initCaptcha();
-    }, []);
-
-    // 畫背景與缺口 + 十字線
-    useEffect(() => {
-        const drawPuzzle = () => {
-            if (!targetX || !canvasRef.current) return;
-            const canvas = canvasRef.current;
-            const ctx = canvas.getContext("2d");
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            img.src = bgImgUrl;
-
-            img.onload = () => {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
-
-                // 畫缺口（圓心）
-                ctx.save();
-                ctx.globalCompositeOperation = "destination-out";
-                ctx.beginPath();
-                ctx.arc(targetX + pieceSize / 2, pieceTop + pieceSize / 2, pieceSize / 2, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
-            };
-        };
-        drawPuzzle();
-    }, [targetX, bgImgUrl]);
-
-    // 拖曳邏輯
-    useEffect(() => {
-        const handleMouseMove = (e) => {
-            if (!isDragging) return;
-            const clientX = e.clientX || (e.touches && e.touches[0]?.clientX);
-            const offset = clientX - startX;
-            const clamped = Math.max(pieceSize / 2, Math.min(offset, canvasWidth - pieceSize / 2));
-            setDragX(clamped); // 圓心座標
-        };
-
-        const handleMouseUp = async () => {
-            if (!isDragging) return;
-            setIsDragging(false);
-
-            const res = await request("POST", "/captcha/verifyCaptcha", {
-                token: captchaToken,
-                userX: dragX, // 傳圓心
-            });
-
-            if (res.success) {
-                toast.success("驗證成功！");
-                onPass?.();
-            } else {
-                toast.error("驗證失敗，請重試");
-                setDragX(canvasWidth / 2); // 重置位置
-            }
-
-            document.removeEventListener("mousemove", handleMouseMove);
-            document.removeEventListener("mouseup", handleMouseUp);
-            document.removeEventListener("touchmove", handleMouseMove);
-            document.removeEventListener("touchend", handleMouseUp);
-        };
-
-        if (isDragging) {
-            document.addEventListener("mousemove", handleMouseMove);
-            document.addEventListener("mouseup", handleMouseUp);
-            document.addEventListener("touchmove", handleMouseMove);
-            document.addEventListener("touchend", handleMouseUp);
-        }
-
-        return () => {
-            document.removeEventListener("mousemove", handleMouseMove);
-            document.removeEventListener("mouseup", handleMouseUp);
-            document.removeEventListener("touchmove", handleMouseMove);
-            document.removeEventListener("touchend", handleMouseUp);
-        };
-    }, [isDragging, startX, dragX, captchaToken, onPass]);
-
-    const handleStart = (e) => {
-        const clientX = e.clientX || (e.touches && e.touches[0]?.clientX);
-        const sliderLeft = dragX - pieceSize / 2;
-        setStartX(clientX - sliderLeft);
-        setIsDragging(true);
+        setCaptchaToken(res.data.token);
+        const { puzzleBase64, bgWithHole } = await createPuzzleFromBg(randomBg, res.data.targetX);
+      
+        console.log(puzzleBase64,'puzzleBase64');
+     
+        setBgImgUrl(bgWithHole);       // 有缺口的背景圖
+      setPuzzleImgUrl(puzzleBase64); // 拼圖塊
+        setReady(true);
+      } else {
+        toast.error("驗證初始化失敗");
+      }
     };
 
-    return (
-        <div className="captcha-slider">
-            <canvas
-                ref={canvasRef}
-                width={canvasWidth}
-                height={canvasHeight}
-                className="captcha-bg"
-            />
-            <div
-                className="slider-piece"
-                onMouseDown={handleStart}
-                onTouchStart={handleStart}
-                style={{
-                    left: `${dragX - pieceSize / 2}px`,
-                    top: `${pieceTop}px`,
-                    width: `${pieceSize}px`,
-                    height: `${pieceSize}px`,
-                    backgroundImage: `url(${bgImgUrl})`,
-                    backgroundPosition: `-${targetX}px -${pieceTop}px`,
-                    backgroundSize: `${canvasWidth}px ${canvasHeight}px`,
-                }}
-            />
-        </div>
-    );
+    initCaptcha();
+  }, []);
+
+  // 滑塊驗證處理
+  const handleVerify = async (data) => {
+    const { x } = data; // data = { x: number, y: number, sliderOffsetX: number }
+    const res = await request("POST", "/captcha/verifyCaptcha", {
+      token: captchaToken,
+      userX: x,
+    });
+
+    if (res.success) {
+      toast.success("驗證成功！");
+      onPass?.();
+      return Promise.resolve();
+    } else {
+      toast.error("驗證失敗，請重試");
+      return Promise.reject();
+    }
+  };
+
+
+
+const createPuzzleFromBg = (bgUrl, targetX) => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
+    img.src = bgUrl;
+
+    img.onload = () => {
+      const bgWidth = 400;    // 你的背景寬度
+      const bgHeight = 200;   // 你的背景高度
+      const puzzleWidth = 50; // 拼圖塊寬度（滑塊寬度）
+      const puzzleHeight = bgHeight; // 高度延伸到底
+
+      // 1. 裁剪拼圖塊（長條形）
+      const puzzleCanvas = document.createElement("canvas");
+      puzzleCanvas.width = puzzleWidth;
+      puzzleCanvas.height = puzzleHeight;
+      const puzzleCtx = puzzleCanvas.getContext("2d");
+
+      // 直接裁剪整個高度的長條形區域
+      puzzleCtx.drawImage(
+        img,
+        targetX * (img.width / bgWidth),   // 換算成原圖座標
+        0,
+        puzzleWidth * (img.width / bgWidth),
+        img.height,
+        0,
+        0,
+        puzzleWidth,
+        puzzleHeight
+      );
+
+      const puzzleBase64 = puzzleCanvas.toDataURL("image/png");
+
+      // 2. 在背景圖上挖缺口（長條形透明區域）
+      const bgCanvas = document.createElement("canvas");
+      bgCanvas.width = bgWidth;
+      bgCanvas.height = bgHeight;
+      const bgCtx = bgCanvas.getContext("2d");
+
+      bgCtx.drawImage(img, 0, 0, bgWidth, bgHeight);
+
+      // 挖缺口：整個高，從 targetX 開始，寬 puzzleWidth
+      bgCtx.clearRect(targetX, 0, puzzleWidth, puzzleHeight);
+
+      const bgWithHole = bgCanvas.toDataURL("image/png");
+
+      resolve({ puzzleBase64, bgWithHole });
+    };
+  });
+};
+
+
+  return (
+    <div style={{ width: 400, margin: "0 auto" }}>
+      {ready && (
+        <SliderCaptcha
+          request={async () => ({
+            bgUrl: bgImgUrl,
+            puzzleUrl: puzzleImgUrl,
+          })}
+          onVerify={handleVerify}
+          bgSize={{ width: 400, height: 200 }}
+          puzzleSize={{ width: 50 }} // 高度自動等於背景高
+          tipText={{
+            default: "請拖動滑塊完成驗證",
+            success: "驗證成功",
+            error: "驗證失敗",
+          }}
+        />
+      )}
+    </div>
+  );
 };
 
 export default CaptchaSlider;
