@@ -6,15 +6,23 @@ import "./captchaSlider.scss";
 const CaptchaSlider = ({ onPass }) => {
     const canvasRef = useRef(null);
 
-    // 常數設定
-    const canvasWidth = 300;
-    const canvasHeight = 150;
+    /**
+     *  canvas 寬度
+     *  canvas 高度 
+     *  滑塊尺寸
+     *  缺口與滑塊在 Y 軸上的位置
+     */
+    const canvasWidth = 400;
+    const canvasHeight = 200;
     const pieceSize = 40;
-    const pieceTop = 55;
+    const pieceTop = 55; 
 
-    const [bgImgUrl] = useState("/cup250.jpg");
+    const [bgImgUrl] = useState(() => {
+        const imgs = ["/captchaSlider1.jpg", "/captchaSlider2.jpg"];
+        return imgs[Math.floor(Math.random() * imgs.length)];
+    });
     const [captchaToken, setCaptchaToken] = useState("");
-    const [targetX, setTargetX] = useState(0); // 缺口左邊界
+    const [targetX, setTargetX] = useState(0); 
     const [dragX, setDragX] = useState(pieceSize / 2);
     const [isDragging, setIsDragging] = useState(false);
     const [startX, setStartX] = useState(0);
