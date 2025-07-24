@@ -19,7 +19,7 @@ const ResizeFix = () => {
     setTimeout(() => {
       map.invalidateSize();
     }, 0);
-  }, []);
+  }, [map]);
   return null;
 };
 
@@ -37,7 +37,7 @@ const LeafletMapPicker = ({ value,  onChange = () => {}}) => {
 
   useEffect(() => {
     if (position) onChange(position);
-  }, [position]);
+  }, [position, onChange]);
 
   return (
     <MapContainer center={position} zoom={15} style={{ height: 300, width: '100%' }}>
