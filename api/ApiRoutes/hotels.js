@@ -19,11 +19,11 @@ router.get('/', getAllHotels)
 router.get('/popular', getPopularHotels)
 //獲取搜尋飯店資訊
 router.get('/search', getSearchHotels)
-//創建第一筆資料
+//創建資料
 router.post("/", createHotel)
-//抓取第一筆資料練習
+//抓取其中一筆資料
 router.get("/find/:id", getHotel)
-//將第一筆資料做修改練習
+//修改資料
 router.put("/:id", updatedHotel)
 //刪除資料
 router.delete("/:id", deleteHotel)

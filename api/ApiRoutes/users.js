@@ -3,13 +3,13 @@ import { deletedUser, getAllUsers, getUser, updateUser } from "../RoutesControll
 import { verifyToken } from "../RoutesController/auth.js";
 
 const router = express.Router()
-//更新user
+//更新用戶資料
 router.put("/:id", verifyToken, updateUser)
-//刪除
+//刪除用戶資料
 router.delete("/:id", verifyToken, deletedUser)
-//讀取 單一用戶資料
+//單一用戶資料
 router.get("/:id", verifyToken, getUser)
-//讀取全部用戶資料
+//全部用戶資料
 router.get("/", verifyToken, getAllUsers)
 
 export default router
