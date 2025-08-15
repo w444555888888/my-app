@@ -13,7 +13,7 @@ import Order from "../models/Order.js";
 import FlightOrder from "../models/FlightOrder.js";
 import bcrypt from "bcryptjs"; //密碼加密
 
-//更新使用者:id
+//更新使用者資訊
 export const updateUser = async (req, res, next) => {
   const id = req.params.id;
 
@@ -66,7 +66,7 @@ export const deletedUser = async (req, res, next) => {
   }
 };
 
-//讀取使用者資料
+//取得單一使用者與其訂單
 export const getUser = async (req, res, next) => {
   const id = req.params.id;
 
@@ -104,7 +104,7 @@ export const getUser = async (req, res, next) => {
   }
 };
 
-//讀取全部使用者資料
+//取得全部使用者（限管理員）
 export const getAllUsers = async (req, res, next) => {
   // 只有管理員可以查看所有用戶
   if (!req.user.isAdmin) {

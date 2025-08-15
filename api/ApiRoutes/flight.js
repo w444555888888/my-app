@@ -17,7 +17,7 @@ router.get("/allOrder", getAllFlightOrders)
 router.post("/order", verifyToken, createFlightOrder)
 router.get("/orders/user", verifyToken, getUserOrders)
 router.get("/orders/:id", getOrderDetail)
-router.post("/orders/:id/cancel", cancelOrder)
+router.post("/orders/:id/cancel", verifyToken, cancelOrder)
 
 
 // 航班管理路由

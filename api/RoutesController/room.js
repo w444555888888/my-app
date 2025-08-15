@@ -2,7 +2,9 @@ import Hotel from "../models/Hotel.js"
 import Room from "../models/Room.js"
 import { errorMessage } from "../errorMessage.js"
 import { sendResponse } from "../sendResponse.js"
-// 創建房型
+
+
+// 建立房型
 export const createRoom = async (req, res, next) => {
   const newRoom = new Room(req.body)
 
@@ -13,6 +15,7 @@ export const createRoom = async (req, res, next) => {
     return next(errorMessage(500, "房型創建失敗，可能為格式錯誤", error))
   }
 }
+
 
 // 更新房型
 export const updatedRoom = async (req, res, next) => {
@@ -25,6 +28,7 @@ export const updatedRoom = async (req, res, next) => {
     return next(errorMessage(500, "房型更新失敗，可能為格式錯誤或找不到其 ID", error))
   }
 }
+
 
 // 刪除房型
 export const deleteRoom = async (req, res, next) => {
@@ -39,7 +43,7 @@ export const deleteRoom = async (req, res, next) => {
 }
 
 
-// 獲取所有房型
+// 取得全部房型
 export const getAllRooms = async (req, res, next) => {
   try {
     const getRooms = await Room.find()
@@ -50,7 +54,7 @@ export const getAllRooms = async (req, res, next) => {
 }
 
 
-// 獲取特定id飯店的所有房型
+// 根據飯店 ID 取得房型列表
 export const getHotelRooms = async (req, res, next) => {
   const hotelId = req.params.hotelId;
 

@@ -3,7 +3,8 @@ import Room from "../models/Room.js";
 import Order from "../models/Order.js"
 import { errorMessage } from "../errorMessage.js"
 import { sendResponse } from "../sendResponse.js"
-// 全部訂單
+
+// 取得全部訂單
 export const getAllOrders = async (req, res, next) => {
   try {
     const orders = await Order.find();
@@ -70,7 +71,7 @@ export const createOrder = async (req, res, next) => {
 };
 
 
-//根據id查找
+//根據 ID 取得單一訂單（含 hotel、room）
 export const getOrderById = async (req, res, next) => {
   try {
     // Order model 設定 ref
@@ -88,7 +89,7 @@ export const getOrderById = async (req, res, next) => {
   }
 };
 
-// 根據id更新訂單
+// 更新訂單（by id）
 export const updateOrder = async (req, res, next) => {
   try {
     const updatedOrder = await Order.findByIdAndUpdate(
@@ -105,7 +106,7 @@ export const updateOrder = async (req, res, next) => {
   }
 };
 
-// 根據id刪除訂單
+// 刪除訂單（by id）
 export const deleteOrder = async (req, res, next) => {
   try {
     const deletedOrder = await Order.findByIdAndDelete(req.params.id);

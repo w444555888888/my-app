@@ -13,7 +13,7 @@ import { errorMessage } from "../errorMessage.js"
 import { sendResponse } from "../sendResponse.js"
 
 
-// 模糊搜尋飯店名稱
+// 模糊搜尋飯店名稱(搜索框)  
 export const getHotelNameSuggestions = async (req, res, next) => {
   const { name } = req.query;
 
@@ -32,6 +32,7 @@ export const getHotelNameSuggestions = async (req, res, next) => {
     return next(errorMessage(500, "搜尋飯店名稱失敗", err));
   }
 };
+
 
 // 獲取所有飯店資料（不帶任何過濾條件）
 export const getAllHotels = async (req, res, next) => {
@@ -57,7 +58,7 @@ export const getPopularHotels = async (req, res, next) => {
 }
 
 
-// 搜尋飯店資料
+// 搜尋飯店資料(根據篩選條件)
 export const getSearchHotels = async (req, res, next) => {
   const { name, minPrice, maxPrice, startDate, endDate, hotelId, popular } = req.query
   const minPriceNumber = Number(minPrice)
@@ -131,8 +132,7 @@ export const getSearchHotels = async (req, res, next) => {
 }
 
 
-
-
+// 新增飯店
 export const createHotel = async (req, res, next) => { //新增next
     const newHotel = new Hotel(req.body)
     try {
@@ -143,6 +143,9 @@ export const createHotel = async (req, res, next) => { //新增next
         return next(errorMessage(500, "資料上傳錯誤請確認格式"))
     }
 }
+
+
+// 取得單一飯店資料
 export const getHotel = async (req, res, next) => {
     const id = req.params.id
     try {
@@ -153,6 +156,8 @@ export const getHotel = async (req, res, next) => {
         return next(errorMessage(500, "找不到資料，請檢查使否有此id", error))
     }
 }
+
+// 更新飯店
 export const updatedHotel = async (req, res, next) => {
     const id = req.params.id
     const body = req.body
@@ -163,6 +168,8 @@ export const updatedHotel = async (req, res, next) => {
         return next(errorMessage(500, "修改失敗，請確認是否有其id與是否欄位輸入格式正確", error))
     }
 }
+
+// 刪除飯店
 export const deleteHotel = async (req, res, next) => {
     const id = req.params.id
     try {
