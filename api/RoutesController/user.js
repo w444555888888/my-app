@@ -84,7 +84,7 @@ export const getUser = async (req, res, next) => {
 
     // populate flightId 拿到航班資料
     const rawFightOrders = await FlightOrder.find({ userId: id }).populate("flightId").sort({ createdAt: -1 });
-    const allFightOrder = rawFightOrders.map(order => {
+    const allFlightOrder = rawFightOrders.map(order => {
       const flight = order.flightId;
       return {
         ...order.toObject(),
@@ -96,7 +96,7 @@ export const getUser = async (req, res, next) => {
     sendResponse(res, 200, {
       ...user.toObject(),
       allOrder,
-      allFightOrder
+      allFlightOrder
     });
 
   } catch (error) {

@@ -69,7 +69,7 @@ const Personal = () => {
       if (result.success) {
         const data = result.data;
         setOrders(data.allOrder || []);
-        setFlightOrders(data.allFightOrder || []);
+        setFlightOrders(data.allFlightOrder || []);
       } else toast.error(`${result.message}`)
     };
     fetchUserData();
