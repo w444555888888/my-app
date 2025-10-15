@@ -37,7 +37,7 @@ const hotelStore = createSlice({
       .addCase(fetchSingleHotel.fulfilled, (state, action) => {
         state.loading = false
         state.currentHotel = action.payload
-        state.availableRooms = action.payload.availableRooms
+        state.availableRooms = action.payload.availableRooms || []
         toast.success('成功獲取飯店資料')
       })
       .addCase(fetchSingleHotel.rejected, (state, action) => {
