@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Tag, message, Empty } from 'antd';
+import { Table, Tag, message, Empty, Button, Popconfirm } from 'antd';
 import {
     UserOutlined,
     MailOutlined,
@@ -52,6 +52,17 @@ const FlightOrders: React.FC = () => {
             message.warning(res.message || '獲取訂單失敗');
         }
         setLoading(false);
+    };
+
+
+    const cancelOrder = async (orderId: string) => {
+        const res = await request('POST', `/flight/orders/${orderId}/cancel`);
+        if (res.success) {
+            message.success('訂單已取消');
+            fetchOrders(); 
+        } else {
+            message.error(res.message || '取消訂單失敗');
+        }
     };
 
     useEffect(() => {
@@ -134,6 +145,29 @@ const FlightOrders: React.FC = () => {
             key: 'createdAt',
             render: (date: string) => dayjs(date).format('YYYY-MM-DD HH:mm'),
         },
+        {
+            title: '操作',
+            key: 'actions',
+            render: (_, record) => (
+                <div>
+                    <Popconfirm
+                        title="確定要取消這筆訂單嗎？"
+                        onConfirm={() => cancelOrder(record._id)}
+                        okText="確定"
+                        cancelText="取消"
+                        disabled={record.status === 'CANCELLED' || record.status === 'COMPLETED'}
+                    >
+                        <Button
+                            danger
+                            size="small"
+                            disabled={record.status === 'CANCELLED' || record.status === 'COMPLETED'}
+                        >
+                            取消訂單
+                        </Button>
+                    </Popconfirm>
+                </div>
+            ),
+        }
     ];
 
     return (
