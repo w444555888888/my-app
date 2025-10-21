@@ -4,6 +4,27 @@ axios.defaults.withCredentials = true;
 const API_BASE_URL = 'http://localhost:5000/api/v1'
 
 
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  withCredentials: true,
+});
+
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error.response?.status;
+    if (status === 401) {
+      console.warn("未授權，重新導向登入頁");
+      if (window.location.pathname !== "/login") {
+        window.location.href = "/login";
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
+
 export const request = async (method, endpoint, data = {}, setLoading = () => {}) => {
     setLoading(true)
     try {

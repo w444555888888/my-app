@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from "axios";
 import Div100vh from "react-div-100vh";
 import "./app.scss";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
