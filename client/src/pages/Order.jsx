@@ -9,13 +9,14 @@ import { MdFreeBreakfast } from "react-icons/md"
 import { toast } from 'react-toastify'
 import { request } from '../utils/apiService'
 const Order = () => {
-  const { startDate, endDate, hotelId, roomId } = useParams()
-  const { currentHotel, availableRooms } = useSelector(state => state.hotel)
+  const { startDate, endDate, hotelId, roomId } = useParams();
+  const { currentHotel, availableRooms } = useSelector(state => state.hotel);
   const { userInfo } = useSelector(state => state.user);
-  const [selectedRoom, setSelectedRoom] = useState(null)
+  const [selectedRoom, setSelectedRoom] = useState(null);
   // 付款方式
-  const [selectedPaymentType, setSelectedPaymentType] = useState(null)
-  const [orderSuccess, setOrderSuccess] = useState(false)
+  const [selectedPaymentType, setSelectedPaymentType] = useState(null);
+  const [orderSuccess, setOrderSuccess] = useState(false);
+  const [orderData, setOrderData] = useState(null);
 
   const handleOrder = async () => {
     const result = await request('POST', '/order', {
@@ -30,15 +31,16 @@ const Order = () => {
     })
 
     if (result.success) {
-      setOrderSuccess(true)
-      toast.success('訂單新增成功！')
-    } else toast.error(`${result.message}`)
+      setOrderSuccess(true);
+      setOrderData(result.data);
+      toast.success('訂單新增成功！');
+    } else toast.error(`${result.message}`);
   }
 
   useEffect(() => {
     if (availableRooms && roomId) {
       const room = availableRooms.find(room => room._id === roomId)
-      setSelectedRoom(room)
+      setSelectedRoom(room);
     }
   }, [availableRooms, roomId])
 
@@ -117,7 +119,7 @@ const Order = () => {
                 </div>
                 <div className="summary-item">
                   <span>總金額：</span>
-                  <span>TWD {selectedRoom.roomTotalPrice}</span>
+                  <span>TWD {orderData?.totalPrice ?? selectedRoom.roomTotalPrice}</span>
                 </div>
               </div>
             </div>

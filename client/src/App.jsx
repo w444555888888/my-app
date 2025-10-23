@@ -7,6 +7,8 @@ import { routeConfig } from "./routes/routes";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 import { logIn, logOut } from "./redux/userStore";
 import { request } from "../src/utils/apiService";
+import { socket } from "./utils/socket";
+import { toast } from 'react-toastify';
 
 function App() {
   const dispatch = useDispatch();

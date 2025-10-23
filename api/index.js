@@ -44,10 +44,10 @@ mongoose.connection.on("disconnected", () => {
 })
 
 const port = 5000
-app.listen(port, () => {
+server.listen(port, () => {
     connect()
-    console.log(`connected to ${port} backend 成功連線`)
-    //並要像npm start 一樣啟動它，
+    console.log(`HTTP + WebSocket 已啟動在 port ${port}`)
+    //npm start 一樣啟動它，
 })
 
 app.use(express.json())//讓上傳的req.body可以視為json

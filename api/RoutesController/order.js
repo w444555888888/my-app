@@ -3,6 +3,8 @@ import Room from "../models/Room.js";
 import Order from "../models/Order.js"
 import { errorMessage } from "../errorMessage.js"
 import { sendResponse } from "../sendResponse.js"
+import { notifyNewOrder } from "../websocket/orderHandler.js";
+
 
 // 取得全部訂單
 export const getAllOrders = async (req, res, next) => {
@@ -13,6 +15,7 @@ export const getAllOrders = async (req, res, next) => {
     return next(errorMessage(500, "查詢全部訂單: Error", error))
   }
 };
+
 
 // 新訂單
 export const createOrder = async (req, res, next) => {
@@ -62,6 +65,9 @@ export const createOrder = async (req, res, next) => {
       totalPrice: totalPriceWithFee //加上手續費
     });
     const savedOrder = await newOrder.save();
+
+    /** WebSocket 通知：推送到管理端 + 客戶端 **/
+    notifyNewOrder(savedOrder, req.user);
 
     // 返回創建成功的訂單
     sendResponse(res, 201, savedOrder);

@@ -24,6 +24,7 @@
     "react-scripts": "5.0.1",
     "sass": "^1.56.1",
     "sass-loader": "^10.1.1",
+    "socket.io-client": "^4.8.1",
     "timezone": "^1.0.23",
     "typescript": "^4.9.5",
     "use-local-storage-state": "^19.5.0",
@@ -62,6 +63,7 @@
     "proxy": "http://localhost:5000/api/v1"
   },
   "devDependencies": {
-    "@types/leaflet": "^1.9.18"
+    "@types/leaflet": "^1.9.18",
+    "@types/socket.io-client": "^1.4.36"
   }
 }

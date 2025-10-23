@@ -8,12 +8,15 @@
  */
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { ConfigProvider, Spin } from 'antd';
+import { ConfigProvider, Spin, notification } from 'antd';
 import zhTW from 'antd/locale/zh_TW';
 import './App.css';
 import 'leaflet/dist/leaflet.css';
 
+
 import { checkLogin } from './utils/auth';
+import { socket } from "./utils/socket";
+
 
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -52,8 +55,51 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 function App() {
+  const [api, contextHolder] = notification.useNotification();
+
+  useEffect(() => {
+    // 新訂單通知
+    socket.on("new-order", (data:any) => {
+      api.info({
+        message: "新訂單通知",
+        description: (
+          <div>
+            <div>
+              <strong>客戶：</strong>
+              {data.userName}
+            </div>
+            <div>
+              <strong>飯店：</strong>
+              {data.hotelId}
+            </div>
+            <div>
+              <strong>總金額：</strong>${data.totalPrice}
+            </div>
+          </div>
+        ),
+        placement: "topRight",
+        duration: 5,
+      });
+    });
+
+    // 房間鎖定通知
+    socket.on("room-locked", (data:any) => {
+      api.warning({
+        message: "房間已鎖定",
+        description: `房間 ${data.roomId} 目前被預訂中`,
+        placement: "bottomRight",
+        duration: 4,
+      });
+    });
+    return () => {
+      socket.off("new-order");
+      socket.off("room-locked");
+    };
+  }, [api]);
+
   return (
     <ConfigProvider locale={zhTW}>
+      {contextHolder}
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
