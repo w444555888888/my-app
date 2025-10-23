@@ -18,7 +18,7 @@ export const notifyNewOrder = (order, user) => {
         hotelId: order.hotelId,
         roomId: order.roomId,
         totalPrice: order.totalPrice,
-        userName: user?.username || "未知用戶",
+        userName: user?.id,
         createdAt: order.createdAt,
     });
 

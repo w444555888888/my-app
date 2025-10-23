@@ -141,19 +141,19 @@ const Order = () => {
                     <div className="customer-details">
                       <div className="info-item">
                         <span className="label">姓名：</span>
-                        <span>{userInfo.realName}</span>
+                        <span>{userInfo?.realName ?? ''}</span>
                       </div>
                       <div className="info-item">
                         <span className="label">帳號：</span>
-                        <span>{userInfo.username}</span>
+                        <span>{userInfo?.username ?? ''}</span>
                       </div>
                       <div className="info-item">
                         <span className="label">電話：</span>
-                        <span>{userInfo.phoneNumber}</span>
+                        <span>{userInfo?.phoneNumber ?? ''}</span>
                       </div>
                       <div className="info-item">
                         <span className="label">地址：</span>
-                        <span>{userInfo.address}</span>
+                        <span>{userInfo?.address ?? ''}</span>
                       </div>
                     </div>
                   )
