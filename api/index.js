@@ -1,6 +1,8 @@
 import mongoose from "mongoose"
 import express from "express"
 import dotenv from "dotenv"
+import http from "http";
+
 import hotelsApiRoute from "./ApiRoutes/hotels.js"
 import roomsApiRoute from "./ApiRoutes/rooms.js"
 import usersApiRoute from "./ApiRoutes/users.js"
@@ -10,10 +12,14 @@ import flightApiRoute from "./ApiRoutes/flight.js"
 import captchaApiRoute from "./ApiRoutes/captcha.js"
 import cookieParser from "cookie-parser"
 import cors from "cors"
+import { initWebSocket } from "./websocket/index.js";
 
-const app = express()
 dotenv.config() //加載環境變數
 
+const app = express();
+const server = http.createServer(app);
+
+initWebSocket(server);
 
 const connect = async () => {
     try {

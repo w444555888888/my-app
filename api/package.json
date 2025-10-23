@@ -26,6 +26,7 @@
     "nodemailer": "^6.9.15",
     "nodemon": "^2.0.22",
     "react-slider-verify": "^0.2.1",
+    "socket.io": "^4.8.1",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
