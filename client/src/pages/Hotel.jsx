@@ -342,7 +342,7 @@ const Hotel = () => {
             </div>
           </div>
           <hr />
-          {availableRooms && (
+          {availableRooms.length > 0  && availableRooms && (
             <div className="roomDes">
               <div className="roomDesText">
                 <table>
