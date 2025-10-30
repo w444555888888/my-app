@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Space, Button, message, Modal, Select, InputNumber, Input, Checkbox, Form } from 'antd';
+import { Table, Space, Button, message, Modal, Select, InputNumber, Input, Checkbox, Form, DatePicker } from 'antd';
 import { CoffeeOutlined, CarOutlined, ShoppingOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -27,6 +27,16 @@ const Hotels = () => {
     lat: 10.2899,
     lng: 103.9840
   });
+
+  // 房間庫存顯示
+  const [inventoryModalVisible, setInventoryModalVisible] = useState(false);
+  const [inventoryData, setInventoryData] = useState<any[]>([]);
+  const [editingInventory, setEditingInventory] = useState<Record<string, number>>({});
+  const [selectedRoom, setSelectedRoom] = useState<any | null>(null);
+
+  // 新增庫存欄位 
+  const [newDate, setNewDate] = useState('');
+  const [newTotal, setNewTotal] = useState<number>(0);
 
   useEffect(() => {
     const lat = hotelForm.getFieldValue(['coordinates', 'latitude']);
@@ -190,6 +200,46 @@ const Hotels = () => {
       setEditingHotelId(hotelId);
       setRoomList(res.data);
       setRoomModalVisible(true);
+    }
+  };
+
+  // 查看指定房型的庫存
+  const handleViewInventory = async (room: any) => {
+    try {
+      setSelectedRoom(room);
+      const res = await request('GET', `/rooms/findHotel/${editingHotelId}`);
+      if (!res.success) throw new Error('查詢庫存失敗');
+      const updatedRoom = res.data.find((r: any) => r._id === room._id);
+
+      setInventoryData(updatedRoom.inventory);
+      setInventoryModalVisible(true);
+    } catch (err) {
+      console.error('取得房型庫存錯誤:', err);
+      message.error('無法取得最新庫存資料');
+    }
+  };
+
+
+  // 儲存修改後的庫存
+  const handleSaveInventory = async () => {
+    const updates = Object.entries(editingInventory).map(([date, totalRooms]) => ({
+      roomId: selectedRoom._id,
+      date,
+      totalRooms,
+    }));
+
+    if (updates.length === 0) {
+      message.info('沒有變更');
+      return;
+    }
+
+    const res = await request('PUT', '/rooms/updateRoomInventory', { updates });
+    if (res.success) {
+      message.success('庫存已更新');
+      setInventoryModalVisible(false);
+      handleViewRooms(editingHotelId!);
+    } else {
+      message.error(res.message || '更新失敗');
     }
   };
 
@@ -371,10 +421,90 @@ const Hotels = () => {
               render: (_: any, record: any) => (
                 <Space>
                   <Button type="link" onClick={() => handleEditRoom(record)}>編輯</Button>
+                  <Button onClick={() => handleViewInventory(record)}>查看庫存</Button>
                   <Button danger onClick={() => handleDeleteRoom(record._id)}>刪除</Button>
                 </Space>
               )
             }
+          ]}
+        />
+      </Modal>
+
+      <Modal
+        title={`庫存管理：${selectedRoom?.title || ''}`}
+        open={inventoryModalVisible}
+        onCancel={() => setInventoryModalVisible(false)}
+        width={750}
+        footer={[
+          <Button key="cancel" onClick={() => setInventoryModalVisible(false)}>取消</Button>,
+          <Button key="save" type="primary" onClick={handleSaveInventory}>儲存變更</Button>,
+        ]}
+      >
+        <Space style={{ marginBottom: 10 }}>
+          <DatePicker
+            placeholder="選擇日期"
+            format="YYYY-MM-DD"
+            value={newDate ? dayjs(newDate) : null}
+            onChange={(date, dateString) => setNewDate(dateString as string)} 
+          />
+          <InputNumber
+            placeholder="房數"
+            min={0}
+            value={newTotal}
+            onChange={(val) => setNewTotal(val ?? 0)}
+          />
+          <Button
+            onClick={() => {
+              if (!newDate) return message.warning('請輸入日期');
+              if (inventoryData.some(item => item.date === newDate)) {
+                return message.warning('該日期已存在');
+              }
+              setInventoryData(prev => [
+                ...prev,
+                { date: newDate, totalRooms: newTotal || 0, bookedRooms: 0, remainingRooms: newTotal || 0, missing: true }
+              ]);
+              setEditingInventory(prev => ({ ...prev, [newDate]: newTotal || 0 }));
+              setNewDate('');
+              setNewTotal(0);
+            }}
+          >
+            新增日期
+          </Button>
+        </Space>
+
+        <Table
+          rowKey="date"
+          pagination={false}
+          dataSource={inventoryData}
+          columns={[
+            { title: '日期', dataIndex: 'date' },
+            {
+              title: '總房數',
+              dataIndex: 'totalRooms',
+              render: (value: number, record: any) => (
+                <InputNumber
+                  min={0}
+                  value={editingInventory[record.date] ?? value}
+                  onChange={(newValue) => {
+                    setEditingInventory((prev) => ({
+                      ...prev,
+                      [record.date]: newValue ?? value,
+                    }));
+                  }}
+                />
+              ),
+            },
+            { title: '已預訂', dataIndex: 'bookedRooms' },
+            { title: '剩餘', dataIndex: 'remainingRooms' },
+            {
+              title: '狀態',
+              render: (record: any) =>
+                record.missing
+                  ? <span style={{ color: 'gray' }}>缺資料</span>
+                  : record.remainingRooms === 0
+                    ? <span style={{ color: 'red' }}>滿房</span>
+                    : <span style={{ color: 'green' }}>可訂</span>,
+            },
           ]}
         />
       </Modal>

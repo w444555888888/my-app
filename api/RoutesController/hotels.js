@@ -8,6 +8,7 @@
  */
 import Hotel from "../models/Hotel.js"
 import Room from "../models/Room.js"
+import RoomInventory from "../models/RoomInventory.js";
 import { addDays, format, isSameDay, parseISO } from 'date-fns'
 import { errorMessage } from "../errorMessage.js"
 import { sendResponse } from "../sendResponse.js"

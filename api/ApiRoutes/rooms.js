@@ -7,13 +7,16 @@
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import express from "express"
-import { createRoom, deleteRoom, getAllRooms, getHotelRooms, updatedRoom } from "../RoutesController/room.js"
+import { createRoom, deleteRoom, getAllRooms, getHotelRooms, updatedRoom, updateRoomInventory } from "../RoutesController/room.js"
 
 const router = express.Router()
 
 
 //創建房間 
 router.post("/", createRoom)
+
+// 批次更新房間庫存
+router.put("/updateRoomInventory", updateRoomInventory);
 
 //更新房間
 router.put("/:id", updatedRoom)
@@ -26,5 +29,7 @@ router.get("/", getAllRooms)
 
 // 獲取特定酒店的所有房間
 router.get("/findHotel/:hotelId", getHotelRooms)
+
+
 
 export default router
