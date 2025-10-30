@@ -21,9 +21,4 @@ export const notifyNewOrder = (order, user) => {
         userName: user?.id,
         createdAt: order.createdAt,
     });
-
-    io.emit("room-locked", {
-        roomId: order.roomId,
-        lockedBy: user?.id,
-    });
 }

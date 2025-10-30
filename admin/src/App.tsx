@@ -82,18 +82,8 @@ function App() {
       });
     });
 
-    // 房間鎖定通知
-    socket.on("room-locked", (data:any) => {
-      api.warning({
-        message: "房間已鎖定",
-        description: `房間 ${data.roomId} 目前被預訂中`,
-        placement: "bottomRight",
-        duration: 4,
-      });
-    });
     return () => {
       socket.off("new-order");
-      socket.off("room-locked");
     };
   }, [api]);
 
