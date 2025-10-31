@@ -15,7 +15,6 @@ import {
   faCalendar,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons"
-import { IoBed } from "react-icons/io5"
 import {
   MdFreeBreakfast,
   MdRestaurantMenu,
@@ -35,7 +34,7 @@ import {
   useNavigate,
 } from "react-router-dom"
 import { DateRange } from "react-date-range"
-import { differenceInDays, format } from "date-fns"
+import { differenceInDays, eachDayOfInterval, format, parseISO } from "date-fns"
 import { useDispatch, useSelector } from "react-redux"
 import {
   fetchSingleHotel,
@@ -170,6 +169,30 @@ const Hotel = () => {
     { key: "spa", icon: faSpa, label: "水療" },
     { key: "wifi", icon: faWifi, label: "免費無線網路" },
   ]
+
+
+  // 房型的庫存資料，補齊日期區間內的所有日期
+  const getFullInventory = (e, startDate, endDate) => {
+    const allDates = eachDayOfInterval({
+      start: parseISO(startDate),
+      end: parseISO(endDate),
+    });
+
+    return allDates.map((d) => {
+      const dateStr = format(d, "yyyy-MM-dd");
+      const found = e.inventory?.find((i) => i.date === dateStr);
+
+      if (found) return found;
+
+      return {
+        date: dateStr,
+        totalRooms: 0,
+        bookedRooms: 0,
+        remainingRooms: 0,
+        missing: true,
+      };
+    });
+  };
 
   if (!currentHotel)
     return (
@@ -342,7 +365,7 @@ const Hotel = () => {
             </div>
           </div>
           <hr />
-          {availableRooms.length > 0  && availableRooms && (
+          {availableRooms.length > 0 && availableRooms && (
             <div className="roomDes">
               <div className="roomDesText">
                 <table>
@@ -350,89 +373,104 @@ const Hotel = () => {
                     <tr>
                       <th>客房類型</th>
                       <th>住客人數</th>
-                      <th>1晚房價</th>
+                      <th>每晚房價</th>
+                      <th>房間數量</th>
                       <th>訂購須知</th>
                       <th>現在就預定</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {availableRooms.map((e) => (
-                      <tr key={e._id} className={e._id}>
-                        <td>
-                          <span className="roomTitle">
-                            {e.title}
-                            {e.roomType}
-                          </span>
-                          <IoBed />
-                          <br />
-                          {e.desc.map((item, index) => (
-                            <span className="desc" key={index}>
-                              <FontAwesomeIcon
-                                icon={faCheck}
-                                className="iconCheck"
-                              />
-                              {item}
-                            </span>
-                          ))}
-                        </td>
-                        <td>
-                          {Array.from({ length: e.maxPeople }).map(
-                            (_, index) => (
-                              <FontAwesomeIcon key={index} icon={faUserLarge} />
-                            )
-                          )}
-                        </td>
+                    {availableRooms.map((e) => {
+                      const fullInventory = getFullInventory(e, startDate, endDate)
 
-                        <td className="twd">
-                          $TWD {e.roomTotalPrice}
-                          <br /> <span>包含稅費與其他費用</span>
-                        </td>
-                        <td>
-                          <ul>
-                            {e.paymentOptions.map((policy, index) => (
-                              <li key={index} className="policy">
-                                <span>{policy.type}</span>:
-                                <span>{policy.description}</span>
-                                <span>
-                                  (
-                                  {policy.refundable === true
-                                    ? "可退款"
-                                    : "不可退款"}
-                                  )
+                      return fullInventory.map((inv, idx) => (
+                        <tr key={`${e._id}-${inv.date}`}>
+                          {/* 房型 */}
+                          {idx === 0 && (
+                            <td rowSpan={fullInventory.length} className="roomTitle">
+                              {e.title} {e.roomType}
+                              <br />
+                              {e.desc.map((item, i) => (
+                                <span key={i} className="desc">
+                                  <FontAwesomeIcon icon={faCheck} className="iconCheck" />
+                                  {item}
                                 </span>
-                              </li>
-                            ))}
-                            <div className="service">
-                              {e.service.breakfast && (
-                                <div>
-                                  <MdFreeBreakfast className="service-item" />{" "}
-                                  含早餐
-                                </div>
-                              )}
+                              ))}
+                            </td>
+                          )}
 
-                              {e.service.dinner && (
-                                <div>
-                                  <MdRestaurantMenu className="service-item" />{" "}
-                                  含晚餐
-                                </div>
-                              )}
+                          {/* 可住人數 */}
+                          {idx === 0 && (
+                            <td rowSpan={fullInventory.length} className="roomPeople">
+                              {Array.from({ length: e.maxPeople }).map((_, i) => (
+                                <FontAwesomeIcon key={i} icon={faUserLarge} />
+                              ))}
+                            </td>
+                          )}
 
-                              {e.service.parking && (
-                                <div>
-                                  <MdLocalParking className="service-item" />{" "}
-                                  停車位
-                                </div>
-                              )}
-                            </div>
-                          </ul>
-                        </td>
-                        <td>
-                          <button onClick={() => handleNavigateToOrder(e._id)}>
-                            現在就預定
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                          {/* 每晚房價：顯示房況 */}
+                          <td className="roomStatus">
+                            <b>{inv.date}</b>
+                            
+                          </td>
+
+                          {/* 房間數量（空格佔位） */}
+                          <td className="roomQty">{inv.missing ? (
+                              <span className="status soldout">已滿房</span>
+                            ) : (
+                              <span className="status available">剩 {inv.remainingRooms} 間</span>
+                            )}</td>
+
+                          {/* 訂購須知（含總價與付款方式） */}
+                          {idx === 0 && (
+                            <td rowSpan={fullInventory.length} className="orderInfo">
+                              <div className="price">
+                                $TWD {e.roomTotalPrice}
+                                <span className="price-note">包含稅費與其他費用</span>
+                              </div>
+
+                              <ul className="payment">
+                                {e.paymentOptions.map((policy, i) => (
+                                  <li key={i}>
+                                    {policy.type}：{policy.description}
+                                    <span className="refund">
+                                      ({policy.refundable ? "可退款" : "不可退款"})
+                                    </span>
+                                  </li>
+                                ))}
+                              </ul>
+
+                              <div className="service">
+                                {e.service.breakfast && (
+                                  <div>
+                                    <MdFreeBreakfast className="service-item" /> 含早餐
+                                  </div>
+                                )}
+                              </div>
+                            </td>
+                          )}
+
+                          {/* 預定按鈕 */}
+                          {idx === 0 && (
+                            <td rowSpan={fullInventory.length} className="orderBtn">
+                              <button
+                                onClick={() => handleNavigateToOrder(e._id)}
+                                disabled={fullInventory.every((i) => i.remainingRooms === 0)}
+                                className={
+                                  fullInventory.every((i) => i.remainingRooms === 0)
+                                    ? "btn soldout"
+                                    : "btn active"
+                                }
+                              >
+                                {fullInventory.every((i) => i.remainingRooms === 0)
+                                  ? "已滿房"
+                                  : "現在就預定"}
+                              </button>
+                            </td>
+                          )}
+                        </tr>
+                      ))
+                    })}
                   </tbody>
                 </table>
               </div>

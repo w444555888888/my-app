@@ -37,13 +37,13 @@ export const getHotelNameSuggestions = async (req, res, next) => {
 
 // 獲取所有飯店資料（不帶任何過濾條件）
 export const getAllHotels = async (req, res, next) => {
-    try {
-        // 查詢所有飯店資料
-        const hotels = await Hotel.find({})
-        sendResponse(res, 200, hotels);
-    } catch (err) {
-        return next(errorMessage(500, "查詢飯店資料失敗"))
-    }
+  try {
+    // 查詢所有飯店資料
+    const hotels = await Hotel.find({})
+    sendResponse(res, 200, hotels);
+  } catch (err) {
+    return next(errorMessage(500, "查詢飯店資料失敗"))
+  }
 }
 
 
@@ -85,34 +85,53 @@ export const getSearchHotels = async (req, res, next) => {
     if (!hotels.length) return next(errorMessage(404, "找不到符合條件的飯店"))
 
     // 計算房價
-    const updatedHotels = hotels.map(hotel => {
-      const hotelRooms = hotel.rooms || []
+    const updatedHotels = await Promise.all(
+      hotels.map(async (hotel) => {
 
-      let cheapestPrice = null
-      let totalHotelPrice = 0
+        const hotelRooms = hotel.rooms || []
+        let cheapestPrice = null
+        let totalHotelPrice = 0
 
-      const updatedRooms = hotelRooms.map(room => {
-        const roomTotalPrice = room.calculateTotalPrice(startDate, endDate)
+        const updatedRooms = await Promise.all(
+          hotelRooms.map(async (room) => {
+            // 算房價
+            const roomTotalPrice = room.calculateTotalPrice(startDate, endDate);
+            // 撈出庫存 (若有範圍)
+            const inventoryQuery = { roomId: room._id };
+            if (startDate && endDate) {
+              inventoryQuery.date = {
+                $gte: format(parseISO(startDate), 'yyyy-MM-dd'),
+                $lte: format(parseISO(endDate), 'yyyy-MM-dd')
+              };
+            }
 
-        if (cheapestPrice === null || roomTotalPrice < cheapestPrice) {
-          cheapestPrice = roomTotalPrice
-        }
+            const inventories = await RoomInventory.find(inventoryQuery).sort({ date: 1 }).lean();
+            if (cheapestPrice === null || roomTotalPrice < cheapestPrice) {
+              cheapestPrice = roomTotalPrice
+            }
 
-        totalHotelPrice += roomTotalPrice
+            totalHotelPrice += roomTotalPrice
+
+            return {
+              ...room.toObject(),
+              roomTotalPrice,
+              inventory: inventories.map(i => ({
+                date: i.date,
+                totalRooms: i.totalRooms,
+                bookedRooms: i.bookedRooms,
+                remainingRooms: Math.max(i.totalRooms - i.bookedRooms, 0)
+              }))
+            }
+          }))
 
         return {
-          ...room.toObject(),
-          roomTotalPrice
+          ...hotel.toObject(),
+          availableRooms: updatedRooms,
+          totalPrice: totalHotelPrice,
+          cheapestPrice
         }
-      })
+      }))
 
-      return {
-        ...hotel.toObject(),
-        availableRooms: updatedRooms,
-        totalPrice: totalHotelPrice,
-        cheapestPrice
-      }
-    })
 
     // 價格篩選
     const filteredHotels =
@@ -135,48 +154,48 @@ export const getSearchHotels = async (req, res, next) => {
 
 // 新增飯店
 export const createHotel = async (req, res, next) => { //新增next
-    const newHotel = new Hotel(req.body)
-    try {
-        const saveHotel = await newHotel.save()
+  const newHotel = new Hotel(req.body)
+  try {
+    const saveHotel = await newHotel.save()
 
-        sendResponse(res, 200, saveHotel);
-    } catch (error) {
-        return next(errorMessage(500, "資料上傳錯誤請確認格式"))
-    }
+    sendResponse(res, 200, saveHotel);
+  } catch (error) {
+    return next(errorMessage(500, "資料上傳錯誤請確認格式"))
+  }
 }
 
 
 // 取得單一飯店資料
 export const getHotel = async (req, res, next) => {
-    const id = req.params.id
-    try {
-        const getHotel = await Hotel.findById(id)
+  const id = req.params.id
+  try {
+    const getHotel = await Hotel.findById(id)
 
-        sendResponse(res, 200, getHotel);
-    } catch (error) {
-        return next(errorMessage(500, "找不到資料，請檢查使否有此id", error))
-    }
+    sendResponse(res, 200, getHotel);
+  } catch (error) {
+    return next(errorMessage(500, "找不到資料，請檢查使否有此id", error))
+  }
 }
 
 // 更新飯店
 export const updatedHotel = async (req, res, next) => {
-    const id = req.params.id
-    const body = req.body
-    try {
-        const updatedHotel = await Hotel.findByIdAndUpdate(id, { $set: body }, { new: true })
-        sendResponse(res, 200, updatedHotel);
-    } catch (error) {
-        return next(errorMessage(500, "修改失敗，請確認是否有其id與是否欄位輸入格式正確", error))
-    }
+  const id = req.params.id
+  const body = req.body
+  try {
+    const updatedHotel = await Hotel.findByIdAndUpdate(id, { $set: body }, { new: true })
+    sendResponse(res, 200, updatedHotel);
+  } catch (error) {
+    return next(errorMessage(500, "修改失敗，請確認是否有其id與是否欄位輸入格式正確", error))
+  }
 }
 
 // 刪除飯店
 export const deleteHotel = async (req, res, next) => {
-    const id = req.params.id
-    try {
-        await Hotel.findByIdAndDelete(id)
-        sendResponse(res, 200, null, { message: "刪除資料成功" });
-    } catch (error) {
-        return next(errorMessage(500, "刪除失敗，請確認是否有其id", error))
-    }
+  const id = req.params.id
+  try {
+    await Hotel.findByIdAndDelete(id)
+    sendResponse(res, 200, null, { message: "刪除資料成功" });
+  } catch (error) {
+    return next(errorMessage(500, "刪除失敗，請確認是否有其id", error))
+  }
 }
