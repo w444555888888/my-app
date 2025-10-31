@@ -34,7 +34,7 @@ import {
   useNavigate,
 } from "react-router-dom"
 import { DateRange } from "react-date-range"
-import { differenceInDays, eachDayOfInterval, format, parseISO } from "date-fns"
+import { subDays, differenceInDays, eachDayOfInterval, format, parseISO } from "date-fns"
 import { useDispatch, useSelector } from "react-redux"
 import {
   fetchSingleHotel,
@@ -173,10 +173,12 @@ const Hotel = () => {
 
   // 房型的庫存資料，補齊日期區間內的所有日期
   const getFullInventory = (e, startDate, endDate) => {
+    // endDate 減 1 天，因為退房日不算住宿
+    const adjustedEnd = subDays(parseISO(endDate), 1)
     const allDates = eachDayOfInterval({
       start: parseISO(startDate),
-      end: parseISO(endDate),
-    });
+      end: adjustedEnd,
+    })
 
     return allDates.map((d) => {
       const dateStr = format(d, "yyyy-MM-dd");
@@ -411,15 +413,15 @@ const Hotel = () => {
                           {/* 每晚房價：顯示房況 */}
                           <td className="roomStatus">
                             <b>{inv.date}</b>
-                            
+
                           </td>
 
                           {/* 房間數量（空格佔位） */}
                           <td className="roomQty">{inv.missing ? (
-                              <span className="status soldout">已滿房</span>
-                            ) : (
-                              <span className="status available">剩 {inv.remainingRooms} 間</span>
-                            )}</td>
+                            <span className="status soldout">已滿房</span>
+                          ) : (
+                            <span className="status available">剩 {inv.remainingRooms} 間</span>
+                          )}</td>
 
                           {/* 訂購須知（含總價與付款方式） */}
                           {idx === 0 && (

@@ -9,7 +9,7 @@
 import Hotel from "../models/Hotel.js"
 import Room from "../models/Room.js"
 import RoomInventory from "../models/RoomInventory.js";
-import { addDays, format, isSameDay, parseISO } from 'date-fns'
+import { subDays, format, parseISO } from 'date-fns'
 import { errorMessage } from "../errorMessage.js"
 import { sendResponse } from "../sendResponse.js"
 
@@ -99,10 +99,11 @@ export const getSearchHotels = async (req, res, next) => {
             // 撈出庫存 (若有範圍)
             const inventoryQuery = { roomId: room._id };
             if (startDate && endDate) {
+              const adjustedEnd = subDays(parseISO(endDate), 1)
               inventoryQuery.date = {
-                $gte: format(parseISO(startDate), 'yyyy-MM-dd'),
-                $lte: format(parseISO(endDate), 'yyyy-MM-dd')
-              };
+                $gte: format(parseISO(startDate), "yyyy-MM-dd"),
+                $lte: format(adjustedEnd, "yyyy-MM-dd"),
+              }
             }
 
             const inventories = await RoomInventory.find(inventoryQuery).sort({ date: 1 }).lean();
