@@ -6,7 +6,7 @@ import { errorMessage } from "../errorMessage.js"
 import { sendResponse } from "../sendResponse.js"
 import { notifyNewOrder } from "../websocket/orderHandler.js";
 import { subDays, format, parseISO } from "date-fns";
-
+import { SERVICE_FEE_RATE } from "../utils/config.js";
 
 // 取得全部訂單
 export const getAllOrders = async (req, res, next) => {
@@ -69,7 +69,7 @@ export const createOrder = async (req, res, next) => {
     );
 
     // 手續費 + 總價
-    const serviceFee = totalPrice * 0.1;
+    const serviceFee = totalPrice * SERVICE_FEE_RATE;
     const totalPriceWithFee = totalPrice + serviceFee;
 
     // 建立訂單
