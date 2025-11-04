@@ -5,7 +5,7 @@ import RoomInventory from "../models/RoomInventory.js";
 import { errorMessage } from "../errorMessage.js"
 import { sendResponse } from "../sendResponse.js"
 import { notifyNewOrder } from "../websocket/orderHandler.js";
-import { subDays, format, parseISO } from "date-fns";
+import { eachDayOfInterval, format, parseISO } from "date-fns";
 import { SERVICE_FEE_RATE } from "../utils/config.js";
 
 // 取得全部訂單
@@ -109,22 +109,34 @@ export const getOrderById = async (req, res, next) => {
 
 
 
-// 更新訂單（by id）
+// 更新訂單status狀態（by id）
 export const updateOrder = async (req, res, next) => {
   try {
+    const { status } = req.body;
+    if (typeof status === "undefined") {
+      return next(errorMessage(400, "缺少要更新的狀態欄位"));
+    }
+
+    const validStatuses = ["pending", "confirmed", "cancelled", "completed"];
+    if (!validStatuses.includes(status)) {
+      return next(errorMessage(400, "無效的訂單狀態"));
+    }
     const updatedOrder = await Order.findByIdAndUpdate(
       req.params.id,
-      { $set: req.body },
-      { new: true }
+      { $set: { status } },
+      { new: true, runValidators: true } 
     );
+
     if (!updatedOrder) {
-      return next(errorMessage(404, "訂單不存在"))
+      return next(errorMessage(404, "訂單不存在"));
     }
+
     sendResponse(res, 200, updatedOrder);
   } catch (error) {
-    return next(errorMessage(500, "訂單id更新訂單: Error", error))
+    return next(errorMessage(500, "訂單id更新訂單: Error", error));
   }
 };
+
 
 
 
@@ -136,15 +148,24 @@ export const deleteOrder = async (req, res, next) => {
 
     const { roomId, checkInDate, checkOutDate } = deletedOrder;
     if (roomId && checkInDate && checkOutDate) {
-      const start = parseISO(checkInDate);
-      const end = parseISO(checkOutDate);
-      for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
-        const dateStr = format(d, "yyyy-MM-dd");
-        await RoomInventory.findOneAndUpdate(
-          { roomId, date: dateStr },
-          { $inc: { bookedRooms: -1 } }
-        );
-      }
+      const start = new Date(checkInDate);
+      const end = new Date(checkOutDate);
+
+      // 取得 [start, end) 之間的所有日期（不包含退房日）
+      const allDays = eachDayOfInterval({
+        start,
+        end: new Date(end.getTime() - 24 * 60 * 60 * 1000) 
+      });
+
+      await Promise.all(
+        allDays.map(async (day) => {
+          const dateStr = format(day, "yyyy-MM-dd");
+          await RoomInventory.findOneAndUpdate(
+            { roomId, date: dateStr },
+            { $inc: { bookedRooms: -1 } }
+          );
+        })
+      );
     }
 
     sendResponse(res, 200, null, { message: "訂單刪除成功，庫存已釋放" });

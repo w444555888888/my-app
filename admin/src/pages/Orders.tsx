@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Space, Button, message, Tag } from 'antd';
+import { Table, Space, Button, message, Tag, Popconfirm, Dropdown, Menu } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { request } from '../utils/apiService';
@@ -45,6 +45,16 @@ const Orders: React.FC = () => {
       fetchOrders();
     } else {
       message.error(res.message || '取消訂單失敗');
+    }
+  };
+
+  const handleUpdateStatus = async (id: string, status: string) => {
+    const res = await request('PUT', `/order/${id}`, { status });
+    if (res.success) {
+      message.success(`訂單狀態已更新為：${status}`);
+      fetchOrders();
+    } else {
+      message.error(res.message || '更新訂單狀態失敗');
     }
   };
 
@@ -110,26 +120,42 @@ const Orders: React.FC = () => {
             ? 'green'
             : status === 'cancelled'
               ? 'red'
-              : 'orange';
+              : status === 'completed'
+                ? 'blue'
+                : 'orange';
         return <Tag color={color}>{status.toUpperCase()}</Tag>;
       },
     },
     {
       title: '操作',
       key: 'action',
-      render: (_, record) => (
-        <Space size="middle">
-          {record.status === 'pending' && (
-            <Button
-              type="primary"
-              danger
-              onClick={() => handleCancel(record._id)}
+      render: (_, record) => {
+        const statusMenu = {
+          items: [
+            { label: '標記為確認', key: 'confirmed' },
+            { label: '標記為完成', key: 'completed' },
+            { label: '標記為取消', key: 'cancelled' },
+          ],
+          onClick: ({ key }: { key: string }) => handleUpdateStatus(record._id, key),
+        };
+
+        return (
+          <Space size="middle">
+            <Dropdown menu={statusMenu} trigger={['click']}>
+              <Button>修改狀態</Button>
+            </Dropdown>
+
+            <Popconfirm
+              title="確定要刪除此訂單嗎？"
+              onConfirm={() => handleCancel(record._id)}
+              okText="確定"
+              cancelText="取消"
             >
-              取消訂單
-            </Button>
-          )}
-        </Space>
-      ),
+              <Button danger>刪除</Button>
+            </Popconfirm>
+          </Space>
+        );
+      },
     },
   ];
 
