@@ -7,7 +7,7 @@ const RoomInventorySchema = new mongoose.Schema({
     required: true
   },
   date: {
-    type: String, // yyyy-MM-dd
+    type: Date,
     required: true
   },
   totalRooms: {
