@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Space, Button, message, Modal, Select, InputNumber, Input, Checkbox, Form, DatePicker } from 'antd';
+import { Table, Space, Button, Image, message, Modal, Select, InputNumber, Input, Checkbox, Form, DatePicker } from 'antd';
 import { CoffeeOutlined, CarOutlined, ShoppingOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -337,12 +337,29 @@ const Hotels = () => {
     { title: '城市', dataIndex: 'city', key: 'city' },
     { title: '類型', dataIndex: 'type', key: 'type' },
     { title: '評分', dataIndex: 'rating', key: 'rating' },
+    { title: 'E-mail', dataIndex: 'email', key: 'email' },
+    { title: '電話', dataIndex: 'phone', key: 'phone' },
     {
-      title: '最低價格',
-      dataIndex: 'cheapestPrice',
-      key: 'cheapestPrice',
-      render: (price: number) => `$${price}`
+      title: '照片',
+      dataIndex: 'photos',
+      key: 'photos',
+      render: (photos: string[]) => (
+        <div className='gap8'>
+          {photos?.slice(0, 3).map((url, index) => (
+            <Image
+              key={index}
+              src={url}
+              width={60}
+              height={40}
+              style={{ objectFit: 'cover', borderRadius: 4 }}
+              preview={{ mask: "" }}
+            />
+          ))}
+        </div>
+      )
     },
+    { title: '入住時間', dataIndex: 'checkInTime', key: 'checkInTime' },
+    { title: '退房時間', dataIndex: 'checkOutTime', key: 'checkOutTime' },
     {
       title: '操作',
       key: 'action',
@@ -445,7 +462,7 @@ const Hotels = () => {
             placeholder="選擇日期"
             format="YYYY-MM-DD"
             value={newDate ? dayjs(newDate) : null}
-            onChange={(date, dateString) => setNewDate(dateString as string)} 
+            onChange={(date, dateString) => setNewDate(dateString as string)}
           />
           <InputNumber
             placeholder="房數"

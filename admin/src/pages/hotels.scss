@@ -15,8 +15,7 @@
   }
 }
 
-
-.full-width{
+.full-width {
   width: 100%;
 }
 
@@ -31,4 +30,9 @@
 .vertical-checkbox-group {
   display: flex;
   flex-direction: column;
+}
+
+.gap8 {
+  display: flex;
+  gap: 8px;
 }
