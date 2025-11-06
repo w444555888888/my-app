@@ -344,18 +344,22 @@ const Hotels = () => {
       dataIndex: 'photos',
       key: 'photos',
       render: (photos: string[]) => (
-        <div className='gap8'>
-          {photos?.slice(0, 3).map((url, index) => (
-            <Image
-              key={index}
-              src={url}
-              width={60}
-              height={40}
-              style={{ objectFit: 'cover', borderRadius: 4 }}
-              preview={{ mask: "" }}
-            />
-          ))}
-        </div>
+        <Image.PreviewGroup>
+          <div className='gap8'>
+            {photos?.slice(0, 3).map((url, index) => (
+              <Image
+                key={index}
+                src={url}
+                width={60}
+                height={40}
+                style={{ objectFit: 'cover', borderRadius: 4 }}
+                preview={{
+                  mask: "",
+                }}
+              />
+            ))}
+          </div>
+        </Image.PreviewGroup>
       )
     },
     { title: '入住時間', dataIndex: 'checkInTime', key: 'checkInTime' },
