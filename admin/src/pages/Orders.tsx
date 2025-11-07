@@ -8,7 +8,9 @@ import './orders.scss';
 interface OrderType {
   _id: string;
   hotelId: string;
+  hotelName?: string;
   roomId: string;
+  roomTitle?: string;
   userId: string;
   checkInDate: string;
   checkOutDate: string;
@@ -70,9 +72,19 @@ const Orders: React.FC = () => {
       width: 220,
     },
     {
+      title: '飯店名稱', 
+      dataIndex: 'hotelName',
+      key: 'hotelName',
+    },
+    {
       title: '飯店 ID',
       dataIndex: 'hotelId',
       key: 'hotelId',
+    },
+    {
+      title: '房型名稱',
+      dataIndex: 'roomTitle',
+      key: 'roomTitle',
     },
     {
       title: '房型 ID',
