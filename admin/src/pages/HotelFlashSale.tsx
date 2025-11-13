@@ -114,15 +114,16 @@ const HotelFlashSale = () => {
     const handleUpload = async (file: File) => {
         const blobUrl = URL.createObjectURL(file);
         setPreviewUrl(blobUrl);
-
         const formData = new FormData();
+
         formData.append('banner', file);
+        if (editingSale) {
+            formData.append('saleId', editingSale._id);
+        }
 
         const res = await request('POST', '/hotelFlashSale/upload-banner', formData);
-
         if (res.success) {
-            const realUrl = "http://localhost:5000" + res.data.bannerUrl;
-            setBannerUrl(realUrl);
+            setBannerUrl(res.data.bannerUrl);
             message.success('上傳成功');
         } else {
             message.error('上傳失敗');
@@ -195,7 +196,7 @@ const HotelFlashSale = () => {
                     {bannerUrl && (
                         <div className='margin-ten'>
                             <Image
-                                src={previewUrl || bannerUrl}
+                                src={ previewUrl || ("http://localhost:5000" + bannerUrl) }
                                 width={200}
                             />
                         </div>
@@ -213,7 +214,7 @@ const HotelFlashSale = () => {
             title: '封面圖',
             dataIndex: 'bannerUrl',
             render: (url: string) =>
-                url ? <Image src={url} width={80} height={60} /> : <span>無</span>,
+                url ? <Image src={"http://localhost:5000" + url} width={80} /> : <span>無</span>,
         },
         {
             title: '飯店',
