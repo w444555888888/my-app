@@ -2,6 +2,9 @@ import mongoose from "mongoose"
 import express from "express"
 import dotenv from "dotenv"
 import http from "http";
+import path from "path";
+import { fileURLToPath } from "url";
+
 
 import hotelsApiRoute from "./ApiRoutes/hotels.js"
 import roomsApiRoute from "./ApiRoutes/rooms.js"
@@ -10,6 +13,7 @@ import authApiRoute from "./ApiRoutes/auth.js"
 import orderApiRoute from "./ApiRoutes/order.js"
 import flightApiRoute from "./ApiRoutes/flight.js"
 import captchaApiRoute from "./ApiRoutes/captcha.js"
+import hotelFlashSale from "./ApiRoutes/hotelFlashSale.js"
 import cookieParser from "cookie-parser"
 import cors from "cors"
 import { initWebSocket } from "./websocket/index.js";
@@ -50,8 +54,14 @@ server.listen(port, () => {
     //npm start 一樣啟動它，
 })
 
-app.use(express.json())//讓上傳的req.body可以視為json
-app.use(cookieParser())//cookie驗證
+// __dirname 取得目前檔案路徑
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));// 靜態檔案服務
+app.use(express.json());//讓上傳的req.body可以視為json
+app.use(cookieParser());//cookie驗證
 
 //跨域
 const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001'];
@@ -77,6 +87,7 @@ app.use("/api/v1/auth", authApiRoute)
 app.use("/api/v1/order", orderApiRoute)
 app.use("/api/v1/flight", flightApiRoute)
 app.use("/api/v1/captcha", captchaApiRoute)
+app.use("/api/v1/hotelFlashSale", hotelFlashSale)
 
 
 //共同管理error狀態

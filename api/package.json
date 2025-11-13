@@ -23,6 +23,7 @@
     "luxon": "^3.6.1",
     "mongodb": "4.1",
     "mongoose": "^8.5.1",
+    "multer": "^2.0.2",
     "nodemailer": "^6.9.15",
     "nodemon": "^2.0.22",
     "react-slider-verify": "^0.2.1",

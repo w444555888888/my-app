@@ -25,6 +25,7 @@ import Hotels from './pages/Hotels';
 import Orders from './pages/Orders';
 import Flights from './pages/Flights';
 import FlightOrders from './pages/FlightOrders';
+import HotelFlashSale from './pages/HotelFlashSale';
 
 
 
@@ -103,6 +104,7 @@ function App() {
           >
             <Route path="users" element={<Users />} />
             <Route path="hotels" element={<Hotels />} />
+            <Route path="hotel-flash-sale" element={<HotelFlashSale />} />
             <Route path="orders" element={<Orders />} />
             <Route path="flights" element={<Flights />} />
             <Route path="flight-orders" element={<FlightOrders />} />

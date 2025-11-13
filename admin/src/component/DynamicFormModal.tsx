@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Modal, Form, Input, InputNumber, Checkbox, TimePicker, DatePicker, Select, Button } from "antd";
+import { Modal, Form, Input, InputNumber, Checkbox, Switch, TimePicker, DatePicker, Select, Button } from "antd";
 import type { FormInstance } from "antd/es/form";
 import dayjs from "dayjs";
 import './dynamicFormModal.scss';
@@ -12,6 +12,8 @@ export type FieldType =
   | "select"
   | "checkboxGroup"
   | "time"
+  | "date"
+  | "switch"
   | "custom";
 
 export interface FormFieldConfig {
@@ -24,6 +26,7 @@ export interface FormFieldConfig {
   placeholder?: string;
   readOnly?: boolean;
   timeFormat?: 'datetime' | 'timeOnly';
+  onChange?: (value: any) => void;
 }
 
 interface DynamicFormModalProps {
@@ -33,6 +36,7 @@ interface DynamicFormModalProps {
   initialValues?: any;
   onCancel: () => void;
   onSubmit: (values: any) => void;
+  children?: React.ReactNode;
   form?: FormInstance; // 外部傳入的 form 實例
 }
 
@@ -45,7 +49,8 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
   initialValues,
   onCancel,
   onSubmit,
-  form
+  form,
+  children
 }) => {
   const [fallbackForm] = Form.useForm();
   const internalForm = form ?? fallbackForm;
@@ -90,6 +95,12 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
           }
         }
       }
+      if (field.type === "date") {
+        const value = values[field.name as string];
+        if (value && dayjs.isDayjs(value)) {
+          transformed[field.name as string] = value.format("YYYY-MM-DDTHH:mm");
+        }
+      }
     });
 
     onSubmit(transformed);
@@ -122,21 +133,22 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
 
           switch (field.type) {
             case "input":
-              return <Form.Item key={key} {...commonProps}><Input placeholder={field.placeholder} /></Form.Item>;
+              return <Form.Item key={key} {...commonProps}><Input placeholder={field.placeholder} readOnly={field.readOnly} /></Form.Item>;
             case "number":
               return <Form.Item key={key} {...commonProps}><InputNumber className="full-width" placeholder={field.placeholder} readOnly={field.readOnly} /></Form.Item>;
             case "textarea":
-              return <Form.Item key={key} {...commonProps}><Input.TextArea placeholder={field.placeholder} /></Form.Item>;
+              return <Form.Item key={key} {...commonProps}><Input.TextArea placeholder={field.placeholder} readOnly={field.readOnly} /></Form.Item>;
             case "time":
               return (
                 <Form.Item key={key} {...commonProps}>
                   {field.timeFormat === 'timeOnly' ? (
-                    <TimePicker format="HH:mm" className="full-width" />
+                    <TimePicker format="HH:mm" className="full-width"   disabled={field.readOnly}/>
                   ) : (
                     <DatePicker
                       showTime={{ format: 'HH:mm' }}
                       format="YYYY-MM-DD HH:mm"
                       className="full-width"
+                      disabled={field.readOnly}
                     />
                   )}
                 </Form.Item>
@@ -144,7 +156,13 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
             case "select":
               return (
                 <Form.Item key={key} {...commonProps}>
-                  <Select placeholder={field.placeholder}>
+                  <Select
+                    disabled={field.readOnly}
+                    placeholder={field.placeholder}
+                    onChange={(val) => {
+                      internalForm.setFieldValue(field.name, val);
+                      field.onChange?.(val);
+                    }}>
                     {field.options?.map(opt => (
                       <Select.Option key={opt.value} value={opt.value}>
                         {opt.label}
@@ -165,6 +183,23 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
                   </Checkbox.Group>
                 </Form.Item>
               );
+            case "date":
+              return (
+                <Form.Item key={key} {...commonProps}>
+                  <DatePicker
+                    showTime
+                    format="YYYY-MM-DD HH:mm"
+                    className="full-width"
+                    disabled={field.readOnly}
+                  />
+                </Form.Item>
+              );
+            case "switch":
+              return (
+                <Form.Item key={key} {...commonProps} valuePropName="checked">
+                  <Switch disabled={field.readOnly}/>
+                </Form.Item>
+              );
             case "custom":
               if (!field.customRender) {
                 console.warn(`[DynamicFormModal] customRender 為空：${field.label}`);
@@ -180,7 +215,7 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
               return null;
           }
         })}
-
+        {children}
         <Form.Item key="submit">
           <Button type="primary" htmlType="submit">
             提交

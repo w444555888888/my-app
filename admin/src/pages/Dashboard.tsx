@@ -32,6 +32,7 @@ const Dashboard: React.FC = () => {
   const menuItems = [
     { key: 'users', icon: <UserOutlined />, label: '用戶管理' },
     { key: 'hotels', icon: <HomeOutlined />, label: '飯店管理' },
+    { key: 'hotel-flash-sale', icon: <FileDoneOutlined />, label: '飯店限時搶購' },
     { key: 'flights', icon: <ScheduleOutlined />, label: '航班管理' },
     { key: 'orders', icon: <ShoppingCartOutlined />, label: '訂單管理' },
     { key: 'flight-orders', icon: <FileDoneOutlined />, label: '機票訂單' }
