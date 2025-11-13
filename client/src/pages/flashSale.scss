@@ -1,9 +1,9 @@
-/* ==========================================================
-   限時搶購列表頁 ─ FlashSaleList.jsx
-   ========================================================== */
+//FlashSaleList.jsx
 .flash-sale-page {
+    background: #f5f6fa;
     padding: 20px;
-
+    min-height: 100vh;
+    box-sizing: border-box;
     .fs-title {
         font-size: 24px;
         font-weight: 700;
@@ -68,7 +68,6 @@
     }
 }
 
-/* RWD 列表頁 */
 @media (max-width: 480px) {
     .flash-sale-page {
         padding: 12px;
@@ -83,9 +82,7 @@
     }
 }
 
-/* ==========================================================
-   詳細頁 ─ FlashSaleDetail.jsx
-   ========================================================== */
+// FlashSaleDetail.jsx
 .fs-detail-page {
     min-height: 100vh;
     background: #f5f6fa;
@@ -156,7 +153,6 @@
         }
     }
 
-   
     .fs-btn {
         width: 100%;
         padding: 14px;
@@ -174,7 +170,6 @@
         }
     }
 }
-
 
 @media (max-width: 768px) {
     .fs-detail-page {
