@@ -227,13 +227,30 @@ const upload = multer({ storage });
 
 export const uploadHotelFlashSaleBanner = [
     upload.single("banner"),
-    (req, res, next) => {
+    async (req, res, next) => {
         try {
             if (!req.file) return next(errorMessage(400, "未接收到圖片"));
-            const fileUrl = `/uploads/hotelFlashSale/${req.file.filename}`;
-            sendResponse(res, 200, { bannerUrl: fileUrl });
+  console.log("收到上傳 saleId =", req.body.saleId);
+            console.log("收到檔案 =", req.file?.filename);
+            const { saleId } = req.body; 
+            const newFileUrl = `/uploads/hotelFlashSale/${req.file.filename}`;
+
+            //  刪除舊圖
+            if (saleId) {
+                const sale = await HotelFlashSale.findById(saleId);
+                if (sale && sale.bannerUrl) {
+                    const oldPath = "." + sale.bannerUrl;
+                    if (fs.existsSync(oldPath)) {
+                        fs.unlinkSync(oldPath);
+                    }
+                }
+            }
+
+            sendResponse(res, 200, { bannerUrl: newFileUrl });
+
         } catch (err) {
             next(errorMessage(500, "上傳活動圖片失敗", err));
         }
     },
 ];
+
