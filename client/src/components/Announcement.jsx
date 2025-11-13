@@ -7,7 +7,7 @@
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { useState } from "react";
-import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { faInfoCircle, faBolt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
@@ -26,6 +26,10 @@ const Announcement = ({ type }) => {
     navigate(
       `/hotelsList?popular=true&startDate=${formattedToday}&endDate=${formattedTomorrow}`
     );
+  };
+
+  const handleFlashSale = () => {
+    navigate("/flash-sale");
   };
 
   return (
@@ -48,7 +52,13 @@ const Announcement = ({ type }) => {
               <div className="right">
                 <span>春季精選住宿</span>
                 <span>立即預訂東京、大阪、首爾熱門飯店，享最多 30% 折扣</span>
-                <button onClick={handleClickPopular}>查看熱門地點</button>
+                <div className="btn-group">
+                  <button className="btn-normal" onClick={handleClickPopular}>查看熱門地點</button>
+                  <button className="flash-sale-btn" onClick={handleFlashSale}>
+                    <FontAwesomeIcon icon={faBolt} />
+                    限時搶購・立即查看
+                  </button>
+                </div>
               </div>
             </div>
           </>
