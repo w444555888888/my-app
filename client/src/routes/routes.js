@@ -9,6 +9,8 @@ import Flight from "../pages/Flight"
 import ResetPassword from "../pages/ResetPassword"
 import Order from "../pages/Order"
 import BookingFlight from "../pages/BookingFlight"
+import FlashSaleList from "../pages/FlashSaleList"
+import FlashSaleDetail from "../pages/FlashSaleDetail"
 
 
 export const ROUTES = {
@@ -22,7 +24,9 @@ export const ROUTES = {
   PERSONAL: '/personal',
   ORDER: '/order/:startDate/:endDate/:hotelId/:roomId',
   FLIGHT: '/flight',
-  BOOKINGFLIGHT: '/bookingFlight/:id'
+  BOOKINGFLIGHT: '/bookingFlight/:id',
+  HOTELFLASHSALE: '/flash-sale',
+  HOTELFLASHSALEDetail: '/flash-sale/:id',
 }
 
 
@@ -81,5 +85,15 @@ export const routeConfig = [
     path: ROUTES.BOOKINGFLIGHT,
     element: BookingFlight,
     requireAuth: true
+  },
+  {
+    path: ROUTES.HOTELFLASHSALE,
+    element: FlashSaleList,
+    requireAuth: false
+  },
+  {
+    path: ROUTES.HOTELFLASHSALEDetail,
+    element: FlashSaleDetail,
+    requireAuth: false
   }
 ]

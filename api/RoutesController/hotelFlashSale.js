@@ -230,8 +230,6 @@ export const uploadHotelFlashSaleBanner = [
     async (req, res, next) => {
         try {
             if (!req.file) return next(errorMessage(400, "未接收到圖片"));
-  console.log("收到上傳 saleId =", req.body.saleId);
-            console.log("收到檔案 =", req.file?.filename);
             const { saleId } = req.body; 
             const newFileUrl = `/uploads/hotelFlashSale/${req.file.filename}`;
 
