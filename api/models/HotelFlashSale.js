@@ -4,6 +4,7 @@ const HotelFlashSaleSchema = new mongoose.Schema({
   title: { type: String, required: true },                // 活動名稱
   hotelId: { type: mongoose.Schema.Types.ObjectId, ref: "Hotel", required: true },
   roomId: { type: mongoose.Schema.Types.ObjectId, ref: "Room", required: true },
+  basePrice: { type: Number, required: true }, // 活動期間的基礎售價
   discountRate: { type: Number, default: 1.0 },            // 折扣率
   startTime: { type: Date, required: true },
   endTime: { type: Date, required: true },

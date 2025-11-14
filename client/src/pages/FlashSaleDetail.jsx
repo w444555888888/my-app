@@ -41,6 +41,10 @@ const FlashSaleDetail = () => {
                     <p className="discount">
                         現在只要 <b>{sale.discountRate * 10} 折</b> ！
                     </p>
+                    <p className="price">
+                        原價：<span className="fs-origin">NT$ {sale.basePrice?.toLocaleString()}</span><br />
+                        搶購價：<b className="fs-sale">NT$ {(sale.basePrice * sale.discountRate).toLocaleString()}</b>
+                    </p>
                     {sale.description && (
                         <div className="desc">
                             <h3>活動說明</h3>

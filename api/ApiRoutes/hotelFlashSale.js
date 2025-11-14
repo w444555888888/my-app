@@ -7,7 +7,8 @@ import {
   deleteHotelFlashSale,
   listFlashSaleInventory,
   updateFlashSaleInventory,
-  uploadHotelFlashSaleBanner
+  uploadHotelFlashSaleBanner,
+  bookHotelFlashSale
 } from "../RoutesController/hotelFlashSale.js";
 
 const router = express.Router();
@@ -17,9 +18,10 @@ router.post("/", createHotelFlashSale);
 
 router.get("/inventory/:saleId", listFlashSaleInventory);
 router.put("/inventory", updateFlashSaleInventory);
-
 // banner圖片上傳
 router.post("/upload-banner", uploadHotelFlashSaleBanner);
+// 搶購飯店訂單
+router.post("/book", bookHotelFlashSale);
 
 router.get("/:id", getHotelFlashSaleById);
 router.put("/:id", updateHotelFlashSale);

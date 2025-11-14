@@ -45,7 +45,10 @@ const FlashSaleList = () => {
                             <p className="fs-date">
                                 {item.startTime.substring(0, 10)} ~ {item.endTime.substring(0, 10)}
                             </p>
-
+                            <p className="fs-price">
+                                原價：<span className="fs-origin">NT$ {item.basePrice?.toLocaleString()}</span><br />
+                                搶購價：<b className="fs-sale">NT$ {(item.basePrice * item.discountRate).toLocaleString()}</b>
+                            </p>
                             <p className="fs-discount">
                                 限時折扣：<b>{item.discountRate * 10}折</b>
                             </p>

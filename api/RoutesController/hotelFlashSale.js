@@ -1,5 +1,6 @@
 import HotelFlashSale from "../models/HotelFlashSale.js";
 import HotelFlashSaleInventory from "../models/HotelFlashSaleInventory.js";
+import HotelFlashSaleOrder from "../models/HotelFlashSaleOrder.js";
 import Hotel from "../models/Hotel.js";
 import Room from "../models/Room.js";
 import { sendResponse } from "../sendResponse.js";
@@ -58,7 +59,8 @@ export const getHotelFlashSaleById = async (req, res, next) => {
  */
 export const createHotelFlashSale = async (req, res, next) => {
     try {
-        const { hotelId, roomId, startTime, endTime, quantityLimit } = req.body;
+        const { hotelId, roomId, startTime, endTime, quantityLimit, basePrice } = req.body;
+        if (!basePrice) return next(errorMessage(400, "請輸入活動底價"));
         const hotel = await Hotel.findById(hotelId);
         const room = await Room.findById(roomId);
         if (!hotel || !room) return next(errorMessage(404, "飯店或房型不存在"));
@@ -137,7 +139,8 @@ export const updateHotelFlashSale = async (req, res, next) => {
             "roomId",
             "startTime",
             "endTime",
-            "quantityLimit"
+            "quantityLimit",
+            "basePrice"
         ];
         blockedFields.forEach(field => delete req.body[field]);
 
@@ -251,4 +254,56 @@ export const uploadHotelFlashSaleBanner = [
         }
     },
 ];
+
+
+
+// 搶購飯店訂單(獨立)
+export const bookHotelFlashSale = async (req, res, next) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const { saleId, userId, date } = req.body;
+    if (!saleId || !userId || !date) return next(errorMessage(400, "缺少必要參數"));
+
+    const sale = await HotelFlashSale.findById(saleId);
+    if (!sale) return next(errorMessage(404, "活動不存在"));
+    if (!sale.isActive) return next(errorMessage(400, "活動尚未啟用"));
+
+    const inventory = await HotelFlashSaleInventory.findOne({ saleId, date }).session(session);
+    if (!inventory) return next(errorMessage(404, "找不到該日期的活動庫存"));
+    if (inventory.bookedRooms >= inventory.totalRooms)
+      return next(errorMessage(400, "該日期已售罄"));
+
+    const finalPrice = Math.round(sale.basePrice * (1 - (sale.discountRate || 0)));
+
+    await HotelFlashSaleInventory.findOneAndUpdate(
+      { saleId, date, bookedRooms: { $lt: inventory.totalRooms } },
+      { $inc: { bookedRooms: 1 } },
+      { new: true, session }
+    );
+
+    const newOrder = new HotelFlashSaleOrder({
+      saleId,
+      userId,
+      hotelId: sale.hotelId,
+      roomId: sale.roomId,
+      date,
+      basePrice: sale.basePrice,
+      discountRate: sale.discountRate,
+      finalPrice,
+      status: "booked",
+    });
+
+    await newOrder.save({ session });
+    await session.commitTransaction();
+
+    sendResponse(res, 200, newOrder, { message: "搶購成功" });
+  } catch (err) {
+    await session.abortTransaction();
+    next(errorMessage(500, "搶購失敗", err));
+  } finally {
+    session.endSession();
+  }
+};
 

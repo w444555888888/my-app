@@ -54,11 +54,35 @@
 
             .fs-hotel,
             .fs-room,
-            .fs-date,
-            .fs-discount {
+            .fs-date {
                 font-size: 14px;
                 margin-bottom: 4px;
-                color: var(--text-color);
+                color: #666;
+            }
+
+            .fs-price {
+                margin-top: 8px;
+                line-height: 1.4;
+                font-size: 15px;
+
+                .fs-origin {
+                    text-decoration: line-through;
+                    color: #aaa;
+                    margin-right: 8px;
+                }
+
+                .fs-sale {
+                    color: #e53935;
+                    font-weight: 700;
+                    font-size: 17px;
+                }
+            }
+
+            .fs-discount {
+                margin-top: 6px;
+                font-size: 14px;
+                color: var(--primary-color);
+                font-weight: 600;
             }
 
             b {
@@ -94,7 +118,6 @@
         padding: 20px 16px 0 16px;
     }
 
-    /* Banner */
     .fs-detail-banner-wrap {
         width: 100%;
         height: 260px;
@@ -109,7 +132,6 @@
         }
     }
 
-    /* 內容卡片 */
     .fs-detail-content {
         background: #fff;
         padding: 20px;
@@ -131,10 +153,28 @@
         }
 
         .discount {
-            margin: 15px 0;
+            margin: 18px 0 6px;
             font-size: 20px;
             font-weight: 700;
             color: var(--primary-color);
+        }
+
+        .price {
+            margin-top: 4px;
+            font-size: 16px;
+            line-height: 1.5;
+
+            .fs-origin {
+                text-decoration: line-through;
+                color: #aaa;
+                margin-right: 6px;
+            }
+
+            .fs-sale {
+                color: #e53935;
+                font-weight: 700;
+                font-size: 20px;
+            }
         }
 
         .desc {

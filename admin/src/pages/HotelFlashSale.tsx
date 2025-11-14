@@ -180,10 +180,11 @@ const HotelFlashSale = () => {
             readOnly: isEditing,
             options: rooms.map((r) => ({ label: r.title, value: r._id })),
         },
+        { name: 'basePrice', label: '活動底價（固定售價）', type: 'number', required: true, readOnly: isEditing },
         { name: 'discountRate', label: '折扣（例如 0.8 = 8 折）', type: 'number', required: true },
-        { name: 'quantityLimit', label: '每日庫存數量', type: 'number', required: true, readOnly: isEditing, },
-        { name: 'startTime', label: '開始時間', type: 'date', required: true, readOnly: isEditing, },
-        { name: 'endTime', label: '結束時間', type: 'date', required: true, readOnly: isEditing, },
+        { name: 'quantityLimit', label: '每日庫存數量', type: 'number', required: true, readOnly: isEditing },
+        { name: 'startTime', label: '開始時間', type: 'date', required: true, readOnly: isEditing },
+        { name: 'endTime', label: '結束時間', type: 'date', required: true, readOnly: isEditing },
         {
             name: 'bannerUpload',
             label: '活動圖片',
@@ -196,7 +197,7 @@ const HotelFlashSale = () => {
                     {bannerUrl && (
                         <div className='margin-ten'>
                             <Image
-                                src={ previewUrl || ("http://localhost:5000" + bannerUrl) }
+                                src={previewUrl || ("http://localhost:5000" + bannerUrl)}
                                 width={200}
                             />
                         </div>
@@ -233,6 +234,7 @@ const HotelFlashSale = () => {
                     record.endTime
                 ).format('YYYY-MM-DD')}`,
         },
+        { title: '底價', dataIndex: 'basePrice' },
         { title: '折扣', dataIndex: 'discountRate' },
         { title: '庫存', dataIndex: 'quantityLimit' },
         {
