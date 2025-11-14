@@ -35,7 +35,10 @@
             width: 100%;
             height: 180px;
             overflow: hidden;
-
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
             .fs-img {
                 width: 100%;
                 height: 100%;
@@ -44,7 +47,12 @@
         }
 
         .fs-info {
-            padding: 14px;
+            flex: 1;
+            background: #fff;
+            padding: 14px 16px;
+            border-top: 1px solid #eee;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
 
             .fs-name {
                 font-size: 18px;
@@ -180,15 +188,19 @@
         .desc {
             margin-top: 20px;
 
-            h3 {
+            .desc-title {
                 font-size: 20px;
                 font-weight: 600;
                 margin-bottom: 6px;
+                color: #222;
             }
 
             p {
                 line-height: 1.6;
-                opacity: 0.9;
+                color: #444;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                white-space: pre-wrap;
             }
         }
     }

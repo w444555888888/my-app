@@ -47,7 +47,7 @@ const FlashSaleDetail = () => {
                     </p>
                     {sale.description && (
                         <div className="desc">
-                            <h3>活動說明</h3>
+                            <div className='desc-title'>活動說明</div>
                             <p>{sale.description}</p>
                         </div>
                     )}
