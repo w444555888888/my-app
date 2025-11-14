@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import HotelFlashSale from "../models/HotelFlashSale.js";
 import HotelFlashSaleInventory from "../models/HotelFlashSaleInventory.js";
 import HotelFlashSaleOrder from "../models/HotelFlashSaleOrder.js";
@@ -161,20 +162,42 @@ export const updateHotelFlashSale = async (req, res, next) => {
 
 
 /**
- * 刪除活動（連同活動庫存）
+ * 刪除活動（連同活動庫存與圖片）
  */
 export const deleteHotelFlashSale = async (req, res, next) => {
-    try {
-        const deleted = await HotelFlashSale.findByIdAndDelete(req.params.id);
-        if (!deleted) return next(errorMessage(404, "活動不存在"));
+  try {
+    const deleted = await HotelFlashSale.findByIdAndDelete(req.params.id);
+    if (!deleted) return next(errorMessage(404, "活動不存在"));
 
-        await HotelFlashSaleInventory.deleteMany({ saleId: deleted._id });
+    // 刪除活動庫存
+    await HotelFlashSaleInventory.deleteMany({ saleId: deleted._id });
 
-        sendResponse(res, 200, null, { message: "刪除成功（含活動庫存）" });
-    } catch (err) {
-        next(errorMessage(500, "刪除限時搶購失敗", err));
+    // 刪除圖片
+    if (deleted.bannerUrl) {
+      try {
+        // bannerUrl 通常為 /uploads/hotelFlashSale/xxxxx.jpg
+        const imagePath = path.join(process.cwd(), deleted.bannerUrl.startsWith('/')
+          ? deleted.bannerUrl.slice(1)
+          : deleted.bannerUrl);
+
+        // 限制安全範圍
+        if (imagePath.includes(path.join("uploads", "hotelFlashSale")) && fs.existsSync(imagePath)) {
+          fs.unlinkSync(imagePath);
+          console.log("已刪除活動圖片:", imagePath);
+        } else {
+          console.warn("找不到圖片或非安全路徑:", imagePath);
+        }
+      } catch (err) {
+        console.error("刪除活動圖片時發生錯誤:", err);
+      }
     }
+
+    sendResponse(res, 200, null, { message: "刪除成功（含活動庫存與圖片）" });
+  } catch (err) {
+    next(errorMessage(500, "刪除限時搶購失敗", err));
+  }
 };
+
 
 
 
@@ -264,24 +287,40 @@ export const bookHotelFlashSale = async (req, res, next) => {
 
   try {
     const { saleId, userId, date } = req.body;
-    if (!saleId || !userId || !date) return next(errorMessage(400, "缺少必要參數"));
+    if (!saleId || !userId || !date) {
+      return next(errorMessage(400, "缺少必要參數"));
+    }
 
     const sale = await HotelFlashSale.findById(saleId);
     if (!sale) return next(errorMessage(404, "活動不存在"));
     if (!sale.isActive) return next(errorMessage(400, "活動尚未啟用"));
 
+    const now = dayjs();
+    if (now.isBefore(dayjs(sale.startTime)) || now.isAfter(dayjs(sale.endTime))) {
+      return next(errorMessage(400, "活動不在有效期間"));
+    }
+
     const inventory = await HotelFlashSaleInventory.findOne({ saleId, date }).session(session);
     if (!inventory) return next(errorMessage(404, "找不到該日期的活動庫存"));
-    if (inventory.bookedRooms >= inventory.totalRooms)
+    if (inventory.bookedRooms >= inventory.totalRooms) {
       return next(errorMessage(400, "該日期已售罄"));
+    }
 
-    const finalPrice = Math.round(sale.basePrice * (1 - (sale.discountRate || 0)));
+    const existOrder = await HotelFlashSaleOrder.findOne({ saleId, userId, date }).session(session);
+    if (existOrder) return next(errorMessage(400, "您已搶購過此日期的活動"));
+    const basePrice = sale.basePrice || 0;
+    const discountRate = sale.discountRate ?? 1;
+    const finalPrice = Math.round(basePrice * discountRate);
 
-    await HotelFlashSaleInventory.findOneAndUpdate(
+    const updatedInv = await HotelFlashSaleInventory.findOneAndUpdate(
       { saleId, date, bookedRooms: { $lt: inventory.totalRooms } },
       { $inc: { bookedRooms: 1 } },
       { new: true, session }
     );
+
+    if (!updatedInv) {
+      return next(errorMessage(400, "庫存已售罄或更新失敗"));
+    }
 
     const newOrder = new HotelFlashSaleOrder({
       saleId,
@@ -289,15 +328,14 @@ export const bookHotelFlashSale = async (req, res, next) => {
       hotelId: sale.hotelId,
       roomId: sale.roomId,
       date,
-      basePrice: sale.basePrice,
-      discountRate: sale.discountRate,
+      basePrice,
+      discountRate,
       finalPrice,
       status: "booked",
     });
 
     await newOrder.save({ session });
     await session.commitTransaction();
-
     sendResponse(res, 200, newOrder, { message: "搶購成功" });
   } catch (err) {
     await session.abortTransaction();

@@ -1,8 +1,38 @@
 .date {
   position: absolute;
   top: 60px;
-  z-index: 2;
+  z-index: 10;
   background-color: white;
   border: 1px solid #ccc;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+
+  .rdrCalendarWrapper {
+    width: 100%;
+    max-width: 360px;
+    font-size: 14px;
+  }
+
+  .rdrDateRangeWrapper {
+    width: 100%;
+  }
+}
+
+
+@media (max-width: 480px) {
+  .date {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 95vw;
+    border-radius: 12px;
+    z-index: 9999;
+    .rdrCalendarWrapper {
+      width: 100%;
+      font-size: 12px; 
+    }
+  }
 }

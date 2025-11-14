@@ -11,10 +11,50 @@
         text-align: center;
     }
 
+    .fs-filter {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+        gap: 10px;
+
+        .fs-filter-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--primary-color);
+            background: #fff;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 15px;
+            transition: 0.2s;
+
+            &:hover {
+                background: var(--primary-color);
+                color: #fff;
+            }
+
+            &.active {
+                background: var(--primary-color);
+                color: #fff;
+            }
+        }
+    }
+
+          .fs-empty {
+             background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+    width: 100%;
+    padding: 60px 0;
+        }
+
     .fs-list {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        max-width: 1200px;
+        margin: 0 auto;
         gap: 18px;
+
+  
     }
 
     .fs-card {
@@ -146,7 +186,6 @@
         border-radius: 12px;
         margin-top: 18px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-
         .title {
             font-size: 26px;
             font-weight: 700;
@@ -182,6 +221,47 @@
                 color: #e53935;
                 font-weight: 700;
                 font-size: 20px;
+            }
+        }
+
+        .fs-date-picker {
+            position: relative;
+            display: inline-block;
+            margin: 18px 0;
+
+            .fs-date-btn {
+                background: var(--primary-color);
+                color: #fff;
+                border: none;
+                padding: 10px 16px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 16px;
+                transition: all 0.25s ease;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+
+                svg {
+                    font-size: 18px;
+                }
+
+                &:hover {
+                    background: var(--hover-color);
+                    transform: translateY(-1px);
+                }
+            }
+
+            .fs-date-popup {
+                position: absolute;
+                top: 0%;
+                left: 0%;
+                z-index: 9999;
+                background: #fff;
+                border-radius: 10px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                border: 1px solid #ddd;
             }
         }
 
