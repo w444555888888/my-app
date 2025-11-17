@@ -10,8 +10,8 @@ import bcrypt from "bcryptjs" //密碼加密
 import { errorMessage } from "../errorMessage.js"
 import { sendResponse } from "../sendResponse.js"
 import User from "../models/User.js"
+import { sendMail } from "../utils/mailer.js"; 
 import jwt from "jsonwebtoken" //身份驗證
-import nodemailer from 'nodemailer'  //發送電子郵件
 import crypto from 'crypto' //隨機令牌
 
 
@@ -112,21 +112,6 @@ export const forgotPassword = async (req, res, next) => {
     user.resetPasswordExpires = Date.now() + 3600000 // 1 小時後過期
     await user.save()
 
-    // 發送郵件
-    const transporter = nodemailer.createTransport({
-      service: 'gmail', // gamil郵件服務
-      auth: {
-        /**
-         * .env 用dotenv.config() //加載環境變數去撈發送郵件帳號
-         * 預設發出去的郵件類型
-         * 帳號 
-         * 密碼: 二次驗證 > 用google應用專用密
-         */
-        user: process.env.EMAIL,
-        pass: process.env.EMAIL_PASSWORD,
-      },
-    })
-
     // 郵件內容
     const mailOptions = {
       to: email,
@@ -136,7 +121,7 @@ export const forgotPassword = async (req, res, next) => {
 
     // 發送郵件
     try {
-      await transporter.sendMail(mailOptions)
+      await sendMail(mailOptions);
       return sendResponse(res, 200, null, { message: "重置密碼郵件已發送" })
     } catch (error) {
       return next(errorMessage(500, "郵件發送失敗", error))

@@ -7,6 +7,7 @@
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { useState } from "react";
+import { request } from "../utils/apiService"
 import { toast } from "react-toastify";
 import "./footer.scss";
 
@@ -14,7 +15,7 @@ const Footer = () => {
     const [email, setEmail] = useState("");
     const [subscribed, setSubscribed] = useState(false);
     const [agreeAppLink, setAgreeAppLink] = useState(false);
-    const handleSubscribe = () => {
+    const handleSubscribe = async () => {
         if (!email.trim()) {
             toast.error("請輸入您的電子郵件");
             return;
@@ -25,9 +26,18 @@ const Footer = () => {
             return;
         }
 
-        // 暫時無api
+        const res = await request("POST", "/subscribe", { email });
+        if (res.success) {
+            const msg = res.data?.message;
+            if (msg === "訂閱成功！") {
+                setSubscribed(true);
+                setEmail("");
+            }
 
-        setSubscribed(true);
+            toast.success(msg);
+        } else {
+            toast.error(res.message);
+        }
     };
 
     return (
