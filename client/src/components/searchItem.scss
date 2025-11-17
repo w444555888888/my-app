@@ -1,15 +1,14 @@
 .SearchItem {
     height: 240px;
-    width: 720px;
+    width: 100%;         
+    max-width: 720px;     
     display: flex;
     align-items: center;
     gap: 15px;
     border: 1px solid lightblue;
     border-radius: 3px;
     margin-bottom: 15px;
-    padding: 0px 15px;
 
-    
 
     img {
         height: 210px;
@@ -151,7 +150,6 @@
         width: 100%;
         height: auto;
         flex-direction: column;
-        padding: 10px;
 
         img {
             width: 100%;

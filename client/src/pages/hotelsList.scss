@@ -24,7 +24,6 @@
   background-color: rgb(241, 241, 241);
   padding: 30px;
   border-radius: 10px;
-  position: sticky;
   height: max-content;
   top: 10px;
 
@@ -176,11 +175,13 @@
   }
 
   .listWrapper {
+    flex-direction: column;
     gap: 20px;
   }
 
   .listItem {
     width: 100%;
+    flex: none;
     font-size: 14px;
   }
 }
@@ -194,7 +195,9 @@
   .listSearch {
     flex: none;
     width: 100%;
-    position: static;
+    max-width: 100%;
+    padding: 15px;
+    box-sizing: border-box;
   }
 
   .listResult {
