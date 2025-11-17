@@ -29,12 +29,12 @@ const Footer = () => {
         const res = await request("POST", "/subscribe", { email });
         if (res.success) {
             const msg = res.data?.message;
-            if (msg === "訂閱成功！") {
+            if (msg.includes("訂閱成功")) {
                 setSubscribed(true);
-                setEmail("");
             }
-
+            
             toast.success(msg);
+            setEmail("");
         } else {
             toast.error(res.message);
         }
