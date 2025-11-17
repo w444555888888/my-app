@@ -27,6 +27,8 @@ export const initWebSocket = (server) => {
     transports: ["websocket", "polling"],
   });
 
+   console.log("[WebSocket] WebSocket 伺服器初始化成功");
+
   /**
    * 使用者成功建立連線時觸發
    * @param {import('socket.io').Socket} socket - 當前使用者的連線物件
@@ -37,6 +39,9 @@ export const initWebSocket = (server) => {
      * 前端可用 socket.emit("ping-server", data)
      * 用於測試 WebSocket 雙向通訊是否正常
      */
+
+    console.log(`[WebSocket] 有使用者連線：${socket.id}`);
+
     socket.on("ping-server", (data) => {
       socket.emit("pong-server", `伺服器回覆：${data}`);
     });
@@ -56,7 +61,7 @@ export const initWebSocket = (server) => {
      * 若連線或傳輸過程中發生異常會觸發
      */
     socket.on("error", (err) => {
-      // 可在此整合 logger，如 winston、pino
+       console.error(`[WebSocket] 連線錯誤：${socket.id}`, err);
     });
 
     /**
@@ -65,6 +70,7 @@ export const initWebSocket = (server) => {
      */
     socket.on("disconnect", (reason) => {
       // 可在此釋放使用者資源或更新狀態
+      console.log(`[WebSocket] 使用者斷線：${socket.id}，原因：${reason}`);
     });
 
     /**
@@ -73,6 +79,7 @@ export const initWebSocket = (server) => {
      */
     socket.on("reconnect_attempt", (attemptNumber) => {
       // 可在此紀錄重連次數或警告使用者
+      console.log(`[WebSocket] 使用者嘗試重連 (${attemptNumber})：${socket.id}`);
     });
   });
 

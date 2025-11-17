@@ -102,17 +102,17 @@
         }
     }
 
-    .footer .emailcontainer {
+    .footer .email-container {
         padding: 20px 15px;
     }
 
-    .footer .emailcontainer .wrapper {
+    .footer .email-container .wrapper {
         flex-direction: column;
         padding: 0 10px;
         align-items: stretch;
     }
 
-    .footer .emailcontainer .wrapper .email {
+    .footer .email-container .wrapper .email {
         width: 100%;
         margin-bottom: 10px;
     }
@@ -133,12 +133,12 @@
         padding-top: 10px;
     }
 
-    .footer .emailcontainer .wrapper .email {
+    .footer .email-container .wrapper .email {
         font-size: 18px;
         height: 40px;
     }
 
-    .footer .emailcontainer .wrapper button {
+    .footer .email-container .wrapper button {
         font-size: 18px;
         height: 40px;
     }

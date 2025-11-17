@@ -18,13 +18,12 @@ import subscribe from "./ApiRoutes/subscribe.js"
 import cookieParser from "cookie-parser"
 import cors from "cors"
 import { initWebSocket } from "./websocket/index.js";
+import { startNewsletterJob } from "./utils/newsletter.js";
 
 dotenv.config() //加載環境變數
 
 const app = express();
 const server = http.createServer(app);
-
-initWebSocket(server);
 
 const connect = async () => {
     try {
@@ -50,9 +49,9 @@ mongoose.connection.on("disconnected", () => {
 
 const port = 5000
 server.listen(port, () => {
-    connect()
-    console.log(`HTTP + WebSocket 已啟動在 port ${port}`)
-    //npm start 一樣啟動它，
+    connect();
+    initWebSocket(server);
+    startNewsletterJob();
 })
 
 // __dirname 取得目前檔案路徑
