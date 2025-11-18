@@ -1,14 +1,16 @@
 //FlashSaleList.jsx
 .flash-sale-page {
-    background: #f5f6fa;
+    background: var(--background-color, #f5f6fa);
     padding: 20px;
     min-height: 100vh;
     box-sizing: border-box;
+
     .fs-title {
         font-size: 24px;
         font-weight: 700;
         margin-bottom: 20px;
         text-align: center;
+        color: var(--text-color);
     }
 
     .fs-filter {
@@ -21,7 +23,7 @@
             padding: 8px 16px;
             border-radius: 8px;
             border: 1px solid var(--primary-color);
-            background: #fff;
+            background: var(--card-bg, #fff);
             color: var(--primary-color);
             cursor: pointer;
             font-size: 15px;
@@ -39,13 +41,13 @@
         }
     }
 
-          .fs-empty {
-             background: transparent;
-    box-shadow: none;
-    border-radius: 0;
-    width: 100%;
-    padding: 60px 0;
-        }
+    .fs-empty {
+        background: transparent;
+        box-shadow: none;
+        border-radius: 0;
+        width: 100%;
+        padding: 60px 0;
+    }
 
     .fs-list {
         display: grid;
@@ -53,10 +55,11 @@
         max-width: 1200px;
         margin: 0 auto;
         gap: 18px;
-
-  
     }
+}
 
+
+.flash-sale-page {
     .fs-card {
         border-radius: 14px;
         cursor: pointer;
@@ -64,6 +67,7 @@
         display: flex;
         flex-direction: column;
         transition: 0.25s ease;
+        background: var(--card-bg, #fff);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 
         &:hover {
@@ -79,6 +83,7 @@
             border-top-right-radius: 16px;
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
+
             .fs-img {
                 width: 100%;
                 height: 100%;
@@ -88,9 +93,9 @@
 
         .fs-info {
             flex: 1;
-            background: #fff;
+            background: var(--card-bg, #fff);
             padding: 14px 16px;
-            border-top: 1px solid #eee;
+            border-top: 1px solid var(--border-color, #eee);
             border-bottom-left-radius: 16px;
             border-bottom-right-radius: 16px;
 
@@ -98,6 +103,7 @@
                 font-size: 18px;
                 font-weight: 600;
                 margin-bottom: 6px;
+                color: var(--text-color);
             }
 
             .fs-hotel,
@@ -105,7 +111,7 @@
             .fs-date {
                 font-size: 14px;
                 margin-bottom: 4px;
-                color: #666;
+                color: var(--text-muted, #666);
             }
 
             .fs-price {
@@ -115,7 +121,7 @@
 
                 .fs-origin {
                     text-decoration: line-through;
-                    color: #aaa;
+                    color: var(--text-muted, #aaa);
                     margin-right: 8px;
                 }
 
@@ -154,10 +160,12 @@
     }
 }
 
+
+
 // FlashSaleDetail.jsx
 .fs-detail-page {
     min-height: 100vh;
-    background: #f5f6fa;
+    background: var(--background-color, #f5f6fa);
     padding-bottom: 40px;
 
     .fs-detail-wrapper {
@@ -181,15 +189,17 @@
     }
 
     .fs-detail-content {
-        background: #fff;
+        background: var(--card-bg, #fff);
         padding: 20px;
         border-radius: 12px;
         margin-top: 18px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
         .title {
             font-size: 26px;
             font-weight: 700;
             margin-bottom: 10px;
+            color: var(--text-color);
         }
 
         .hotel,
@@ -197,6 +207,7 @@
         .time {
             font-size: 16px;
             margin-bottom: 6px;
+            color: var(--text-color);
         }
 
         .discount {
@@ -213,7 +224,7 @@
 
             .fs-origin {
                 text-decoration: line-through;
-                color: #aaa;
+                color: var(--text-muted, #aaa);
                 margin-right: 6px;
             }
 
@@ -258,10 +269,10 @@
                 top: 0%;
                 left: 0%;
                 z-index: 9999;
-                background: #fff;
+                background: var(--card-bg, #fff);
                 border-radius: 10px;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-                border: 1px solid #ddd;
+                border: 1px solid var(--border-color, #ddd);
             }
         }
 
@@ -272,12 +283,12 @@
                 font-size: 20px;
                 font-weight: 600;
                 margin-bottom: 6px;
-                color: #222;
+                color: var(--text-color);
             }
 
             p {
                 line-height: 1.6;
-                color: #444;
+                color: var(--text-muted, #444);
                 word-wrap: break-word;
                 overflow-wrap: break-word;
                 white-space: pre-wrap;
@@ -289,7 +300,7 @@
         width: 100%;
         padding: 14px;
         background: var(--primary-color);
-        color: var(--text-color);
+        color: var(--text-on-primary, #fff);
         border: none;
         border-radius: 12px;
         font-size: 18px;
@@ -326,3 +337,137 @@
         }
     }
 }
+
+
+
+
+
+
+
+
+/* ---------------------Success Page---------------------- */
+.fs-success-wrapper {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 40px 16px 0 16px;
+}
+
+
+.fs-success-card {
+  background: var(--card-bg, #fff);
+  padding: 28px 22px;
+  border-radius: 14px;
+  margin-top: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  text-align: center;
+  color: var(--text-color);
+}
+
+
+.fs-success-icon {
+  width: 86px;
+  height: 86px;
+  line-height: 86px;
+  font-size: 42px;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  background: rgba(76,175,80,0.12);
+  color: #4caf50;
+}
+
+
+.fs-success-title {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--primary-color);
+}
+
+
+.fs-success-subtitle {
+  font-size: 15px;
+  color: var(--text-muted, #666);
+  margin-bottom: 24px;
+}
+
+
+.fs-success-summary {
+  text-align: left;
+  max-width: 600px;
+  margin: 0 auto 28px;
+  border-radius: 10px;
+  padding: 20px;
+  background: var(--card-bg-alt, #fafafa);
+  border: 1px solid var(--border-color, #ddd);
+
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color, #eee);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .label {
+      color: var(--text-muted, #666);
+    }
+
+    .value {
+      font-weight: 600;
+      color: var(--text-color);
+    }
+  }
+}
+
+
+.fs-success-btn {
+  width: 100%;
+  padding: 14px;
+  font-size: 18px;
+  border: none;
+  border-radius: 12px;
+  background: var(--primary-color);
+  color: #fff;
+  cursor: pointer;
+  transition: 0.25s;
+
+  &:hover {
+    background: var(--hover-color);
+  }
+}
+
+
+@media (max-width: 480px) {
+  .fs-success-card {
+    padding: 22px 16px;
+  }
+
+  .fs-success-icon {
+    width: 70px;
+    height: 70px;
+    line-height: 70px;
+    font-size: 34px;
+  }
+
+  .fs-success-title {
+    font-size: 22px;
+  }
+
+  .fs-success-summary {
+    padding: 16px;
+
+    .summary-item {
+      flex-direction: column;
+      gap: 6px;
+
+      .value {
+        font-size: 16px;
+        color: var(--primary-color);
+      }
+    }
+  }
+}
+
+
