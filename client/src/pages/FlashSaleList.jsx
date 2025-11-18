@@ -4,7 +4,7 @@ import { faFire } from "@fortawesome/free-solid-svg-icons";
 import { request } from "../utils/apiService";
 import { useNavigate } from "react-router-dom";
 import EmptyState from "../subcomponents/EmptyState";
-import "./flashSale.scss";
+import "./flashSaleList.scss";
 
 const FlashSaleList = () => {
     const [list, setList] = useState([]);

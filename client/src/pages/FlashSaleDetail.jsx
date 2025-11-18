@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux'
 import { request } from "../utils/apiService";
 import { toast } from 'react-toastify';
 import dayjs from "dayjs";
-import "./flashSale.scss";
+import "./flashSaleDetail.scss";
 
 const FlashSaleDetail = () => {
     const { userInfo } = useSelector(state => state.user);
