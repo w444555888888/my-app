@@ -9,6 +9,7 @@ export type FieldType =
   | "input"
   | "number"
   | "textarea"
+  | "checkbox"
   | "select"
   | "checkboxGroup"
   | "time"
@@ -138,11 +139,23 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
               return <Form.Item key={key} {...commonProps}><InputNumber className="full-width" placeholder={field.placeholder} readOnly={field.readOnly} /></Form.Item>;
             case "textarea":
               return <Form.Item key={key} {...commonProps}><Input.TextArea placeholder={field.placeholder} readOnly={field.readOnly} /></Form.Item>;
+            case "checkbox":
+              return (
+                <Form.Item
+                  key={key}
+                  {...commonProps}
+                  valuePropName="checked"
+                >
+                  <Checkbox disabled={field.readOnly}>
+                    {field.label}
+                  </Checkbox>
+                </Form.Item>
+              );
             case "time":
               return (
                 <Form.Item key={key} {...commonProps}>
                   {field.timeFormat === 'timeOnly' ? (
-                    <TimePicker format="HH:mm" className="full-width"   disabled={field.readOnly}/>
+                    <TimePicker format="HH:mm" className="full-width" disabled={field.readOnly} />
                   ) : (
                     <DatePicker
                       showTime={{ format: 'HH:mm' }}
@@ -197,7 +210,7 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
             case "switch":
               return (
                 <Form.Item key={key} {...commonProps} valuePropName="checked">
-                  <Switch disabled={field.readOnly}/>
+                  <Switch disabled={field.readOnly} />
                 </Form.Item>
               );
             case "custom":

@@ -8,7 +8,7 @@ const HotelFlashSaleOrderSchema = new mongoose.Schema(
         roomId: { type: mongoose.Schema.Types.ObjectId, ref: "Room", required: true },
         date: { type: String, required: true }, // 預訂日期（對應 HotelFlashSaleInventory.date）
         discountRate: { type: Number, default: 0 }, // 折扣率
-        originalPrice: { type: Number },            // 原價
+        basePrice: { type: Number },            // 原價
         finalPrice: { type: Number },               // 折扣後價格
         status: {
             type: String,

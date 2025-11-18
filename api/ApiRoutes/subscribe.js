@@ -1,5 +1,5 @@
 import express from "express";
-import { addSubscribe, getAllSubscribe } from "../RoutesController/subscribe.js";
+import { addSubscribe, getAllSubscribe, deleteSubscribe } from "../RoutesController/subscribe.js";
 
 const router = express.Router();
 
@@ -8,5 +8,8 @@ router.post("/", addSubscribe);
 
 // 查詢訂閱列表（後台用）
 router.get("/", getAllSubscribe);
+
+// 刪除訂閱（後台用）
+router.delete("/:id", deleteSubscribe);
 
 export default router;

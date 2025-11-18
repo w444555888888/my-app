@@ -50,3 +50,21 @@ export const getAllSubscribe = async (req, res, next) => {
         return next(errorMessage(500, "訂閱資料查詢失敗", error));
     }
 };
+
+// 刪除訂閱（後台用）
+export const deleteSubscribe = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const exist = await Subscribe.findById(id);
+    if (!exist) {
+      return next(errorMessage(404, "找不到此訂閱紀錄"));
+    }
+
+    await Subscribe.findByIdAndDelete(id);
+
+    sendResponse(res, 200, null, "訂閱已成功刪除");
+  } catch (error) {
+    return next(errorMessage(500, "訂閱刪除失敗", error));
+  }
+};

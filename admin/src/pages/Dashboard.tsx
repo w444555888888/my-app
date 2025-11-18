@@ -7,6 +7,7 @@ import {
   ScheduleOutlined,
   DashboardOutlined,
   FileDoneOutlined,
+  MailOutlined
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import useLocalStorageState from 'use-local-storage-state'
@@ -33,6 +34,8 @@ const Dashboard: React.FC = () => {
     { key: 'users', icon: <UserOutlined />, label: '用戶管理' },
     { key: 'hotels', icon: <HomeOutlined />, label: '飯店管理' },
     { key: 'hotel-flash-sale', icon: <FileDoneOutlined />, label: '飯店限時搶購' },
+    { key: 'flash-sale-orders', icon: <ShoppingCartOutlined />, label: '搶購訂單' },
+    { key: 'subscribe', icon: <MailOutlined />, label: '訂閱管理' }, 
     { key: 'flights', icon: <ScheduleOutlined />, label: '航班管理' },
     { key: 'orders', icon: <ShoppingCartOutlined />, label: '訂單管理' },
     { key: 'flight-orders', icon: <FileDoneOutlined />, label: '機票訂單' }

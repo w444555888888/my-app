@@ -15,11 +15,6 @@ const HotelsList = () => {
     // 路由
     const [searchParams, setSearchParams] = useSearchParams()
 
-    // 預設日期為今天和一周後
-    const today = new Date()
-    const nextWeek = new Date()
-    nextWeek.setDate(today.getDate() + 7)
-
     const [name, setName] = useState('')
     const [startDate, setStartDate] = useState('')
     const [endDate, setEndDate] = useState('')
@@ -27,8 +22,8 @@ const HotelsList = () => {
     const [isPopular, setIsPopular] = useState(false)
     const [dates, setDates] = useState([
         {
-            startDate: today,
-            endDate: nextWeek,
+            startDate: new Date(),
+            endDate: new Date(Date.now() + 86400000 * 1),
             key: 'selection',
         }
     ])
@@ -36,7 +31,7 @@ const HotelsList = () => {
     useEffect(() => {
         const nameParam = searchParams.get('name') || ''
         const start = searchParams.get('startDate') || format(new Date(), 'yyyy-MM-dd')
-        const end = searchParams.get('endDate') || format(new Date(Date.now() + 7 * 86400000), 'yyyy-MM-dd')
+        const end = searchParams.get('endDate') || format(new Date(Date.now() + 86400000 * 1), 'yyyy-MM-dd')
         const adult = parseInt(searchParams.get('adult')) || 1
         const room = parseInt(searchParams.get('room')) || 1
         const popular = searchParams.get('popular') === 'true'
@@ -166,7 +161,7 @@ const HotelsList = () => {
                                         onChange={(e) => setMaxPrice(e.target.value)}
                                         required />
                                 </div>
-                                
+
                                 <span className="limitTitle">
                                     人數/房間數
                                 </span>

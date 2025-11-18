@@ -498,7 +498,11 @@ const Hotels = () => {
           pagination={false}
           dataSource={inventoryData}
           columns={[
-            { title: '日期', dataIndex: 'date' },
+            { 
+              title: '日期',
+              dataIndex: 'date', 
+              render: (value) => dayjs(value).format('YYYY-MM-DD')
+            },
             {
               title: '總房數',
               dataIndex: 'totalRooms',

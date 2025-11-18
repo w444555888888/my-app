@@ -345,3 +345,21 @@ export const bookHotelFlashSale = async (req, res, next) => {
   }
 };
 
+
+
+export const getAllHotelFlashSaleOrder = async (req, res, next) => {
+  try {
+    const list = await HotelFlashSaleOrder.find()
+      .populate("userId", "username email")        // 顯示使用者資訊
+      .populate("hotelId", "name")                 // 顯示飯店名稱
+      .populate("roomId", "title")                 // 顯示房型名稱
+      .populate("saleId", "title basePrice discountRate") // 顯示活動資訊
+      .sort({ createdAt: -1 });
+
+    sendResponse(res, 200, list);
+  } catch (error) {
+    return next(errorMessage(500, "限時搶購訂單查詢失敗", error));
+  }
+};
+
+

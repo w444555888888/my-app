@@ -57,10 +57,7 @@ const Hotel = () => {
   const [night, setNight] = useState("")
   const comments = useRef(null)
 
-  // 預設日期為今天和一周後
-  const today = new Date()
-  const nextWeek = new Date()
-  nextWeek.setDate(today.getDate() + 7)
+
 
   // 從 URL 獲取參數
   const hotelId = searchParams.get("hotelId")
@@ -69,16 +66,13 @@ const Hotel = () => {
 
   // 路由傳遞數據
   const [openCalendar, setOpenCalendar] = useState(false)
-  const [startDate, setStartDate] = useState(
-    startDateParam || format(today, "yyyy-MM-dd")
-  )
-  const [endDate, setEndDate] = useState(
-    endDateParam || format(nextWeek, "yyyy-MM-dd")
-  )
+  const [startDate, setStartDate] = useState(startDateParam || format(new Date(), 'yyyy-MM-dd'));
+  const [endDate, setEndDate] = useState(endDateParam || format(new Date(Date.now() + 86400000 * 1), 'yyyy-MM-dd'));
+
   const [dates, setDates] = useState([
     {
-      startDate: startDate ? new Date(startDate) : new Date(),
-      endDate: endDate ? new Date(endDate) : new Date(),
+      startDate: new Date(),
+      endDate: new Date(Date.now() + 86400000 * 1),
       key: "selection",
     },
   ])

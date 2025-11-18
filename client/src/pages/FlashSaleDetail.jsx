@@ -2,19 +2,25 @@ import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHotel, faClock, faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 import DateRangePicker from "../components/DateRangePicker";
-import dayjs from "dayjs";
+import { useParams } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { request } from "../utils/apiService";
-import { useParams } from "react-router-dom";
 import { toast } from 'react-toastify';
+import dayjs from "dayjs";
 import "./flashSale.scss";
 
 const FlashSaleDetail = () => {
+    const { userInfo } = useSelector(state => state.user);
+    const userId = userInfo?._id ?? ''
+
+    // saleId
     const { id } = useParams();
+
     const [sale, setSale] = useState(null);
     const [loading, setLoading] = useState(false);
     const [booking, setBooking] = useState(false);
-    const userId = id
-
+    
+    
     // 日期
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [startDate, setStartDate] = useState("");
@@ -43,6 +49,8 @@ const FlashSaleDetail = () => {
             saleId: sale._id,
             userId,
             date: dayjs(date).format("YYYY-MM-DD"),
+            basePrice: sale.basePrice,
+            discountRate: sale.discountRate,
         });
 
         if (res.success) {

@@ -26,6 +26,8 @@ import Orders from './pages/Orders';
 import Flights from './pages/Flights';
 import FlightOrders from './pages/FlightOrders';
 import HotelFlashSale from './pages/HotelFlashSale';
+import HotelFlashSaleOrders from './pages/HotelFlashSaleOrders';
+import SubscribeList from './pages/SubscribeList';
 
 
 
@@ -60,7 +62,7 @@ function App() {
 
   useEffect(() => {
     // 新訂單通知
-    socket.on("new-order", (data:any) => {
+    socket.on("new-order", (data: any) => {
       api.info({
         message: "新訂單通知",
         description: (
@@ -105,6 +107,8 @@ function App() {
             <Route path="users" element={<Users />} />
             <Route path="hotels" element={<Hotels />} />
             <Route path="hotel-flash-sale" element={<HotelFlashSale />} />
+            <Route path="flash-sale-orders" element={<HotelFlashSaleOrders />} />
+            <Route path="subscribe" element={<SubscribeList />} />
             <Route path="orders" element={<Orders />} />
             <Route path="flights" element={<Flights />} />
             <Route path="flight-orders" element={<FlightOrders />} />

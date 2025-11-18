@@ -8,7 +8,8 @@ import {
   listFlashSaleInventory,
   updateFlashSaleInventory,
   uploadHotelFlashSaleBanner,
-  bookHotelFlashSale
+  bookHotelFlashSale,
+  getAllHotelFlashSaleOrder
 } from "../RoutesController/hotelFlashSale.js";
 
 const router = express.Router();
@@ -22,6 +23,8 @@ router.put("/inventory", updateFlashSaleInventory);
 router.post("/upload-banner", uploadHotelFlashSaleBanner);
 // 搶購飯店訂單
 router.post("/book", bookHotelFlashSale);
+// 後台查看所有限時搶購訂單
+router.get("/order/all", getAllHotelFlashSaleOrder);
 
 router.get("/:id", getHotelFlashSaleById);
 router.put("/:id", updateHotelFlashSale);

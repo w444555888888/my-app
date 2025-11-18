@@ -10,7 +10,9 @@ import { errorMessage } from "../errorMessage.js";
 import { sendResponse } from "../sendResponse.js";
 import User from "../models/User.js";
 import Order from "../models/Order.js";
+import HotelFlashSaleOrder from "../models/HotelFlashSaleOrder.js";
 import FlightOrder from "../models/FlightOrder.js";
+import Subscribe from "../models/Subscribe.js";
 import bcrypt from "bcryptjs"; //密碼加密
 
 //更新使用者資訊
@@ -22,24 +24,29 @@ export const updateUser = async (req, res, next) => {
     return next(errorMessage(403, "您只能修改自己的資料"));
   }
 
-  const { password, address, phoneNumber, realName } = req.body;
+  const { password, isAdmin, address, phoneNumber, realName } = req.body;
 
-  // 檢查必填字段
-  if (!password || !address || !phoneNumber || !realName) {
-    return next(errorMessage(400, "所有欄位都是必填的"));
+  const updateObj = {};
+
+  // 密碼如果有傳進來(加密更新)
+  if (password && password.trim() !== "") {
+    const salt = bcrypt.genSaltSync(10);
+    updateObj.password = bcrypt.hashSync(password, salt);
   }
 
-  // 密碼bcrypt加密
-  const salt = bcrypt.genSaltSync(10);
-  const hashedPassword = bcrypt.hashSync(password, salt);
+  // isAdmin 只有管理員才能修改
+  if (req.user.isAdmin && typeof isAdmin === "boolean") {
+    updateObj.isAdmin = isAdmin;
+  }
+
+  if (address !== undefined) updateObj.address = address;
+  if (phoneNumber !== undefined) updateObj.phoneNumber = phoneNumber;
+  if (realName !== undefined) updateObj.realName = realName;
 
   try {
-    // 更新用戶資料，只更新這4個參數，其餘照舊
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      {
-        $set: { password: hashedPassword, address, phoneNumber, realName },
-      },
+      { $set: updateObj },
       { new: true }
     );
 
@@ -49,7 +56,7 @@ export const updateUser = async (req, res, next) => {
   }
 };
 
-//刪除使用者
+//刪除使用者(包含使用者.飯店訂單.機票訂單.飯店限時搶購.訂閱)
 export const deletedUser = async (req, res, next) => {
   const id = req.params.id;
 
@@ -59,8 +66,17 @@ export const deletedUser = async (req, res, next) => {
   }
 
   try {
-    await User.findByIdAndDelete(id);
-    sendResponse(res, 200, null, { message: "用戶成功刪除" });
+    const deletedUser = await User.findByIdAndDelete(id);
+    if (!deletedUser) {
+      return next(errorMessage(404, "找不到此使用者"));
+    }
+    const hotelOrders = await Order.deleteMany({ userId: id });
+    const flightOrders = await FlightOrder.deleteMany({ userId: id });
+    const flashSaleOrders = await HotelFlashSaleOrder.deleteMany({
+      userId: id,
+    });
+    const subscribes = await Subscribe.deleteMany({ userId: id });
+    sendResponse(res, 200, null, { message: "使用者與所有相關資料已成功刪除" });
   } catch (error) {
     return next(errorMessage(500, "刪除用戶失敗", error));
   }
@@ -83,8 +99,10 @@ export const getUser = async (req, res, next) => {
     const allOrder = await Order.find({ userId: id });
 
     // populate flightId 拿到航班資料
-    const rawFightOrders = await FlightOrder.find({ userId: id }).populate("flightId").sort({ createdAt: -1 });
-    const allFlightOrder = rawFightOrders.map(order => {
+    const rawFightOrders = await FlightOrder.find({ userId: id })
+      .populate("flightId")
+      .sort({ createdAt: -1 });
+    const allFlightOrder = rawFightOrders.map((order) => {
       const flight = order.flightId;
       return {
         ...order.toObject(),
@@ -96,9 +114,8 @@ export const getUser = async (req, res, next) => {
     sendResponse(res, 200, {
       ...user.toObject(),
       allOrder,
-      allFlightOrder
+      allFlightOrder,
     });
-
   } catch (error) {
     return next(errorMessage(500, "讀取用戶失敗", error));
   }
