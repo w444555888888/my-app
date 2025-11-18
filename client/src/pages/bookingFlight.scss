@@ -12,7 +12,7 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
+            background: var(--card-bg);
             @media (max-width: 768px) {
                 padding: 15px;
             }
@@ -23,24 +23,24 @@
                 justify-content: space-between;
                 margin-bottom: 20px;
                 padding: 15px;
-                background: #f8f9fa;
+                background: var(--card-bg-alt);
                 border-radius: 8px;
 
                 .flightDate {
                     font-size: 1.1rem;
-                    color: #666;
+                    color: var(--text-muted);
                     margin-top: 8px;
 
                     .weekday {
                         margin-left: 10px;
-                        color: #666;
+                        color: var(--text-muted);
                     }
                 }
 
                 h2 {
                     font-weight: bold;
                     font-size: 1.5rem;
-
+                    color: var(--text-color);
                     @media (max-width: 768px) {
                         font-size: 1.2rem;
                     }
@@ -54,6 +54,7 @@
                 margin: 20px 0;
                 padding: 20px;
                 border-radius: 8px;
+                background: var(--card-bg-alt);
 
                 @media (max-width: 768px) {
                     padding: 15px;
@@ -68,6 +69,7 @@
                     .city {
                         font-size: 24px;
                         font-weight: bold;
+                        color: var(--text-color);
 
                         @media (max-width: 768px) {
                             font-size: 20px;
@@ -76,13 +78,13 @@
 
                     .time {
                         font-size: 18px;
-                        color: #666;
+                        color: var(--text-muted);
                         position: relative;
 
                         .timezone {
                             font-size: 0.8em;
-                            color: #666;
                             margin-top: 4px;
+                            color: var(--text-muted);
                         }
 
                         @media (max-width: 768px) {
@@ -99,17 +101,18 @@
             .cabinSelection {
                 margin: 2rem 0;
                 padding: 1.5rem;
-                background: #f8f9fa;
+                background: var(--card-bg-alt);
                 border-radius: 12px;
 
                 .cabinTitle {
                     font-size: 1.5rem;
                     font-weight: 600;
                     margin-bottom: 0.5rem;
+                    color: var(--text-color);
                 }
 
                 .cabinDescription {
-                    color: #6c757d;
+                    color: var(--text-muted);
                     margin-bottom: 1.5rem;
                 }
 
@@ -119,16 +122,16 @@
                     gap: 1.5rem;
 
                     .cabinOption {
-                        background: white;
-                        border: 1px solid #dee2e6;
+                        background: var(--card-bg);
+                        border: 1px solid var(--border-color);
                         border-radius: 8px;
                         padding: 1.5rem;
                         cursor: pointer;
                         transition: all 0.3s ease;
 
                         &:hover {
-                            transform: translateY(-3px);
-                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                            border: 2px solid var(--primary-color);
+                            background: rgba(var(--primary-color), 0.05);
                         }
 
                         &.selected {
@@ -142,23 +145,24 @@
                             align-items: center;
                             margin-bottom: 1rem;
                             padding-bottom: 1rem;
-                            border-bottom: 1px solid #eee;
+                            border-bottom: 1px solid var(--border-color);
 
                             .cabinType {
                                 font-size: 1.25rem;
                                 font-weight: 600;
+                                color: var(--text-color);
                             }
 
                             .price {
                                 font-size: 1.5rem;
-                                color: #007bff;
                                 font-weight: 600;
+                                color: var(--primary-color);
                             }
                         }
 
                         .cabinDetails {
                             .seats {
-                                color: #28a745;
+                                color: var(--success-color);
                                 margin-bottom: 1rem;
                             }
 
@@ -168,6 +172,7 @@
                                 .featureTitle {
                                     font-weight: 600;
                                     margin-bottom: 0.5rem;
+                                    color: var(--text-color);
                                 }
 
                                 ul {
@@ -176,12 +181,12 @@
 
                                     li {
                                         padding: 0.25rem 0;
-                                        color: #495057;
+                                        color: var(--text-color);
                                         font-size: 0.9rem;
 
                                         &:before {
                                             content: "✓";
-                                            color: #28a745;
+                                            color: var(--success-color);
                                             margin-right: 0.5rem;
                                         }
                                     }
@@ -191,9 +196,9 @@
                             .additionalInfo {
                                 margin-top: 1rem;
                                 padding-top: 1rem;
-                                border-top: 1px solid #eee;
+                                border-top: 1px solid var(--border-color);
                                 font-size: 0.9rem;
-                                color: #6c757d;
+                                color: var(--text-muted);
 
                                 div {
                                     margin: 0.5rem 0;
@@ -205,7 +210,7 @@
             }
 
             .passengerInfo {
-                background: #fff;
+                background: var(--card-bg);
                 padding: 2rem;
                 border-radius: 12px;
                 box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
@@ -213,17 +218,17 @@
                 h2 {
                     margin-bottom: 1.5rem;
                     font-size: 1.5rem;
-                    color: #333;
+                    color: var(--text-color);
                 }
 
                 .infoNotice {
-                    background-color: #fff3cd;
-                    border-left: 4px solid #ffc107;
+                    background-color: rgba(255, 193, 7, 0.15);
+                    border-left: 4px solid var(--warning-color);
                     padding: 1rem 1.25rem;
                     margin-bottom: 1.5rem;
                     border-radius: 6px;
                     font-size: 0.95rem;
-                    color: #856404;
+                    color: var(--warning-color);
 
                     p {
                         margin: 0.5rem 0;
@@ -232,11 +237,11 @@
                 }
 
                 .passengerForm {
-                    border: 1px solid #e0e0e0;
+                    border: 1px solid var(--border-color);
                     border-radius: 8px;
                     padding: 1.5rem;
                     margin-bottom: 1.5rem;
-                    background-color: #f9f9f9;
+                    background-color: var(--card-bg-alt);
 
                     .fieldRow {
                         display: grid;
@@ -258,7 +263,7 @@
                             display: block;
                             margin-bottom: 0.5rem;
                             font-weight: 500;
-                            color: #444;
+                            color: var(--text-color);
                         }
 
                         input,
@@ -266,25 +271,26 @@
                             width: 90%;
                             padding: 0.75rem;
                             font-size: 1rem;
-                            border: 1px solid #ccc;
+                            border: 1px solid var(--border-color);
                             border-radius: 6px;
-                            background-color: #fff;
+                            background-color: var(--card-bg);
+                            color: var(--text-color);
 
                             &:focus {
-                                border-color: #4a90e2;
+                                border-color: var(--primary-color);
                                 outline: none;
                                 box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
                             }
 
                             &::placeholder {
-                                color: #999;
+                                color: var(--text-muted);
                             }
                         }
                     }
                 }
 
                 .removeBtn {
-                    background-color: #dc3545;
+                    background-color: var(--danger-color);
                     color: #fff;
                     border: none;
                     border-radius: 6px;
@@ -304,7 +310,7 @@
                     margin: 0 auto;
                     margin-top: 1rem;
                     padding: 0.75rem 2rem;
-                    background-color: #4a90e2;
+                    background-color: var(--primary-color);
                     color: white;
                     font-weight: 500;
                     border: none;
@@ -340,87 +346,87 @@
                 }
 
                 &:disabled {
-                    background: #ccc;
+                    background: var(--border-color);
                     cursor: not-allowed;
                 }
             }
         }
     }
 
-.successContainer {
-    padding: 3rem 2rem;
-    text-align: center;
-    background-color: #f0f9ff;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    margin-top: 2rem;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
+    .successContainer {
+        padding: 3rem 2rem;
+        text-align: center;
+        background-color: var(--card-bg-alt);
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        margin-top: 2rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
 
-    h2 {
-        font-size: 28px;
-        color: #4caf50; 
-        margin-bottom: 1rem;
+        h2 {
+            font-size: 28px;
+            color: var(--success-color);
+            margin-bottom: 1rem;
 
-        @media (max-width: 768px) {
-            font-size: 1.6rem;
+            @media (max-width: 768px) {
+                font-size: 1.6rem;
+            }
+
+            @media (max-width: 480px) {
+                font-size: 1.4rem;
+            }
         }
 
-        @media (max-width: 480px) {
-            font-size: 1.4rem;
+        p {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 0.5rem;
+
+            @media (max-width: 768px) {
+                font-size: 1rem;
+            }
+
+            @media (max-width: 480px) {
+                font-size: 0.95rem;
+            }
         }
-    }
 
-    p {
-        font-size: 1.1rem;
-        color: #555;
-        margin-bottom: 0.5rem;
-
-        @media (max-width: 768px) {
+        .backHomeBtn {
+            margin-top: 24px;
+            padding: 0.75rem 2rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
             font-size: 1rem;
-        }
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
 
-        @media (max-width: 480px) {
-            font-size: 0.95rem;
-        }
-    }
+            &:hover {
+                background-color: #1864c7;
+            }
 
-    .backHomeBtn {
-        margin-top: 24px;
-        padding: 0.75rem 2rem;
-        background-color: #2c7be5;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-size: 1rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
+            @media (max-width: 768px) {
+                width: 100%;
+                font-size: 1rem;
+                padding: 0.75rem 1rem;
+            }
 
-        &:hover {
-            background-color: #1864c7;
+            @media (max-width: 480px) {
+                font-size: 0.95rem;
+            }
         }
 
         @media (max-width: 768px) {
-            width: 100%;
-            font-size: 1rem;
-            padding: 0.75rem 1rem;
+            padding: 2rem 1.5rem;
         }
 
         @media (max-width: 480px) {
-            font-size: 0.95rem;
+            padding: 1.5rem 1rem;
         }
     }
-
-    @media (max-width: 768px) {
-        padding: 2rem 1.5rem;
-    }
-
-    @media (max-width: 480px) {
-        padding: 1.5rem 1rem;
-    }
-}
 }
 
 .bookingFlight {

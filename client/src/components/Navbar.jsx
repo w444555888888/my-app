@@ -77,32 +77,32 @@ const Navbar = () => {
                     </div>
                 </div>
                 <div className="lineTwo">
-                    <div className={`item ${activeItem === '住宿' ? 'active' : ''}`}
+                    <div className={`item ${activeItem === '住宿' ? 'navbar-active' : ''}`}
                         onClick={() => handleClickActive('住宿')}>
                         <FontAwesomeIcon icon={faBed} />
                         <span >住宿</span>
                     </div>
-                    <div className={`item ${activeItem === '航班' ? 'active' : ''}`}
+                    <div className={`item ${activeItem === '航班' ? 'navbar-active' : ''}`}
                         onClick={() => handleClickActive('航班')}>
                         <FontAwesomeIcon icon={faPlane} />
                         <span >航班</span>
                     </div>
-                    <div className={`item ${activeItem === '機場接送' ? 'active' : ''}`}
+                    <div className={`item ${activeItem === '機場接送' ? 'navbar-active' : ''}`}
                         onClick={() => handleClickActive('機場接送')}>
                         <FontAwesomeIcon icon={faShuttleVan} />
                         <span >機場接送</span>
                     </div>
-                    <div className={`item ${activeItem === '美食預約' ? 'active' : ''}`}
+                    <div className={`item ${activeItem === '美食預約' ? 'navbar-active' : ''}`}
                         onClick={() => handleClickActive('美食預約')}>
                         <FontAwesomeIcon icon={faUtensils} />
                         <span >美食預約</span>
                     </div>
-                    <div className={`item ${activeItem === '行程活動 / 當地體驗' ? 'active' : ''}`}
+                    <div className={`item ${activeItem === '行程活動 / 當地體驗' ? 'navbar-active' : ''}`}
                         onClick={() => handleClickActive('行程活動 / 當地體驗')}>
                         <FontAwesomeIcon icon={faMapMarkerAlt} />
                         <span >行程活動 / 當地體驗</span>
                     </div>
-                    <div className={`item ${activeItem === '客服 / 幫助中心' ? 'active' : ''}`}
+                    <div className={`item ${activeItem === '客服 / 幫助中心' ? 'navbar-active' : ''}`}
                         onClick={() => handleClickActive('客服 / 幫助中心')}>
                         <FontAwesomeIcon icon={faHeadset} />
                         <span >客服 / 幫助中心</span>

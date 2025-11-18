@@ -182,9 +182,12 @@ const Hotel = () => {
 
     return allDates.map((d) => {
       const dateStr = format(d, "yyyy-MM-dd");
-      const found = e.inventory?.find((i) => i.date === dateStr);
+      const found = e.inventory?.find((i) => {
+        const invDateStr = format(new Date(i.date), "yyyy-MM-dd");
+        return invDateStr === dateStr;
+      });
 
-      if (found) return found;
+      if (found) return { ...found, date: dateStr };
 
       return {
         date: dateStr,

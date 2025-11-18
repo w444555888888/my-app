@@ -1,5 +1,6 @@
 .header {
-  background-color: white;
+  width: 100%;
+  background-color: var(--background-color);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -8,9 +9,11 @@
   .headerContainer {
     width: 100%;
     max-width: 1024px;
-    margin: 80px 0px 10px 0px;
+    margin: 80px 0 10px;
     position: relative;
+    color: var(--text-color);
 
+    /* ---------------- Header Category List --------------- */
     .headerList {
       display: flex;
       flex-wrap: wrap;
@@ -23,21 +26,34 @@
         align-items: center;
         gap: 10px;
         cursor: pointer;
+        padding: 8px 14px;
+        border-radius: 20px;
+        transition: all 0.2s ease;
+        color: var(--text-color);
+
+        &:hover {
+          background-color: var(--hover-bg, rgba(0, 0, 0, 0.06));
+        }
       }
 
       .active {
-        border: 1px solid white;
-        padding: 10px;
+        background-color: var(--primary-color);
+        color: white !important;
+        padding: 10px 16px;
         border-radius: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
       }
     }
 
+    /* ---------------- Header Description --------------- */
     .headerDesc {
-      margin: 20px 0px;
-      color: white;
+      margin: 20px 0;
       text-align: center;
+      font-size: 18px;
+      color: var(--text-muted);
     }
 
+    /* ---------------- Button --------------- */
     .headerBtn {
       background-color: var(--primary-color);
       color: white;
@@ -46,19 +62,24 @@
       padding: 10px 16px;
       cursor: pointer;
       border-radius: 5px;
+      transition: 0.2s ease;
+
+      &:hover {
+        opacity: 0.9;
+      }
     }
 
+    /* ---------------- Search Bar --------------- */
     .headerSearch {
-      height: auto;
-      box-sizing: border-box;
-      background-color: white;
-      font-size: 14px;
+      background-color: var(--card-bg);
       border: 3px solid var(--primary-color);
       display: flex;
       align-items: center;
       justify-content: space-around;
       padding: 20px 10px;
-      border-radius: 5px;
+      border-radius: 8px;
+      font-size: 14px;
+
       position: absolute;
       bottom: -25px;
       left: 0;
@@ -66,18 +87,19 @@
       width: 100%;
       flex-wrap: wrap;
       gap: 10px;
+      box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.08);
 
       .headerIcon {
-        color: lightgray;
+        color: var(--text-muted);
       }
 
       .headerSearchItem {
         display: flex;
         align-items: center;
         gap: 10px;
-        position: relative;
         flex-grow: 1;
         min-width: 0;
+        position: relative;
 
         &:nth-child(1) {
           flex-basis: 35%;
@@ -92,42 +114,36 @@
       }
 
       .headerSearchInput {
-        text-align: center;
-        line-height: 1.5;
         width: 100%;
         padding: 8px;
-        box-sizing: border-box;
         border: none;
         outline: none;
-        color: var(--primary-color);
+        background-color: var(--card-bg);
+        color: var(--text-color);
         font-size: 14px;
-        white-space: nowrap;
-        overflow: hidden;
+        border-radius: 5px;
+        box-sizing: border-box;
       }
 
       .headerSearchInput::placeholder {
-        color: var(--primary-color);
+        color: var(--text-muted);
         opacity: 1;
       }
 
       .headerSearchText {
         color: var(--primary-color);
         cursor: pointer;
-        white-space: nowrap;
+        font-weight: 600;
       }
 
       .headerBtn {
-        background-color: var(--primary-color);
-        color: white;
-        font-weight: 500;
-        border: none;
-        padding: 10px 16px;
-        cursor: pointer;
+        width: auto;
       }
     }
   }
 }
 
+/* ---------------- Suggestion List ---------------- */
 .suggestion-wrapper {
   position: relative;
 
@@ -136,9 +152,9 @@
     top: 48px;
     left: 0;
     right: 0;
-    background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    color: var(--primary-color);
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
     max-height: 250px;
     overflow-y: auto;
     z-index: 100;
@@ -146,26 +162,27 @@
     margin: 0;
     list-style: none;
     border-radius: 8px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     font-size: 15px;
     transition: all 0.2s ease;
 
     li {
       padding: 10px 16px;
       cursor: pointer;
-      transition: background-color 0.2s ease;
+      transition: 0.2s background-color ease;
 
       &:hover {
-        background-color: #f7f7f7;
+        background-color: var(--hover-bg, rgba(0, 0, 0, 0.05));
       }
 
       &:not(:last-child) {
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid var(--border-color);
       }
     }
   }
 }
 
+/* ---------------- RWD: Tablet ---------------- */
 @media screen and (max-width: 768px) {
   .header {
     padding: 0 12px;
@@ -175,7 +192,7 @@
     margin: 30px 0 80px 0;
 
     .headerList {
-      gap: 16px 12px;
+      gap: 12px 12px;
     }
 
     .headerSearch {

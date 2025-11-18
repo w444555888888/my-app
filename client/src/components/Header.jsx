@@ -16,12 +16,12 @@ const Header = () => {
   const [dates, setDates] = useState([
     {
       startDate: new Date(),
-      endDate: new Date(Date.now() + 86400000 * 7),
+      endDate: new Date(Date.now() + 86400000 * 1),
       key: 'selection',
     },
   ])
-  const [startDate, setStartDate] = useState(format(new Date(), 'yyyy-MM-dd'))
-  const [endDate, setEndDate] = useState(format(new Date(Date.now() + 86400000 * 7), 'yyyy-MM-dd'))
+  const [startDate, setStartDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+  const [endDate, setEndDate] = useState(format(new Date(Date.now() + 86400000 * 1), 'yyyy-MM-dd'));
   const [conditions, setConditions] = useState({ adult: 1, room: 1 })
 
   const navigate = useNavigate()

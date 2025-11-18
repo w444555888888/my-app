@@ -30,7 +30,6 @@ const DateRangePicker = ({
     const end = format(item.selection.endDate, 'yyyy-MM-dd');
     setStartDate(start);
     setEndDate(end);
-    setDate(start);
     if (start !== end) onClose?.();
   };
 

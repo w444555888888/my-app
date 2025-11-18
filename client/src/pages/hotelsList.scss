@@ -1,10 +1,15 @@
+/* ---------------- Empty State ---------------- */
+
 .empty-state-wrapper {
   width: 100%;
   min-height: 400px;
   display: flex;
   justify-content: center;
   align-items: center;
+  color: var(--text-color);
 }
+
+/* ---------------- List Layout ---------------- */
 
 .listContainer {
   display: flex;
@@ -19,45 +24,57 @@
   }
 }
 
+/* ---------------- Search Sidebar ---------------- */
+
 .listSearch {
   flex: 0 0 360px;
-  background-color: rgb(241, 241, 241);
+  background-color: var(--card-bg-alt);
   padding: 30px;
   border-radius: 10px;
   height: max-content;
   top: 10px;
+  color: var(--text-color);
 
   .searchTitle {
-    color: black;
+    color: var(--text-color);
     font-size: 22px;
+    font-weight: 600;
   }
 
   .limitTitle {
     font-weight: 600;
     font-size: 14px;
     margin-bottom: 6px;
-    color: #333;
+    color: var(--text-muted);
     display: block;
   }
 
   .listItmConditions {
-    position: relative;
     width: 100%;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-radius: 5px;
     padding: 8px 10px;
     font-size: 14px;
-    color: black;
-    background-color: white;
-    box-sizing: border-box;
+    color: var(--text-color);
+    background-color: var(--card-bg);
     cursor: pointer;
+    box-sizing: border-box;
+
+    &:hover {
+      border-color: var(--primary-color);
+    }
   }
 }
+
+/* ---------------- List Result ---------------- */
 
 .listResult {
   flex: 1;
   min-width: 0;
+  color: var(--text-color);
 }
+
+/* ---------------- List Item ---------------- */
 
 .listItem {
   width: 300px;
@@ -65,18 +82,25 @@
   display: flex;
   flex-direction: column;
   font-size: 12px;
-  color: rgba(0, 0, 0);
+  color: var(--text-color);
 
   .searchInput {
-    border: none;
+    border: 1px solid var(--border-color);
     padding: 10px 5px;
     border-radius: 5px;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+
+    &:focus {
+      border-color: var(--primary-color);
+      outline: none;
+    }
   }
 
   .dates {
-    background-color: #fff;
-    border: none;
-    border-radius: 2px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
   }
 
   .searchbtn {
@@ -86,7 +110,12 @@
     font-size: 20px;
     color: #fff;
     cursor: pointer;
-    background-color: rgb(128, 127, 127);
+    background-color: var(--primary-color);
+    transition: 0.3s;
+
+    &:hover {
+      opacity: 0.9;
+    }
   }
 
   label {
@@ -94,7 +123,7 @@
     align-items: center;
     gap: 8px;
     font-size: 14px;
-    color: #333;
+    color: var(--text-color);
     cursor: pointer;
 
     input[type="checkbox"] {
@@ -105,28 +134,37 @@
   }
 }
 
+/* ---------------- Price Limit ---------------- */
+
 .listItemLimitPrice {
   margin-bottom: 10px;
   display: flex;
   flex-direction: column;
 
   .searchInput {
-    border: 1px solid gray;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    color: var(--text-color);
     border-radius: 5px;
   }
 }
+
+/* ---------------- Result Title ---------------- */
 
 .resultTitle {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 15px;
+  color: var(--text-color);
 }
+
+/* ---------------- Loading Skeleton ---------------- */
 
 .skeleton-item {
   padding: 20px;
   margin-bottom: 20px;
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 8px;
 
   .skeleton-wrapper {
@@ -138,6 +176,7 @@
     width: 200px;
     height: 200px;
     border-radius: 8px;
+    background-color: var(--card-bg-alt);
   }
 
   .skeleton-content {
@@ -147,10 +186,15 @@
       height: 30px;
       margin-bottom: 10px;
       width: 300px;
+      background-color: var(--card-bg-alt);
+      border-radius: 4px;
     }
 
     .skeleton-text {
       margin-bottom: 10px;
+      height: 16px;
+      background-color: var(--card-bg-alt);
+      border-radius: 4px;
     }
 
     .skeleton-footer {
@@ -158,16 +202,18 @@
       justify-content: space-between;
       align-items: center;
 
-      .skeleton-price {
-        width: 100px;
-      }
-
+      .skeleton-price,
       .skeleton-button {
         width: 100px;
+        height: 20px;
+        background-color: var(--card-bg-alt);
+        border-radius: 4px;
       }
     }
   }
 }
+
+/* ---------------- Responsive ---------------- */
 
 @media (max-width: 1024px) {
   .listContainer {
@@ -181,7 +227,6 @@
 
   .listItem {
     width: 100%;
-    flex: none;
     font-size: 14px;
   }
 }
@@ -195,8 +240,8 @@
   .listSearch {
     flex: none;
     width: 100%;
-    max-width: 100%;
-    padding: 15px;
+    padding: 20px;
+    background-color: var(--card-bg-alt);
     box-sizing: border-box;
   }
 
@@ -207,15 +252,10 @@
   .listItem {
     width: 100%;
     font-size: 16px;
-    margin-top: 10px;
   }
 
   .searchTitle {
     font-size: 18px;
-  }
-
-  .listSearch {
-    padding: 20px;
   }
 
   .searchbtn {
@@ -233,6 +273,7 @@
 }
 
 @media (max-width: 480px) {
+
   .listWrapper {
     gap: 10px;
   }
@@ -240,7 +281,6 @@
   .listItem {
     width: 100%;
     font-size: 18px;
-    margin-top: 8px;
   }
 
   .searchTitle {
