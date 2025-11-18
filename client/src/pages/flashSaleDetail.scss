@@ -1,3 +1,25 @@
+.fs-detail-loading {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 20px 16px;
+}
+
+.skeleton-wrapper {
+    .fs-detail-content {
+        background: var(--card-bg);
+        padding: 20px;
+        margin-top: 18px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .react-loading-skeleton {
+        margin-bottom: 10px;
+    }
+}
+
+
+
 .fs-detail-page {
     min-height: 100vh;
     background: var(--background-color);

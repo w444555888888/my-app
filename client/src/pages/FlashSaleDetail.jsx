@@ -5,6 +5,7 @@ import DateRangePicker from "../components/DateRangePicker";
 import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { request } from "../utils/apiService";
+import Skeleton from 'react-loading-skeleton';
 import { toast } from 'react-toastify';
 import dayjs from "dayjs";
 import "./flashSaleDetail.scss";
@@ -30,14 +31,12 @@ const FlashSaleDetail = () => {
 
 
     const fetchData = async () => {
-        setLoading(true);
-        const res = await request("GET", `/hotelFlashSale/${id}`);
+        const res = await request("GET", `/hotelFlashSale/${id}`, {}, setLoading);
         if (res.success) {
             setSale(res.data);
         } else {
             toast.error("讀取活動資料失敗");
         }
-        setLoading(false);
     };
 
     const handleBook = async () => {
@@ -73,8 +72,39 @@ const FlashSaleDetail = () => {
 
     if (loading || !sale)
         return (
-            <div className="fs-detail-loading">
-                讀取中...
+            <div className="fs-detail-loading skeleton-wrapper">
+                <Skeleton height={200} />
+
+                <div className="fs-detail-content">
+                    <h2 className="title">
+                        <Skeleton width={"60%"} height={30} />
+                    </h2>
+
+                    <p className="hotel">
+                        <Skeleton width={"40%"} height={20} />
+                    </p>
+                    <p className="room">
+                        <Skeleton width={"50%"} height={20} />
+                    </p>
+                    <p className="time">
+                        <Skeleton width={"70%"} height={20} />
+                    </p>
+
+                    <div className="fs-price">
+                        <Skeleton width={"50%"} height={28} />
+                        <Skeleton width={"40%"} height={28} />
+                    </div>
+
+                    <div className="fs-date-picker">
+                        <Skeleton height={40} />
+                    </div>
+
+                    <div className="desc">
+                        <Skeleton count={3} />
+                    </div>
+
+                    <Skeleton height={45} borderRadius={10} />
+                </div>
             </div>
         );
 
@@ -115,7 +145,7 @@ const FlashSaleDetail = () => {
 
                         <button
                             className="fs-success-btn"
-                             onClick={() => (window.location.href = '/personal')}
+                            onClick={() => (window.location.href = '/personal')}
                         >
                             查看訂單
                         </button>
