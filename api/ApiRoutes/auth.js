@@ -6,20 +6,27 @@
  * @FilePath: \my-app\api\ApiRoutes\auth.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import express from "express"
-import { login, register, forgotPassword, resetPassword, me, logout } from "../RoutesController/auth.js"
-import { verifyToken } from "../RoutesController/auth.js";
+import express from "express";
+import {
+  login,
+  register,
+  forgotPassword,
+  resetPassword,
+  me,
+  logout,
+  verifyToken,
+} from "../RoutesController/auth.js";
 
-const router = express.Router()
+const router = express.Router();
 
-router.post("/register", register)
-router.post("/login", login)
+router.post("/register", register);
+router.post("/login", login);
 
-router.post("/forgot-password", forgotPassword)
-router.post("/reset-password/:token", resetPassword) 
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password/:token", resetPassword);
 
 router.get("/me", verifyToken, me);
 router.post("/logout", logout);
 
-export default router
+export default router;
 

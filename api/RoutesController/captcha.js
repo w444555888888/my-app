@@ -1,30 +1,24 @@
-import jwt from "jsonwebtoken";
 import { sendResponse } from "../sendResponse.js";
 import { errorMessage } from "../errorMessage.js";
+import { initCaptchaService, verifyCaptchaService } from "../Services/captcha.js";
 
-
+// 初始化滑塊
 export const initCaptcha = (req, res, next) => {
   try {
-    const x = Math.floor(Math.random() * 80 + 100);
-    const token = jwt.sign({ x }, process.env.JWT, { expiresIn: "5m" });
-
-    sendResponse(res, 200, { token, targetX: x }, "滑塊驗證初始化");
+    const result = initCaptchaService();
+    sendResponse(res, 200, result, "滑塊驗證初始化");
   } catch (err) {
     return next(errorMessage(500, "滑塊初始化失敗", err));
   }
 };
 
-
+// 驗證滑塊
 export const verifyCaptcha = (req, res, next) => {
   const { token, userX } = req.body;
   try {
-    const decoded = jwt.verify(token, process.env.JWT);
-    const correctX = decoded.x;
-    const tolerance = 6;   // 允許誤差範圍
-    const isPassed = Math.abs(userX - correctX) < tolerance;
-    if (!isPassed) {
-      return next(errorMessage(400, "滑塊驗證未通過"));
-    }
+    const isPassed = verifyCaptchaService(token, userX);
+
+    if (!isPassed) return next(errorMessage(400, "滑塊驗證未通過"));
 
     sendResponse(res, 200, { success: true }, "滑塊驗證成功");
   } catch (err) {

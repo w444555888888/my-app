@@ -12,7 +12,7 @@ import { getHotelNameSuggestions, getAllHotels, getPopularHotels, getSearchHotel
 const router = express.Router()
 
 //模糊搜尋飯店名稱
-router.get('/suggestions', getHotelNameSuggestions)
+router.get('/suggestions', getHotelNameSuggestions) 
 //獲取所有飯店資訊
 router.get('/', getAllHotels)
 // 獲取熱門飯店資訊 給首頁、精選區塊用

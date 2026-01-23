@@ -8,7 +8,7 @@
  */
 import express from "express"
 import { createFlight, updateFlight, getAllFlights, getFlight, deleteFlight, getAllFlightOrders, createFlightOrder, getUserOrders, getOrderDetail, cancelOrder } from "../RoutesController/flight.js"
-import { verifyToken } from "../RoutesController/auth.js";
+import { verifyToken } from "../RoutesController/auth.js"; 
 
 const router = express.Router()
 
