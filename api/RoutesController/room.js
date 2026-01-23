@@ -5,9 +5,8 @@ import {
   getAllRoomsService,
   getHotelRoomsService,
   updateRoomInventoryService
-} from "../Services/room.js";
+} from "../Services/rooms.js";
 import { sendResponse } from "../sendResponse.js";
-import { errorMessage } from "../errorMessage.js";
 
 // 建立房型
 export const createRoom = async (req, res, next) => {

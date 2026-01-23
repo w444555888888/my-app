@@ -381,7 +381,7 @@ const Hotel = () => {
                   <tbody>
                     {availableRooms.map((e) => {
                       const fullInventory = getFullInventory(e, startDate, endDate)
-
+                      const isSoldOut = fullInventory.some(i => i.remainingRooms === 0);
                       return fullInventory.map((inv, idx) => (
                         <tr key={`${e._id}-${inv.date}`}>
                           {/* 房型 */}
@@ -454,16 +454,10 @@ const Hotel = () => {
                             <td rowSpan={fullInventory.length} className="orderBtn">
                               <button
                                 onClick={() => handleNavigateToOrder(e._id)}
-                                disabled={fullInventory.every((i) => i.remainingRooms === 0)}
-                                className={
-                                  fullInventory.every((i) => i.remainingRooms === 0)
-                                    ? "btn soldout"
-                                    : "btn active"
-                                }
+                                disabled={isSoldOut}
+                                className={isSoldOut ? "btn soldout" : "btn active"}
                               >
-                                {fullInventory.every((i) => i.remainingRooms === 0)
-                                  ? "已滿房"
-                                  : "現在就預定"}
+                                {isSoldOut ? "日期部分已滿房" : "現在就預定"}
                               </button>
                             </td>
                           )}

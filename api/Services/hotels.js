@@ -24,93 +24,146 @@ export const getPopularHotelsService = async () => {
   return Hotel.find({ popularHotel: true }).populate("rooms");
 };
 
-// 搜尋飯店資料
+
+
+/**
+ * 計算單個房型在日期範圍內的價格和庫存
+ */
+const getRoomWithInventory = (room, startDate, endDate, inventoryMap) => {
+  // 總價計算
+  const roomTotalPrice = room.calculateTotalPrice(startDate, endDate);
+
+  let inventories = [];
+  if (startDate && endDate) {
+    const start = parseISO(startDate);
+    const end = subDays(parseISO(endDate), 1);
+
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      const dateStr = format(d, "yyyy-MM-dd");
+      const key = `${room._id.toString()}_${dateStr}`;
+      const inv = inventoryMap.get(key);
+      if (inv) {
+        inventories.push(inv);
+      } else {
+        inventories.push({
+          date: dateStr,
+          totalRooms: 0,
+          bookedRooms: 0,
+        });
+      }
+    }
+  }
+
+  return {
+    ...room.toObject(),
+    roomTotalPrice,
+    inventory: inventories.map((i) => ({
+      date: i.date,
+      totalRooms: i.totalRooms,
+      bookedRooms: i.bookedRooms,
+      remainingRooms: Math.max(i.totalRooms - i.bookedRooms, 0),
+    })),
+  };
+};
+
+
+
+
+/**
+ * 搜尋飯店+房型+價格範圍
+ */
 export const getSearchHotelsService = async (query) => {
   const { name, minPrice, maxPrice, startDate, endDate, hotelId, popular } = query;
   const minPriceNumber = Number(minPrice);
   const maxPriceNumber = Number(maxPrice);
 
-  const isSingleQuery = hotelId && !name && !minPrice && !maxPrice && !startDate && !endDate;
+  // 單查飯店
+  const isSingleQuery =
+    hotelId && !name && !minPrice && !maxPrice && !startDate && !endDate;
+
   if (isSingleQuery) {
-    const hotel = await Hotel.findById(hotelId);
-    if (!hotel) throw errorMessage(404, "找不到此飯店");
+    const hotel = await Hotel.findById(hotelId).populate("rooms");
+    if (!hotel) throw new Error("找不到此飯店");
     return [hotel];
   }
 
-  const q = {};
-  if (name) q.name = { $regex: name, $options: "i" };
-  if (hotelId) q._id = hotelId;
-  if (popular === "true") q.popularHotel = true;
+  // 篩選飯店條件
+  const hotelQuery = {};
+  if (name) hotelQuery.name = { $regex: name, $options: "i" };
+  if (hotelId) hotelQuery._id = hotelId;
+  if (popular === "true") hotelQuery.popularHotel = true;
 
-  const hotels = await Hotel.find(q).populate("rooms");
-  if (!hotels.length) throw errorMessage(404, "找不到符合條件的飯店");
+  const hotels = await Hotel.find(hotelQuery).populate("rooms");
+  if (!hotels.length) throw new Error("找不到符合條件的飯店");
 
-  const updatedHotels = await Promise.all(
-    hotels.map(async (hotel) => {
-      const hotelRooms = hotel.rooms || [];
-      let cheapestPrice = null;
-      let totalHotelPrice = 0;
+  // 3️提前抓取所有房型的庫存
+  let roomIds = [];
+  hotels.forEach((hotel) => {
+    hotel.rooms.forEach((room) => roomIds.push(room._id));
+  });
 
-      const updatedRooms = await Promise.all(
-        hotelRooms.map(async (room) => {
-          const roomTotalPrice = room.calculateTotalPrice(startDate, endDate);
+  let inventoryDocs = [];
+  if (startDate && endDate) {
+    const adjustedEnd = subDays(parseISO(endDate), 1);
+    inventoryDocs = await RoomInventory.find({
+      roomId: { $in: roomIds },
+      date: {
+        $gte: format(parseISO(startDate), "yyyy-MM-dd"),
+        $lte: format(adjustedEnd, "yyyy-MM-dd"),
+      },
+    }).lean();
+  }
 
-          const inventoryQuery = { roomId: room._id };
-          if (startDate && endDate) {
-            const adjustedEnd = subDays(parseISO(endDate), 1);
-            inventoryQuery.date = {
-              $gte: format(parseISO(startDate), "yyyy-MM-dd"),
-              $lte: format(adjustedEnd, "yyyy-MM-dd"),
-            };
-          }
+  const inventoryMap = new Map();
+  inventoryDocs.forEach((inv) => {
+    const key = `${inv.roomId.toString()}_${format(new Date(inv.date), "yyyy-MM-dd")}`;
+    inventoryMap.set(key, inv);
+  });
 
-          const inventories = await RoomInventory.find(inventoryQuery).sort({ date: 1 }).lean();
+  // 處理每間飯店的房型資訊
+  const hotelsWithRooms = hotels.map((hotel) => {
+    const updatedRooms = hotel.rooms.map((room) =>
+      getRoomWithInventory(room, startDate, endDate, inventoryMap)
+    );
 
-          if (cheapestPrice === null || roomTotalPrice < cheapestPrice) cheapestPrice = roomTotalPrice;
-          totalHotelPrice += roomTotalPrice;
+    const cheapestPrice =
+      updatedRooms.length > 0
+        ? Math.min(...updatedRooms.map((r) => r.roomTotalPrice))
+        : null;
 
-          return {
-            ...room.toObject(),
-            roomTotalPrice,
-            inventory: inventories.map((i) => ({
-              date: i.date,
-              totalRooms: i.totalRooms,
-              bookedRooms: i.bookedRooms,
-              remainingRooms: Math.max(i.totalRooms - i.bookedRooms, 0),
-            })),
-          };
-        })
-      );
+    const totalHotelPrice = updatedRooms.reduce((sum, r) => sum + r.roomTotalPrice, 0);
 
-      return {
-        ...hotel.toObject(),
-        availableRooms: updatedRooms,
-        totalPrice: totalHotelPrice,
-        cheapestPrice,
-      };
-    })
-  );
+    return {
+      ...hotel.toObject(),
+      availableRooms: updatedRooms,
+      cheapestPrice,
+      totalPrice: totalHotelPrice,
+    };
+  });
 
   // 價格篩選
-  const filteredHotels =
-    !isNaN(minPriceNumber) || !isNaN(maxPriceNumber)
-      ? updatedHotels.filter((hotel) => {
-          const price = hotel.cheapestPrice;
-          let isInRange = true;
-          if (!isNaN(minPriceNumber)) isInRange = isInRange && price >= minPriceNumber;
-          if (!isNaN(maxPriceNumber)) isInRange = isInRange && price <= maxPriceNumber;
-          return isInRange;
-        })
-      : updatedHotels;
+  if (!isNaN(minPriceNumber) || !isNaN(maxPriceNumber)) {
+    return hotelsWithRooms.filter((hotel) => {
+      const price = hotel.cheapestPrice;
+      if (price === null) return false;
+      let isInRange = true;
+      if (!isNaN(minPriceNumber)) isInRange = isInRange && price >= minPriceNumber;
+      if (!isNaN(maxPriceNumber)) isInRange = isInRange && price <= maxPriceNumber;
+      return isInRange;
+    });
+  }
 
-  return filteredHotels;
+  return hotelsWithRooms;
 };
+
+
 
 // 新增飯店
 export const createHotelService = async (body) => {
   const newHotel = new Hotel(body);
   return newHotel.save();
 };
+
 
 // 取得單一飯店資料
 export const getHotelService = async (id) => {
@@ -119,12 +172,14 @@ export const getHotelService = async (id) => {
   return hotel;
 };
 
+
 // 更新飯店
 export const updatedHotelService = async (id, body) => {
   const updated = await Hotel.findByIdAndUpdate(id, { $set: body }, { new: true });
   if (!updated) throw errorMessage(404, "修改失敗，找不到此飯店");
   return updated;
 };
+
 
 // 刪除飯店
 export const deleteHotelService = async (id) => {
