@@ -18,6 +18,13 @@ interface FlightSchedule {
   };
 }
 
+interface CabinClass {
+  category: 'ECONOMY' | 'BUSINESS' | 'FIRST';
+  basePrice: number;
+  totalSeats: number;
+  bookedSeats?: number;
+}
+
 interface FlightType {
   _id: string;
   flightNumber: string;
@@ -26,6 +33,7 @@ interface FlightType {
     arrivalCity: string;
     flightDuration: number;
   };
+  cabinClasses: CabinClass[];
   schedules: FlightSchedule[];
 }
 
@@ -58,38 +66,83 @@ const Flights: React.FC = () => {
     setLoading(false);
   };
 
-  
+
   const handleSubmit = async (values: any) => {
-    const body = {
-      flightNumber: values.flightNumber,
-      route: {
-        departureCity: values.departureCity,
-        arrivalCity: values.arrivalCity,
-        flightDuration: values.flightDuration,
-      },
-      cabinClasses: [
-        { category: 'ECONOMY', totalSeats: values.seatsECONOMY, basePrice: 1000 },
-        { category: 'BUSINESS', totalSeats: values.seatsBUSINESS, basePrice: 2000 },
-        { category: 'FIRST', totalSeats: values.seatsFIRST, basePrice: 3000 },
-      ].filter(c => c.totalSeats > 0),
-      schedules: [
-        {
-          departureDate: values.departureDate,
+    const cabinClasses = [
+      { category: 'ECONOMY', totalSeats: values.seatsECONOMY, basePrice: values.priceECONOMY },
+      { category: 'BUSINESS', totalSeats: values.seatsBUSINESS, basePrice: values.priceBUSINESS },
+      { category: 'FIRST', totalSeats: values.seatsFIRST, basePrice: values.priceFIRST },
+    ].filter(c => c.totalSeats > 0);
+
+    const schedules = [
+      {
+        departureDate: values.departureDate,
+        availableSeats: {
+          ECONOMY: values.seatsECONOMY,
+          BUSINESS: values.seatsBUSINESS,
+          FIRST: values.seatsFIRST,
         },
-      ],
-    };
+      },
+    ];
 
-    const res = editingFlight
-      ? await request('PUT', `/flight/${editingFlight._id}`, body)
-      : await request('POST', '/flight', body);
+    let body: any;
 
-    if (res.success) {
-      message.success(`${editingFlight ? '編輯' : '新增'}航班成功`);
-      setModalVisible(false);
-      setEditingFlight(null);
-      fetchFlights();
+    if (!editingFlight) {
+      // 新增航班
+      body = {
+        flightNumber: values.flightNumber,
+        route: {
+          departureCity: values.departureCity,
+          arrivalCity: values.arrivalCity,
+          flightDuration: values.flightDuration,
+        },
+        cabinClasses,
+        schedules,
+      };
+      const res = await request('POST', '/flight', body);
+      if (res.success) {
+        message.success('新增航班成功');
+        setModalVisible(false);
+        fetchFlights();
+      } else {
+        message.error(res.message || '新增航班失敗');
+      }
     } else {
-      message.error(res.message || `${editingFlight ? '編輯' : '新增'}航班失敗`);
+      // 編輯航班
+      body = {
+        flightNumber: values.flightNumber,
+        route: {
+          departureCity: values.departureCity,
+          arrivalCity: values.arrivalCity,
+          flightDuration: values.flightDuration,
+        },
+        cabinClasses: editingFlight.cabinClasses.map(c => {
+          const updated = cabinClasses.find(cc => cc.category === c.category);
+          return {
+            ...c,
+            totalSeats: updated?.totalSeats ?? c.totalSeats,
+            basePrice: updated?.basePrice ?? c.basePrice,
+          };
+        }),
+        schedules: editingFlight.schedules.map(s => ({
+          ...s,
+          departureDate: values.departureDate,
+          availableSeats: {
+            ECONOMY: values.seatsECONOMY,
+            BUSINESS: values.seatsBUSINESS,
+            FIRST: values.seatsFIRST,
+          },
+        })),
+      };
+      const res = await request('PUT', `/flight/${editingFlight._id}`, body);
+      if (res.success) {
+        message.success('編輯航班成功');
+        setModalVisible(false);
+        setEditingFlight(null);
+        fetchFlights();
+      } else {
+        message.error(res.message || '編輯航班失敗');
+      }
     }
   };
 
@@ -152,6 +205,9 @@ const Flights: React.FC = () => {
     { name: 'seatsECONOMY', label: '經濟艙座位', type: 'number', required: true },
     { name: 'seatsBUSINESS', label: '商務艙座位', type: 'number' },
     { name: 'seatsFIRST', label: '頭等艙座位', type: 'number' },
+    { name: 'priceECONOMY', label: '經濟艙價格', type: 'number', required: true },
+    { name: 'priceBUSINESS', label: '商務艙價格', type: 'number' },
+    { name: 'priceFIRST', label: '頭等艙價格', type: 'number' },
   ];
 
   const initialValues = editingFlight
@@ -162,8 +218,11 @@ const Flights: React.FC = () => {
       flightDuration: editingFlight.route.flightDuration,
       departureDate: dayjs(editingFlight.schedules[0]?.departureDate),
       seatsECONOMY: editingFlight.schedules[0]?.availableSeats?.ECONOMY ?? 0,
+      priceECONOMY: editingFlight.cabinClasses.find(c => c.category === 'ECONOMY')?.basePrice ?? 1000,
       seatsBUSINESS: editingFlight.schedules[0]?.availableSeats?.BUSINESS ?? 0,
+      priceBUSINESS: editingFlight.cabinClasses.find(c => c.category === 'BUSINESS')?.basePrice ?? 2000,
       seatsFIRST: editingFlight.schedules[0]?.availableSeats?.FIRST ?? 0,
+      priceFIRST: editingFlight.cabinClasses.find(c => c.category === 'FIRST')?.basePrice ?? 3000,
     }
     : undefined;
 
