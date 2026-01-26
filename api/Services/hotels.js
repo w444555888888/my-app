@@ -67,6 +67,23 @@ const getRoomWithInventory = (room, startDate, endDate, inventoryMap) => {
 };
 
 
+
+/**
+ * hotel 回傳格式
+ */
+const cleanHotel = (hotelObj) => {
+    const {
+        __v,
+        createdAt,
+        updatedAt,
+        rooms,
+        ...rest
+    } = hotelObj;
+
+    return rest;
+};
+
+
 /**
  * 搜尋飯店 + 房型 + 價格範圍
  */
@@ -76,46 +93,12 @@ export const getSearchHotelsService = async (query) => {
     const maxPriceNumber = Number(maxPrice);
 
     const isSingleQuery = hotelId && !name && !minPrice && !maxPrice && !startDate && !endDate;
-    const cleanHotel = (hotel) => {
-        const { __v, createdAt, updatedAt, rooms, ...rest } = hotel;
-        return {
-            ...rest,
-            availableRooms: hotel.availableRooms,
-            cheapestPrice: hotel.cheapestPrice,
-            totalPrice: hotel.totalPrice,
-        };
-    };
-
 
     if (isSingleQuery) {
-        const hotel = await Hotel.findById(hotelId)
-
+        const hotel = await Hotel.findById(hotelId).populate("rooms");
         if (!hotel) throw new Error("找不到此飯店");
-
-        const updatedRooms = hotel.rooms.map((room) =>
-            getRoomWithInventory(room, startDate, endDate, new Map())
-        );
-
-        const cheapestPrice =
-            updatedRooms.length > 0
-                ? Math.min(...updatedRooms.map((r) => r.roomTotalPrice))
-                : null;
-
-        const totalHotelPrice = updatedRooms.reduce(
-            (sum, r) => sum + r.roomTotalPrice,
-            0
-        );
-
-        return [
-            cleanHotel({
-                ...hotel,
-                availableRooms: updatedRooms,
-                cheapestPrice,
-                totalPrice: totalHotelPrice,
-            }),
-        ];
+        return [cleanHotel(hotel.toObject())];
     }
-
 
     const hotelQuery = {};
     if (name) hotelQuery.name = { $regex: name, $options: "i" };
