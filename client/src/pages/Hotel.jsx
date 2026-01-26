@@ -364,7 +364,7 @@ const Hotel = () => {
             </div>
           </div>
           <hr />
-          {availableRooms.length > 0 && availableRooms && (
+          {availableRooms && availableRooms.length > 0 && (
             <div className="roomDes">
               <div className="roomDesText">
                 <table>
@@ -381,6 +381,7 @@ const Hotel = () => {
                   <tbody>
                     {availableRooms.map((e) => {
                       const fullInventory = getFullInventory(e, startDate, endDate)
+                      const allSoldOut = fullInventory.every(i => i.remainingRooms === 0);
                       const isSoldOut = fullInventory.some(i => i.remainingRooms === 0);
                       return fullInventory.map((inv, idx) => (
                         <tr key={`${e._id}-${inv.date}`}>
@@ -454,10 +455,14 @@ const Hotel = () => {
                             <td rowSpan={fullInventory.length} className="orderBtn">
                               <button
                                 onClick={() => handleNavigateToOrder(e._id)}
-                                disabled={isSoldOut}
-                                className={isSoldOut ? "btn soldout" : "btn active"}
+                                disabled={isSoldOut || allSoldOut}
+                                className={isSoldOut || allSoldOut ? "btn soldout" : "btn active"}
                               >
-                                {isSoldOut ? "日期部分已滿房" : "現在就預定"}
+                                {allSoldOut
+                                  ? "全部日期已滿房"
+                                  : isSoldOut
+                                    ? "日期部分已滿房"
+                                    : "現在就預定"}
                               </button>
                             </td>
                           )}

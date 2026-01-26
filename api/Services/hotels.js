@@ -63,6 +63,7 @@ const getRoomWithInventory = (room, startDate, endDate, inventoryMap) => {
         roomType: room.roomType,
         roomTotalPrice,
         inventory: inventories,
+        paymentOptions: Array.isArray(room.paymentOptions) ? room.paymentOptions : [],
     };
 };
 
