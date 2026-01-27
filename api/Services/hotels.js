@@ -182,8 +182,8 @@ export const createHotelService = async (body) => {
 
 // 取得單一飯店資料
 export const getHotelService = async (id) => {
-    const hotel = await Hotel.findById(id);
-    if (!hotel) throw errorMessage(404, "找不到資料");
+   const hotel = await Hotel.findById(id).select('-rooms -__v').lean();  
+    if (!hotel) throw errorMessage(404, "找不到單一飯店資料");
     return hotel;
 };
 

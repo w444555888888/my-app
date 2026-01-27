@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Modal, Form, Input, InputNumber, Checkbox, Switch, TimePicker, DatePicker, Select, Button } from "antd";
 import type { FormInstance } from "antd/es/form";
+import LeafletMapPicker from './LeafletMapPicker';
 import dayjs from "dayjs";
 import './dynamicFormModal.scss';
 
@@ -15,6 +16,7 @@ export type FieldType =
   | "time"
   | "date"
   | "switch"
+  | "map"
   | "custom";
 
 export interface FormFieldConfig {
@@ -211,6 +213,24 @@ const DynamicFormModal: React.FC<DynamicFormModalProps> = ({
               return (
                 <Form.Item key={key} {...commonProps} valuePropName="checked">
                   <Switch disabled={field.readOnly} />
+                </Form.Item>
+              );
+            case "map":
+              return (
+                <Form.Item key={key} label={label} shouldUpdate>
+                  {({ getFieldValue, setFieldsValue }) => {
+                    const coord = getFieldValue(name) || { latitude: 10.2899, longitude: 103.9840 };
+                    const valueForMap = { lat: coord.latitude, lng: coord.longitude };
+                    return (
+                      <LeafletMapPicker
+                        value={valueForMap}
+                        onChange={(val) => {
+                          console.log('[map case] onChange val:', val);
+                          setFieldsValue({ [name as string]: { latitude: val.lat, longitude: val.lng } } as any);
+                        }}
+                      />
+                    );
+                  }}
                 </Form.Item>
               );
             case "custom":

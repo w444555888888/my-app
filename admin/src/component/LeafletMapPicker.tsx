@@ -33,10 +33,7 @@ const LocationMarker = ({ position, setPosition }: { position: any; setPosition:
   return position ? <Marker position={position} /> : null;
 };
 
-const LeafletMapPicker = ({
-  value,
-  onChange
-}: {
+const LeafletMapPicker = ({ value, onChange }: {
   value: { lat: number; lng: number };
   onChange: (val: { lat: number; lng: number }) => void;
 }) => {

@@ -7,7 +7,6 @@ import { request } from '../utils/apiService';
 import DynamicFormModal, { FormFieldConfig } from '../component/DynamicFormModal';
 import DynamicFormList from '../component/DynamicFormList';
 import PricingFormList from '../component/PricingFormList';
-import LeafletMapPicker from '../component/LeafletMapPicker';
 import './hotels.scss';
 
 const Hotels = () => {
@@ -38,13 +37,6 @@ const Hotels = () => {
   const [newDate, setNewDate] = useState('');
   const [newTotal, setNewTotal] = useState<number>(0);
 
-  useEffect(() => {
-    const lat = hotelForm.getFieldValue(['coordinates', 'latitude']);
-    const lng = hotelForm.getFieldValue(['coordinates', 'longitude']);
-    if (lat && lng) {
-      setMapCoord({ lat, lng });
-    }
-  }, [editingHotel]);
 
   const hotelFields: FormFieldConfig[] = [
     { name: 'name', label: '飯店名稱', type: 'input', required: true },
@@ -87,24 +79,7 @@ const Hotels = () => {
     },
     { name: ['coordinates', 'latitude'], label: '緯度', type: 'number', required: true },
     { name: ['coordinates', 'longitude'], label: '經度', type: 'number', required: true },
-    {
-      name: 'mapPicker',
-      label: '地圖選擇座標',
-      type: 'custom',
-      customRender: (
-        <>
-          <LeafletMapPicker
-            value={mapCoord}
-            onChange={({ lat, lng }) => {
-              hotelForm.setFieldsValue({
-                coordinates: { latitude: lat, longitude: lng }
-              });
-              setMapCoord({ lat, lng });
-            }}
-          />
-        </>
-      )
-    }
+    { name: 'coordinates', label: '地圖選擇座標', type: 'map', required: true}
   ];
 
   const roomFields: FormFieldConfig[] = [
