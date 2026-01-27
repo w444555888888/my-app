@@ -10,6 +10,7 @@ import {
   getUserOrdersService,
   getOrderDetailService,
   cancelOrderService,
+  getAllFlightOrdersService
 } from "../Services/flight.js";
 
 // Flight Controller
