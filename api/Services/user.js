@@ -106,7 +106,27 @@ export const getUserService = async (currentUser, userId) => {
         };
     }).filter(Boolean);
 
-    return { ...user, allOrder, allFlightOrder };
+    // 搶購活動訂單
+    const rawFlashSaleOrders = await HotelFlashSaleOrder.find({ userId })
+        .populate("hotelId", "name")
+        .populate("roomId", "title")
+        .populate("saleId", "title basePrice discountRate")
+        .sort({ createdAt: -1 })
+        .lean();
+
+    const allFlashSaleOrder = rawFlashSaleOrders.map(order => ({
+        _id: order._id,
+        hotelName: order.hotelId?.name,
+        roomTitle: order.roomId?.title,
+        saleTitle: order.saleId?.title,
+        basePrice: order.basePrice,
+        discountRate: order.discountRate,
+        finalPrice: order.finalPrice,
+        date: order.date,
+        status: order.status,
+    }));
+
+    return { ...user, allOrder, allFlightOrder, allFlashSaleOrder };
 };
 
 

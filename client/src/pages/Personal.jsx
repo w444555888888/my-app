@@ -30,6 +30,7 @@ const Personal = () => {
   // useState
   const [orders, setOrders] = useState([])
   const [flightOrders, setFlightOrders] = useState([])
+  const [flashSaleOrders, setFlashSaleOrders] = useState([]);
   const [password, setPassword] = useState('')
   const [realName, setRealName] = useState(userInfo?.realName || '')
   const [phoneNumber, setPhoneNumber] = useState(userInfo?.phoneNumber || '')
@@ -70,6 +71,7 @@ const Personal = () => {
         const data = result.data;
         setOrders(data.allOrder || []);
         setFlightOrders(data.allFlightOrder || []);
+        setFlashSaleOrders(data.allFlashSaleOrder || []);
       } else toast.error(`${result.message}`)
     };
     fetchUserData();
@@ -144,7 +146,7 @@ const Personal = () => {
 
       </div>
       <div className="personalContainer">
-        <h2>My Orders</h2>
+        <h2>My Hotel Bookings</h2>
         <div className="orderList">
           {orders.length === 0 ? (
             <EmptyState title="無訂房訂單" />
@@ -259,6 +261,36 @@ const Personal = () => {
           )}
         </div>
       </div>
+      <div className="personalContainer">
+        <h2>My Flash Sale Bookings</h2>
+        <div className="orderList">
+          {flashSaleOrders.length === 0 ? (
+            <EmptyState title="無搶購訂房活動訂單" />
+          ) : (
+            flashSaleOrders.map((order) => (
+              <div key={order._id} className="orderItem">
+                <div className="orderHeader">
+                  <span>訂單編號: {order._id}</span>
+                  <span>狀態: {
+                    order.status === 'booked' ? '已訂購' :
+                      order.status === 'cancelled' ? '已取消' : '未知'
+                  }</span>
+                </div>
+                <div className="orderDetails">
+                  <p>飯店: {order.hotelName}</p>
+                  <p>房型: {order.roomTitle}</p>
+                  <p>活動名稱: {order.saleTitle}</p>
+                  <p>日期: {new Date(order.date).toLocaleDateString()}</p>
+                  <p>原價: ${order.basePrice}</p>
+                  <p>折扣: {order.discountRate * 100}%</p>
+                  <p>折扣後價格: ${order.finalPrice}</p>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
     </div>
   )
 }
