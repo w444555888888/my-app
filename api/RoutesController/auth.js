@@ -23,12 +23,11 @@ export const register = async (req, res, next) => {
 export const login = async (req, res, next) => {
   try {
     const { token, userDetails } = await loginUser(req.body);
-    const isProduction = process.env.NODE_ENV === "production";
-
+  
     res.cookie("JWT_token", token, {
       httpOnly: false,
-      secure: isProduction,
-      sameSite: isProduction ? "strict" : "lax",
+      secure: true,
+      sameSite: "none", 
       path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
