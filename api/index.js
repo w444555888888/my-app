@@ -47,11 +47,12 @@ mongoose.connection.on("disconnected", () => {
     console.log("MongoDB disconnected!")
 })
 
-const port = 5000
+const port = process.env.PORT || 5000; 
 server.listen(port, () => {
     connect();
     initWebSocket(server);
     startNewsletterJob();
+    console.log(`Server running on port ${port}`);
 })
 
 // __dirname 取得目前檔案路徑
@@ -64,7 +65,7 @@ app.use(express.json());//讓上傳的req.body可以視為json
 app.use(cookieParser());//cookie驗證
 
 //跨域
-const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001','https://my-app-client.onrender.com','https://my-app-admin.onrender.com'];
+const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001','https://my-app-client-l6r7.onrender.com','https://my-app-admin-omqv.onrender.com'];
 
 const corsOptions = {
     origin: function (origin, callback) {
