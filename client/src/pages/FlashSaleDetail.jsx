@@ -160,7 +160,7 @@ const FlashSaleDetail = () => {
                 <div className="fs-detail-wrapper">
                     <div className="fs-detail-banner-wrap">
                         <img
-                            src={"http://localhost:5000" + sale.bannerUrl}
+                            src={process.env.REACT_APP_API_URL + sale.bannerUrl}
                             className="fs-detail-banner"
                         />
                     </div>

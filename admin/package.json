@@ -57,10 +57,7 @@
     ]
   },
   "options": {
-    "allowedHosts": [
-      "all"
-    ],
-    "proxy": "http://localhost:5000/api/v1"
+    "allowedHosts": ["all"]
   },
   "devDependencies": {
     "@types/leaflet": "^1.9.18",

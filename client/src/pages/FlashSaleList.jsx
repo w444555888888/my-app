@@ -60,7 +60,7 @@ const FlashSaleList = () => {
                             onClick={() => navigate(`/flash-sale/${item._id}`)}
                         >
                             <div className="fs-img-wrap">
-                                <img src={"http://localhost:5000" + item.bannerUrl} className="fs-img" />
+                                <img src={process.env.REACT_APP_API_URL+ item.bannerUrl} className="fs-img" />
                             </div>
 
                             <div className="fs-info">

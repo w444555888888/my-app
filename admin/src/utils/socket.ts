@@ -1,6 +1,6 @@
 import ClientIO from "socket.io-client";
 
-export const socket = ClientIO("http://localhost:5000", {
+export const socket = ClientIO(process.env.REACT_APP_API_URL as any, {
   transports: ["websocket"],  // 優先使用 WebSocket
   reconnection: true,         // 允許自動重連
   reconnectionAttempts: 5,    // 最多重試 5 次

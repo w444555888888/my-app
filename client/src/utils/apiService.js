@@ -1,12 +1,9 @@
 import axios from 'axios'
 import { toast } from "react-toastify";
 axios.defaults.withCredentials = true;
-const API_BASE_URL = 'https://my-app-aoxz.onrender.com'
-// const API_BASE_URL = 'http://localhost:5000/api/v1'
-
 
 const api = axios.create({
-    baseURL: API_BASE_URL,
+    baseURL: process.env.REACT_APP_API_URL,
     withCredentials: true,
 });
 

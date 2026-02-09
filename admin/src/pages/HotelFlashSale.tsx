@@ -197,7 +197,7 @@ const HotelFlashSale = () => {
                     {bannerUrl && (
                         <div className='margin-ten'>
                             <Image
-                                src={previewUrl || ("http://localhost:5000" + bannerUrl)}
+                                src={previewUrl || ( process.env.REACT_APP_API_URL + bannerUrl)}
                                 width={200}
                             />
                         </div>
@@ -215,7 +215,7 @@ const HotelFlashSale = () => {
             title: '封面圖',
             dataIndex: 'bannerUrl',
             render: (url: string) =>
-                url ? <Image src={"http://localhost:5000" + url} width={80} /> : <span>無</span>,
+                url ? <Image src={ process.env.REACT_APP_API_URL + url} width={80} /> : <span>無</span>,
         },
         {
             title: '飯店',
