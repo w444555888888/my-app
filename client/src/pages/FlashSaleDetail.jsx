@@ -160,7 +160,7 @@ const FlashSaleDetail = () => {
                 <div className="fs-detail-wrapper">
                     <div className="fs-detail-banner-wrap">
                         <img
-                            src={process.env.REACT_APP_API_URL + sale.bannerUrl}
+                            src={"https://my-app-aoxz.onrender.com" + sale.bannerUrl}
                             className="fs-detail-banner"
                         />
                     </div>

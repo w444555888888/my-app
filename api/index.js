@@ -55,9 +55,7 @@ server.listen(port, () => {
     console.log(`Server running on port ${port}`);
 })
 
-// __dirname 取得目前檔案路徑
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+
 
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));// 靜態檔案服務
