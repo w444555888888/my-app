@@ -66,7 +66,7 @@ export const forgotUserPassword = async (email) => {
   await sendMail({
     to: email,
     subject: "重置密碼請求",
-    text: `請點擊以下鏈接重置你的密碼：\nhttp://localhost:3000/reset-password/${token}\n如果你沒有請求此操作，請忽略此郵件。`,
+    text: `請點擊以下鏈接重置你的密碼：\n${process.env.FRONTEND_URL}/reset-password/${token}\n如果你沒有請求此操作，請忽略此郵件。`,
   });
 
   return { message: "重置密碼郵件已發送" };

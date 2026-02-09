@@ -19,7 +19,7 @@ export const initWebSocket = (server) => {
    */
   io = new Server(server, {
     cors: {
-      origin: ["http://localhost:3000", "http://localhost:3001"],
+      origin: ["http://localhost:3000", "http://localhost:3001",'https://my-app-client.onrender.com','https://my-app-admin.onrender.com','https://my-app-client.onrender.com','https://my-app-admin.onrender.com'],
       credentials: true,
     },
     pingInterval: 25000,
