@@ -8,8 +8,6 @@
  */
 import axios, { AxiosRequestConfig, Method } from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL;
-
 type SetLoadingFn = (value: boolean) => void;
 
 interface RequestResult<T = any> {
@@ -29,7 +27,7 @@ export const request = async <T = any>(
   try {
     const config: AxiosRequestConfig = {
       method,
-      url: `${API_BASE_URL}${endpoint}`,
+      url: `${process.env.REACT_APP_API_URL}${endpoint}`,
       ...(method.toUpperCase() === 'GET' ? { params: data } : { data }),
       withCredentials: true,
     };
