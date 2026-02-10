@@ -17,9 +17,10 @@ export const initWebSocket = (server) => {
    * - pingTimeout：若在此時間內未收到 pong，即視為斷線
    * - transports：傳輸協定（websocket 為主，polling 為備援）
    */
+  const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
   io = new Server(server, {
     cors: {
-      origin: ["http://localhost:3000", "http://localhost:3001",'https://my-app-client-l6r7.onrender.com','https://my-app-admin-omqv.onrender.com'],
+      origin: allowedOrigins,
       credentials: true,
     },
     pingInterval: 25000,
