@@ -79,7 +79,7 @@ const corsOptions = {
 app.use(cors(corsOptions))
 
 
-///middlewares中間代理商
+///middlewares
 app.use("/api/v1/hotels", hotelsApiRoute)
 app.use("/api/v1/rooms", roomsApiRoute)
 app.use("/api/v1/users", usersApiRoute)
